@@ -1,25 +1,32 @@
 package org.mabufudyne.core;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.*;
 
 public class StoryPieceTest {
+
+    private StoryPiece defaultStoryPiece;
+
+    @BeforeEach
+    private void createDefaultStoryPiece() {
+        defaultStoryPiece = new StoryPiece();
+    }
+
     @Test
     public void Constructor_ShouldCreateAStoryPieceObjectWithTitleAndBlankStory_GivenTheTitle() {
         StoryPiece testSP = new StoryPiece("StoryPiece Title");
-        assertEquals("The StoryPiece Title should be the same it has been given",
-                "StoryPiece Title", testSP.getTitle());
-        assertEquals("The StoryPiece Story should be left blank by default",
-                "", testSP.getStory());
+        assertEquals("StoryPiece Title", testSP.getTitle(),
+                "The StoryPiece Title should be the same it has been given");
+        assertEquals("", testSP.getStory(),
+                "The StoryPiece Story should be left blank by default");
     }
 
     @Test
     public void Constructor_ShouldCreateAStoryPieceObjectWithDefaultTitleAndBlankStory_GivenNoArguments() {
-        StoryPiece defaultSP = new StoryPiece();
-        assertEquals("The StoryPiece Title should be default",
-                StoryPiece.getDefaultTitle(), defaultSP.getTitle());
-        assertEquals("The StoryPiece Story should be blank",
-                "", defaultSP.getStory());
+        assertEquals(StoryPiece.getDefaultTitle(), defaultStoryPiece.getTitle(),
+                "The StoryPiece Title should be default");
+        assertEquals("", defaultStoryPiece.getStory(),
+                "The StoryPiece Story should be blank");
     }
 
     @Test
@@ -28,8 +35,8 @@ public class StoryPieceTest {
 
         for (int i=1; i<= 5; i++) {
             StoryPiece sp = new StoryPiece();
-            assertEquals(String.format("The {0}th StoryPiece should have order {0}.", i),
-                    i, sp.getOrder());
+            assertEquals(i, sp.getOrder(),
+                    String.format("The {0}th StoryPiece should have order {0}.", i));
         }
     }
 
