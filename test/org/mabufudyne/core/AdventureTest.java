@@ -4,10 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class AdventureTest {
-    
+
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
@@ -116,5 +118,39 @@ public class AdventureTest {
         }
     }
 
+    @Test
+    public void RemoveStoryPiece_ShouldThrowExceptionWhenTryingToRemoveStoryPiece_GivenTheAdventureDoesNotContainTheStoryPiece() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            defaultAdventure.removeStoryPiece(defaultStoryPiece);
+        });
+        assertEquals("Adventure does not contain the given StoryPiece.", ex.getMessage(),
+                "The exception did not have the correct message.");
+    }
+
+    @Test
+    public void RemoveStoryPiece_ShouldOnlyRemoveSpecificStoryPieces_GivenTheStoryPieces() {
+        // Add 10 choices to a StoryPiece, remove random number of them, check that the rest still remains
+        ArrayList<StoryPiece> spList = new ArrayList<>();
+
+        for (int i=0; i<10; i++) {
+            StoryPiece sp = new StoryPiece();
+            spList.add(sp);
+            defaultAdventure.addStoryPiece(sp);
+        }
+
+        Random rand = new Random();
+        int numOfChosen = rand.nextInt(10);
+
+        for (int i=0; i<numOfChosen; i++) {
+            int randIndex = rand.nextInt(spList.size()-1);
+            StoryPiece removedSP = spList.remove(randIndex);
+            defaultAdventure.removeStoryPiece(removedSP);
+        }
+
+        for (StoryPiece remainingSP : spList) {
+            assertTrue(defaultAdventure.getStoryPieces().contains(remainingSP),
+                    "Adventure no longer contains a StoryPiece that was not supposed to be removed.");
+        }
+    }
 
 }

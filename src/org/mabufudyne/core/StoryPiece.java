@@ -1,5 +1,7 @@
 package org.mabufudyne.core;
 
+import java.util.ArrayList;
+
 public class StoryPiece {
 
     private static String DEFAULT_TITLE = "Untitled";
@@ -8,11 +10,13 @@ public class StoryPiece {
     private String title;
     private String story;
     private int order;
+    private ArrayList<StoryPiece> choices;
 
     public StoryPiece(String title) {
         this.title = title;
         this.story = "";
         this.order = nextOrder;
+        this.choices = new ArrayList<>();
         nextOrder++;
     }
 
@@ -38,6 +42,25 @@ public class StoryPiece {
 
     public static void setNextOrder(int next) {
         nextOrder = next;
+    }
+
+    public ArrayList<StoryPiece> getChoices() {
+        return choices;
+    }
+
+    public void addChoice(StoryPiece choice) {
+        if (!choices.contains(choice) && choice != this) {
+            choices.add(choice);
+        }
+    }
+
+    public void removeChoice(StoryPiece choice) {
+        if (choices.contains(choice)) {
+            choices.remove(choice);
+        }
+        else {
+            throw new IllegalArgumentException("StoryPiece does not contain the given choice.");
+        }
     }
 
 

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Adventure {
 
     private static String DEFAULT_NAME = "New Adventure";
-    private ArrayList<StoryPiece> storyPieces;
 
+    private ArrayList<StoryPiece> storyPieces;
     private String name;
 
     public Adventure() {
@@ -40,8 +40,13 @@ public class Adventure {
     }
 
     public void removeStoryPiece(StoryPiece sp) {
-        if (this.storyPieces.size() > 1) {
-            this.storyPieces.remove(sp);
+        if (this.storyPieces.contains(sp)) {
+            if (storyPieces.size() > 1) {
+                this.storyPieces.remove(sp);
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Adventure does not contain the given StoryPiece.");
         }
     }
 
