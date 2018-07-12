@@ -1,4 +1,4 @@
-package org.mabufudyne.core;
+package org.mabufudyne.designer.core;
 
 import java.util.ArrayList;
 

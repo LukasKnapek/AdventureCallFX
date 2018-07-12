@@ -1,7 +1,8 @@
-package org.mabufudyne.core;
+package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+import org.mabufudyne.designer.core.StoryPiece;
 
 import java.util.ArrayList;
 import java.util.Collections;
