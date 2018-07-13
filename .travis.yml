@@ -11,5 +11,5 @@ script:
   - mvn cobertura:cobertura -Dcobertura.report.format=xml
 after_script:
 # Point test-reporter to the XML coverage report from Cobertura
-  - ./cc-test-reporter format-coverage --input type cobertura target/site/cobertura/coverage.xml --debug
+  - ./cc-test-reporter format-coverage --input-type cobertura target/site/cobertura/coverage.xml --debug
   - ./cc-test-reporter upload-coverage --debug
