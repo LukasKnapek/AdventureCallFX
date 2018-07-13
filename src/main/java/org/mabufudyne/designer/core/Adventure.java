@@ -49,6 +49,4 @@ public class Adventure {
             throw new IllegalArgumentException("Adventure does not contain the given StoryPiece.");
         }
     }
-
-
 }

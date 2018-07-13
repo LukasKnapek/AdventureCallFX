@@ -7,6 +7,9 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build --debug
 script:
-  - mvn cobertura:cobertura
+# Force Cobertura to generate an XML report (so Code Climate test-reporter can process it)
+  - mvn cobertura:cobertura -Dcobertura.report.format=xml
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --debug
+# Point test-reporter to the XML coverage report from Cobertura
+  - ./cc-test-reporter format-coverage target/site/cobertura/coverage.xml
+  - ./cc-test-reporter upload-coverage
