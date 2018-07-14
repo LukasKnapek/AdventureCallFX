@@ -10,10 +10,14 @@ import java.util.Random;
 public class StoryPieceTest {
 
     private StoryPiece defaultStoryPiece;
+    private Choice defaultChoice;
 
     @BeforeEach
     private void createDefaultStoryPiece() {
         defaultStoryPiece = new StoryPiece();
+        StoryPiece choiceSP = new StoryPiece();
+        defaultChoice = new Choice(choiceSP);
+
     }
 
     @Test
@@ -45,72 +49,83 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void AddChoice_ShouldAddStoryPieceAsAChoice_GivenTheStoryPiece() {
-        StoryPiece choice = new StoryPiece();
-        defaultStoryPiece.addChoice(choice);
-        assertTrue(defaultStoryPiece.getChoices().contains(choice),
-                "StoryPiece should contain a choice StoryPiece that was passed to it.");
+    public void AddChoice_ShouldAddChoice_GivenTheChoice() {
+        defaultStoryPiece.addChoice(defaultChoice);
+        assertTrue(defaultStoryPiece.getChoices().contains(defaultChoice),
+                "StoryPiece should contain a Choice that was passed to it.");
     }
 
     @Test
-    public void AddChoice_ShouldNotAddStoryPieceAsAChoice_GivenTheStoryPieceIsAlreadyAChoice() {
-        StoryPiece choice = new StoryPiece();
-        defaultStoryPiece.addChoice(choice);
-        defaultStoryPiece.addChoice(choice);
-        assertTrue(Collections.frequency(defaultStoryPiece.getChoices(), choice) == 1,
-                "StoryPiece should not add a choice if it already contains that choice.");
+    public void AddChoice_ShouldNotAddChoice_GivenTheStoryPieceAlreadyContainsTheChoice() {
+        defaultStoryPiece.addChoice(defaultChoice);
+        defaultStoryPiece.addChoice(defaultChoice);
+        assertTrue(Collections.frequency(defaultStoryPiece.getChoices(), defaultChoice) == 1,
+                "StoryPiece should not add a Choice if it already contains that Choice.");
     }
 
     @Test
-    public void AddChoice_ShouldNotAddStoryPieceAsAChoice_GivenTheChoiceIsTheStoryPieceItself() {
-        defaultStoryPiece.addChoice(defaultStoryPiece);
-        assertFalse(defaultStoryPiece.getChoices().contains(defaultStoryPiece),
-                "StoryPiece should not add itself as a choice.");
+    public void AddChoice_ShouldNotAddAChoice_GivenTheChoiceIsTheStoryPieceItself() {
+        Choice selfChoice = new Choice(defaultStoryPiece);
+        defaultStoryPiece.addChoice(selfChoice);
+        assertFalse(defaultStoryPiece.getChoices().contains(selfChoice),
+                "StoryPiece should not add a Choice that is the StoryPiece itself.");
+    }
+
+    @Test
+    public void AddChoice_ShouldNotAddAChoice_GivenStoryPieceContainsAnotherChoiceWithTheSameStoryPiece() {
+        StoryPiece sp = new StoryPiece();
+        Choice choiceOne = new Choice(sp);
+        Choice choiceTwo = new Choice(sp);
+        defaultStoryPiece.addChoice(choiceOne);
+        defaultStoryPiece.addChoice(choiceTwo);
+        assertTrue(defaultStoryPiece.getChoices().contains(choiceOne) &&
+                !defaultStoryPiece.getChoices().contains(choiceTwo),
+                "StoryPiece should not add a Choice with the same StoryPiece that another existing Choice points to.");
     }
 
     @Test
     public void RemoveChoice_ShouldRemoveChoiceFromStoryPiece_GivenTheChoice() {
-        StoryPiece choice = new StoryPiece();
-        defaultStoryPiece.addChoice(choice);
-        defaultStoryPiece.removeChoice(choice);
+        defaultStoryPiece.addChoice(defaultChoice);
+        defaultStoryPiece.removeChoice(defaultChoice);
         assertTrue(defaultStoryPiece.getChoices().size() == 0,
-                "The only choice that was added to the StoryPiece should have been removed.");
+                "The only Choice that was added to the StoryPiece should have been removed.");
     }
 
     @Test
     public void RemoveChoice_ShouldRemoveChoicesFromStoryPiece_GivenTheChoices() {
-        StoryPiece[] choices = new StoryPiece[5];
+        Choice[] choices = new Choice[5];
 
         for (int i=0; i<5; i++) {
-            choices[i] = new StoryPiece();
+            StoryPiece choiceSP = new StoryPiece();
+            choices[i] = new Choice(choiceSP);
             defaultStoryPiece.addChoice(choices[i]);
         }
 
-        for (StoryPiece choice : choices) {
+        for (Choice choice : choices) {
             defaultStoryPiece.removeChoice(choice);
         }
 
         assertTrue(defaultStoryPiece.getChoices().size() == 0,
-                "All choices that were added to the StoryPiece should have been removed.");
+                "All Choices that were added to the StoryPiece should have been removed.");
     }
 
     @Test
     public void RemoveChoice_ThrowsExceptionWhenTryingToRemoveChoice_GivenStoryPieceDoesNotContainTheChoice() {
-        StoryPiece choice = new StoryPiece();
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            defaultStoryPiece.removeChoice(choice);
+            defaultStoryPiece.removeChoice(defaultChoice);
         });
-        assertEquals("StoryPiece does not contain the given choice.", ex.getMessage(),
+        assertEquals("StoryPiece does not contain the given Choice.", ex.getMessage(),
                 "The exception did not have the correct message.");
     }
 
     @Test
     public void RemoveChoice_ShouldRemoveOnlySpecificChoices_GivenTheChoices() {
         // Add 10 choices to a StoryPiece, remove random number of them, check that the rest still remains
-        ArrayList<StoryPiece> choices = new ArrayList<>();
+        ArrayList<Choice> choices = new ArrayList<>();
 
         for (int i=0; i<10; i++) {
-            StoryPiece choice = new StoryPiece();
+            StoryPiece choiceSP = new StoryPiece();
+            Choice choice = new Choice(choiceSP);
             choices.add(choice);
             defaultStoryPiece.addChoice(choice);
         }
@@ -120,14 +135,13 @@ public class StoryPieceTest {
 
         for (int i=0; i<numOfChosen; i++) {
             int randIndex = rand.nextInt(choices.size()-1);
-            StoryPiece removedChoice = choices.remove(randIndex);
+            Choice removedChoice = choices.remove(randIndex);
             defaultStoryPiece.removeChoice(removedChoice);
         }
 
-        for (StoryPiece remainingChoice : choices) {
+        for (Choice remainingChoice : choices) {
             assertTrue(defaultStoryPiece.getChoices().contains(remainingChoice),
-                    "StoryPiece no longer contains a choice that was not supposed to be removed.");
+                    "StoryPiece no longer contains a Choice that was not supposed to be removed.");
         }
     }
-
 }

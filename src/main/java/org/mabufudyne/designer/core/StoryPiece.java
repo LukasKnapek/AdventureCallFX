@@ -10,7 +10,7 @@ public class StoryPiece {
     private String title;
     private String story;
     private int order;
-    private ArrayList<StoryPiece> choices;
+    private ArrayList<Choice> choices;
 
     public StoryPiece(String title) {
         this.title = title;
@@ -44,22 +44,27 @@ public class StoryPiece {
         nextOrder = next;
     }
 
-    public ArrayList<StoryPiece> getChoices() {
+    public ArrayList<Choice> getChoices() {
         return choices;
     }
 
-    public void addChoice(StoryPiece choice) {
-        if (!choices.contains(choice) && choice != this) {
+    public void addChoice(Choice choice) {
+
+        for (Choice existingChoice : choices) {
+            if (existingChoice.getStoryPiece() == choice.getStoryPiece()) return;
+        }
+
+        if (choice.getStoryPiece() != this) {
             choices.add(choice);
         }
     }
 
-    public void removeChoice(StoryPiece choice) {
+    public void removeChoice(Choice choice) {
         if (choices.contains(choice)) {
             choices.remove(choice);
         }
         else {
-            throw new IllegalArgumentException("StoryPiece does not contain the given choice.");
+            throw new IllegalArgumentException("StoryPiece does not contain the given Choice.");
         }
     }
 
