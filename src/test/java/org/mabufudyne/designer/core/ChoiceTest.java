@@ -7,11 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChoiceTest {
 
+    private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
     @BeforeEach
     private void createDefaultStoryPiece() {
-        defaultStoryPiece = new StoryPiece();
+        defaultAdventure = new Adventure();
+        defaultStoryPiece = defaultAdventure.createNewStoryPiece();
     }
 
     @Test

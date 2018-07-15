@@ -9,17 +9,20 @@ import java.util.Random;
 
 public class StoryPieceTest {
 
+    private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
     private Choice defaultChoice;
 
     @BeforeEach
     private void createDefaultStoryPiece() {
-        defaultStoryPiece = new StoryPiece();
-        StoryPiece choiceSP = new StoryPiece();
+        defaultAdventure = new Adventure();
+        defaultStoryPiece = defaultAdventure.createNewStoryPiece();
+        StoryPiece choiceSP = defaultAdventure.createNewStoryPiece();
         defaultChoice = new Choice(choiceSP);
 
     }
 
+    /*
     @Test
     public void Constructor_ShouldCreateAStoryPieceObjectWithTitleAndBlankStory_GivenTheTitle() {
         StoryPiece testSP = new StoryPiece("StoryPiece Title");
@@ -48,6 +51,8 @@ public class StoryPieceTest {
         }
     }
 
+    */
+
     @Test
     public void AddChoice_ShouldAddChoice_GivenTheChoice() {
         defaultStoryPiece.addChoice(defaultChoice);
@@ -73,7 +78,7 @@ public class StoryPieceTest {
 
     @Test
     public void AddChoice_ShouldNotAddAChoice_GivenStoryPieceContainsAnotherChoiceWithTheSameStoryPiece() {
-        StoryPiece sp = new StoryPiece();
+        StoryPiece sp = defaultAdventure.createNewStoryPiece();
         Choice choiceOne = new Choice(sp);
         Choice choiceTwo = new Choice(sp);
         defaultStoryPiece.addChoice(choiceOne);
@@ -96,8 +101,7 @@ public class StoryPieceTest {
         Choice[] choices = new Choice[5];
 
         for (int i=0; i<5; i++) {
-            StoryPiece choiceSP = new StoryPiece();
-            choices[i] = new Choice(choiceSP);
+            choices[i] = new Choice(defaultAdventure.createNewStoryPiece());
             defaultStoryPiece.addChoice(choices[i]);
         }
 
@@ -124,8 +128,7 @@ public class StoryPieceTest {
         ArrayList<Choice> choices = new ArrayList<>();
 
         for (int i=0; i<10; i++) {
-            StoryPiece choiceSP = new StoryPiece();
-            Choice choice = new Choice(choiceSP);
+            Choice choice = new Choice(defaultAdventure.createNewStoryPiece());
             choices.add(choice);
             defaultStoryPiece.addChoice(choice);
         }

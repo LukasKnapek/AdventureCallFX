@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 public class AdventureTest {
@@ -15,7 +14,7 @@ public class AdventureTest {
     @BeforeEach
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
-        defaultStoryPiece = new StoryPiece();
+        defaultStoryPiece = defaultAdventure.createNewStoryPiece();
     }
 
     @Test
@@ -39,50 +38,64 @@ public class AdventureTest {
     }
 
     @Test
-    public void AddStoryPiece_ShouldAddStoryPieceToTheAdventure_GivenAStoryPiece() {
-        defaultAdventure.addStoryPiece(defaultStoryPiece);
-        assertTrue(defaultAdventure.getStoryPieces().contains(defaultStoryPiece),
-                "The Adventure does not contain the StoryPiece that was added to it");
+    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithTitle_GivenTheName() {
+        String spTitle = "Beginning";
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece("Beginning");
+        assertEquals(spTitle, newSP.getTitle(),
+                "The new StoryPiece does not have the title that was passed to the method.");
     }
 
     @Test
-    public void AddStoryPiece_ShouldAddStoryPiecesToTheAdventure_GivenMultipleStoryPieces() {
+    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithDefaultTitle_GivenNothing() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        assertEquals(Adventure.getDefaultStoryPieceTitle(), newSP.getTitle(),
+                "The new StoryPiece does not have the default title.");
+    }
+
+    @Test
+    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPieceToTheAdventure_GivenNothing() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        assertTrue(defaultAdventure.getStoryPieces().contains(newSP),
+                "The Adventure does not contain the StoryPiece that was created inside it");
+    }
+
+    @Test
+    public void CreateNewStoryPiece_ShouldIncrementOrderOfEveryNewStoryPiece() {
+        assertEquals(1, defaultStoryPiece.getOrder(),
+                "The initial StoryPiece in an Adventure should have order 1.");
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        assertEquals(2, newSP.getOrder(),
+                "The second StoryPiece in an Adventure should have order 2.");
+    }
+
+    @Test
+    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPiecesToTheAdventure_GivenMultipleStoryPieces() {
         StoryPiece[] storyPieces = new StoryPiece[5];
         for (int i=0; i<5; i++) {
-            storyPieces[i] = new StoryPiece();
-            defaultAdventure.addStoryPiece(storyPieces[i]);
+            storyPieces[i] = defaultAdventure.createNewStoryPiece();
         }
 
         for (StoryPiece sp : storyPieces) {
             assertTrue(defaultAdventure.getStoryPieces().contains(sp),
-                    "The Adventure does not contain one of the StoryPieces that were added to it");
+                    "The Adventure does not contain one of the StoryPieces that were created inside it");
         }
     }
 
     @Test
-    public void AddStoryPiece_ShouldNotAddStoryPieceToTheAdventure_GivenTheAdventureAlreadyContainsTheStoryPiece() {
-        defaultAdventure.addStoryPiece(defaultStoryPiece);
-        defaultAdventure.addStoryPiece(defaultStoryPiece);
+    public void RemoveStoryPiece_ShouldRemoveStoryPieceFromAdventure_GivenTheStoryPiece() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        defaultAdventure.removeStoryPiece(newSP);
 
-        assertTrue(Collections.frequency(defaultAdventure.getStoryPieces(), defaultStoryPiece) == 1,
-                "The Adventure should not add the StoryPiece if it already exists inside the Adventure");
-    }
-
-    @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPiece_GivenTheStoryPieces() {
-        defaultAdventure.addStoryPiece(defaultStoryPiece);
-        defaultAdventure.removeStoryPiece(defaultStoryPiece);
-
-        assertFalse(defaultAdventure.getStoryPieces().contains(defaultStoryPiece),
+        assertFalse(defaultAdventure.getStoryPieces().contains(newSP),
                 "The Adventure should not contain the StoryPiece that was removed from it");
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPieces_GivenTheStoryPieces() {
+    public void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventure_GivenTheStoryPieces() {
         StoryPiece[] storyPieces = new StoryPiece[5];
+
         for (int i=0; i<5; i++) {
-            storyPieces[i] = new StoryPiece();
-            defaultAdventure.addStoryPiece(storyPieces[i]);
+            storyPieces[i] = defaultAdventure.createNewStoryPiece();
         }
 
         for (StoryPiece sp : storyPieces) {
@@ -93,7 +106,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldNotRemovyStoryPiece_GivenItIsTheLastOne() {
+    public void RemoveStoryPiece_ShouldNotRemoveStoryPieceFromAdventure_GivenItIsTheLastOne() {
         StoryPiece sp = defaultAdventure.getStoryPieces().get(0);
         defaultAdventure.removeStoryPiece(sp);
         assertTrue(defaultAdventure.getStoryPieces().contains(sp),
@@ -101,40 +114,29 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPiecesExceptForTheLastOne_GivenTheStoryPieces() {
+    public void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventureExceptForTheLastOne_GivenTheStoryPieces() {
         StoryPiece[] storyPieces = new StoryPiece[5];
         storyPieces[0] = defaultAdventure.getStoryPieces().get(0);
 
         for (int i=1; i<5; i++) {
-            storyPieces[i] = new StoryPiece();
-            defaultAdventure.addStoryPiece(storyPieces[i]);
+            storyPieces[i] = defaultAdventure.createNewStoryPiece();
         }
 
         for (StoryPiece sp : storyPieces) {
             defaultAdventure.removeStoryPiece(sp);
-            assertTrue(defaultAdventure.getStoryPieces().size() > 0,
-                    "The Adventure should not have removed the last StoryPiece");
         }
+
+        assertTrue(defaultAdventure.getStoryPieces().size() > 0,
+                "The Adventure should not have removed its last StoryPiece");
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldThrowExceptionWhenTryingToRemoveStoryPiece_GivenTheAdventureDoesNotContainTheStoryPiece() {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            defaultAdventure.removeStoryPiece(defaultStoryPiece);
-        });
-        assertEquals("Adventure does not contain the given StoryPiece.", ex.getMessage(),
-                "The exception did not have the correct message.");
-    }
-
-    @Test
-    public void RemoveStoryPiece_ShouldOnlyRemoveSpecificStoryPieces_GivenTheStoryPieces() {
-        // Add 10 choices to a StoryPiece, remove random number of them, check that the rest still remains
+    public void RemoveStoryPiece_ShouldOnlyRemoveSpecificStoryPiecesFromAdventure_GivenTheStoryPieces() {
+        // Create 10 StoryPieces inside an Adventure, remove random number of them, see if the rest remains
         ArrayList<StoryPiece> spList = new ArrayList<>();
 
         for (int i=0; i<10; i++) {
-            StoryPiece sp = new StoryPiece();
-            spList.add(sp);
-            defaultAdventure.addStoryPiece(sp);
+            spList.add(defaultAdventure.createNewStoryPiece());
         }
 
         Random rand = new Random();
@@ -152,4 +154,53 @@ public class AdventureTest {
         }
     }
 
+    @Test
+    public void RemoveStoryPiece_ShouldDecrementTheNextStoryPieceOrder() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        int oldOrder = newSP.getOrder();
+        defaultAdventure.removeStoryPiece(newSP);
+        StoryPiece newNewSP = defaultAdventure.createNewStoryPiece();
+        assertEquals(oldOrder, newNewSP.getOrder(),
+                "Adventure did not decrement next StoryPiece order after deleting a StoryPiece.");
+    }
+
+    @Test
+    public void SwitchStoryPieceOrder_ShouldSwitchTheOrderOfTheStoryPieces_GivenTheFirstStoryPieceAndItsNewOrder() {
+
+        for (int i=0; i<5; i++) {
+            defaultAdventure.createNewStoryPiece();
+        }
+
+        StoryPiece sp1 = defaultAdventure.getStoryPieces().get(2);
+        StoryPiece sp2 = defaultAdventure.getStoryPieces().get(4);
+        int sp1Order = sp1.getOrder();
+        int sp2Order = sp2.getOrder();
+
+        defaultAdventure.switchStoryPieceOrder(sp1, sp2Order);
+
+        assertEquals(sp1Order, sp2.getOrder(),
+                "The second StoryPiece should have the order of the first StoryPiece.");
+        assertEquals(sp2Order, sp1.getOrder(),
+                "The first StoryPiece should have the order of the second StoryPiece.");
+    }
+
+    @Test
+    public void SwitchStoryPieceOrder_ShouldNotSwitchTheOrderOfTheStoryPieces_GivenAStoryPieceAndItsCurrentOrderAsTheNewOrder() {
+
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        int currentOrder = newSP.getOrder();
+
+        defaultAdventure.switchStoryPieceOrder(newSP, currentOrder);
+        assertEquals(currentOrder, newSP.getOrder(),
+                "The StoryPiece order was changed although its new order argument was its current order.");
+    }
+
+    @Test
+    public void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatWasNotAssignedYet() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+            defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 100);
+        });
+        assertEquals("The requested new order is out of range (not assigned to any StoryPiece yet).", ex.getMessage(),
+                "The exception did not have the correct message.");
+    }
 }
