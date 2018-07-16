@@ -1,12 +1,13 @@
 package org.mabufudyne.designer.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Adventure {
 
     private static String DEFAULT_NAME = "New Adventure";
     private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
-    private static int nextStoryPieceOrder;
+    private static ArrayList<Integer> availableOrders;
 
     private ArrayList<StoryPiece> storyPieces;
     private String name;
@@ -18,9 +19,9 @@ public class Adventure {
     public Adventure(String name) {
         this.name = name;
         this.storyPieces = new ArrayList<>();
-        nextStoryPieceOrder = 1;
+        this.availableOrders = new ArrayList<>();
 
-        StoryPiece initialSP = new StoryPiece(DEFAULT_STORYPIECE_TITLE, nextStoryPieceOrder);
+        this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
     }
 
     public String getName() {
@@ -38,9 +39,8 @@ public class Adventure {
     public static String getDefaultStoryPieceTitle() { return DEFAULT_STORYPIECE_TITLE; }
 
     public StoryPiece createNewStoryPiece(String title) {
-        StoryPiece newSP = new StoryPiece(title, nextStoryPieceOrder);
+        StoryPiece newSP = new StoryPiece(title, obtainNextStoryPieceOrder());
         storyPieces.add(newSP);
-        nextStoryPieceOrder++;
         return newSP;
     }
 
@@ -48,23 +48,27 @@ public class Adventure {
         return createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
     }
 
+    private int obtainNextStoryPieceOrder() {
+        return availableOrders.isEmpty() ? storyPieces.size() + 1 : availableOrders.remove(0);
+    }
+
+    private void freeUpOrder(int order) {
+        availableOrders.add(order);
+        Collections.sort(availableOrders);
+    }
+
     public void removeStoryPiece(StoryPiece sp) {
-        if (this.storyPieces.contains(sp)) {
-            if (storyPieces.size() > 1) {
-                this.storyPieces.remove(sp);
-                nextStoryPieceOrder--;
-            }
-        }
-        else {
-            throw new IllegalArgumentException("Adventure does not contain the given StoryPiece.");
+        if (storyPieces.size() > 1) {
+            freeUpOrder(sp.getOrder());
+            this.storyPieces.remove(sp);
         }
     }
 
     public void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
         StoryPiece secondSP = null;
 
-        if (newOrder > storyPieces.size()) {
-            throw new IllegalArgumentException("The requested new order is out of range (not assigned to any StoryPiece yet).");
+        if (newOrder > storyPieces.size() || newOrder <= 0) {
+            throw new IllegalArgumentException("The requested new order is out of range (1-Number of existing StoryPieces).");
         }
 
         for (StoryPiece sp : storyPieces) {
@@ -73,8 +77,10 @@ public class Adventure {
             }
         }
 
-        int temp = firstSP.getOrder();
-        firstSP.setOrder(secondSP.getOrder());
-        secondSP.setOrder(temp);
+        if (secondSP != null) {
+            int temp = firstSP.getOrder();
+            firstSP.setOrder(secondSP.getOrder());
+            secondSP.setOrder(temp);
+        }
     }
 }

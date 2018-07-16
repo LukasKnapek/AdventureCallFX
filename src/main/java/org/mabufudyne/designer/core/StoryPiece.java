@@ -24,6 +24,10 @@ public class StoryPiece {
         return story;
     }
 
+    public void setStory(String story) {
+        this.story = story;
+    }
+
     public int getOrder() {
         return order;
     }

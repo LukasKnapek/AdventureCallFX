@@ -2,6 +2,8 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,7 +16,7 @@ public class AdventureTest {
     @BeforeEach
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
-        defaultStoryPiece = defaultAdventure.createNewStoryPiece();
+        defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
     }
 
     @Test
@@ -155,16 +157,6 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldDecrementTheNextStoryPieceOrder() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
-        int oldOrder = newSP.getOrder();
-        defaultAdventure.removeStoryPiece(newSP);
-        StoryPiece newNewSP = defaultAdventure.createNewStoryPiece();
-        assertEquals(oldOrder, newNewSP.getOrder(),
-                "Adventure did not decrement next StoryPiece order after deleting a StoryPiece.");
-    }
-
-    @Test
     public void SwitchStoryPieceOrder_ShouldSwitchTheOrderOfTheStoryPieces_GivenTheFirstStoryPieceAndItsNewOrder() {
 
         for (int i=0; i<5; i++) {
@@ -195,12 +187,13 @@ public class AdventureTest {
                 "The StoryPiece order was changed although its new order argument was its current order.");
     }
 
-    @Test
-    public void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatWasNotAssignedYet() {
+    @ParameterizedTest
+    @ValueSource(ints = { 0, -1, 100 })
+    public void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatIsOutsideTheRange1ToTheNumberOfExistingStoryPieces(int order) {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 100);
+            defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, order);
         });
-        assertEquals("The requested new order is out of range (not assigned to any StoryPiece yet).", ex.getMessage(),
+        assertEquals("The requested new order is out of range (1-Number of existing StoryPieces).", ex.getMessage(),
                 "The exception did not have the correct message.");
     }
 }
