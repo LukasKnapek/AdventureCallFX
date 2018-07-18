@@ -6,6 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class AdventureTest {
@@ -55,7 +57,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPieceToTheAdventure_GivenNothing() {
+    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPieceToTheAdventure() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
         assertTrue(defaultAdventure.getStoryPieces().contains(newSP),
                 "The Adventure does not contain the StoryPiece that was created inside it");
@@ -196,4 +198,39 @@ public class AdventureTest {
         assertEquals("The requested new order is out of range (1-Number of existing StoryPieces).", ex.getMessage(),
                 "The exception did not have the correct message.");
     }
+
+    @Test
+    public void ShuffleStoryPieceOrder_ShouldRandomizeTheOrderOfStoryPiecesInAnAdventure() {
+
+        for (int i=0; i<5; i++) {
+            defaultAdventure.createNewStoryPiece();
+        }
+
+        ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
+        defaultAdventure.shuffleStoryPieces();
+
+        assertFalse(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+                "The order of the StoryPieces has not changed after shuffle.");
+    }
+
+    @Test
+    public void ShuffleStoryPieceOrder_ShouldNotResultInTheSameOrderAsBefore_GivenThereAreAtLeastTwoShuffableStoryPieces() {
+
+        // Create a new StoryPiece so we have 2 in total
+        defaultAdventure.createNewStoryPiece();
+
+        // 50% chance of the correct order after shuffle even if the method does not work correctly, so repeat 10 times
+        // to reduce the chance that the order gets shuffled correctly each time by chance to ~0.09%
+        for (int i=0; i<10; i++) {
+            ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
+            defaultAdventure.shuffleStoryPieces();
+            assertFalse(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+                    "The order of the StoryPieces has not changed after shuffle even though there are two" +
+                            "shuffable StoryPieces.");
+        }
+
+
+
+    }
+
 }

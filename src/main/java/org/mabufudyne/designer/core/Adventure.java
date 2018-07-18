@@ -2,15 +2,20 @@ package org.mabufudyne.designer.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Adventure {
 
     private static String DEFAULT_NAME = "New Adventure";
     private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
-    private static ArrayList<Integer> availableOrders;
+    private static ArrayList<Integer> availableOrders = new ArrayList<>();
 
     private ArrayList<StoryPiece> storyPieces;
     private String name;
+
+    private void sortStoryPiecesByOrder() {
+        Collections.sort(storyPieces, Comparator.comparing(StoryPiece::getOrder));
+    }
 
     public Adventure() {
         this(DEFAULT_NAME);
@@ -19,7 +24,6 @@ public class Adventure {
     public Adventure(String name) {
         this.name = name;
         this.storyPieces = new ArrayList<>();
-        this.availableOrders = new ArrayList<>();
 
         this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
     }
@@ -41,6 +45,7 @@ public class Adventure {
     public StoryPiece createNewStoryPiece(String title) {
         StoryPiece newSP = new StoryPiece(title, obtainNextStoryPieceOrder());
         storyPieces.add(newSP);
+        sortStoryPiecesByOrder();
         return newSP;
     }
 
@@ -65,22 +70,44 @@ public class Adventure {
     }
 
     public void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
-        StoryPiece secondSP = null;
-
         if (newOrder > storyPieces.size() || newOrder <= 0) {
             throw new IllegalArgumentException("The requested new order is out of range (1-Number of existing StoryPieces).");
         }
 
         for (StoryPiece sp : storyPieces) {
             if (sp.getOrder() == newOrder) {
-                secondSP = sp;
+                int temp = firstSP.getOrder();
+                firstSP.setOrder(sp.getOrder());
+                sp.setOrder(temp);
+                return;
             }
         }
+    }
 
-        if (secondSP != null) {
-            int temp = firstSP.getOrder();
-            firstSP.setOrder(secondSP.getOrder());
-            secondSP.setOrder(temp);
+    public void shuffleStoryPieces() {
+        ArrayList<Integer> remainingOrders = new ArrayList<>();
+        ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(storyPieces);
+        boolean sameResultOrder = true;
+
+        while (sameResultOrder) {
+            for (int i=1; i<=storyPieces.size(); i++) {
+                remainingOrders.add(i);
+            }
+
+            // Return if there are not enough shuffable StoryPieces
+            if (remainingOrders.size() <= 1) return;
+
+            Collections.shuffle(remainingOrders);
+
+            for (StoryPiece sp : storyPieces) {
+                sp.setOrder(remainingOrders.remove(0));
+            }
+
+            sortStoryPiecesByOrder();
+            // If the result of the shuffle is the same StoryPiece order as before, we will repeat the process
+            sameResultOrder = storyPiecesOriginalOrder.equals(storyPieces);
         }
+
+
     }
 }
