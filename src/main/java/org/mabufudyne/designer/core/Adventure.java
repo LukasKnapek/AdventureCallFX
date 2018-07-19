@@ -84,26 +84,36 @@ public class Adventure {
         }
     }
 
+    private ArrayList<Integer> obtainShuffableOrders() {
+        ArrayList<Integer> shuffableOrders = new ArrayList<>();
+
+        for (StoryPiece sp : storyPieces) {
+            if (!sp.isFixed()) shuffableOrders.add(sp.getOrder());
+        }
+
+        return shuffableOrders;
+    }
+
+    private void reassignStoryPieceOrders(ArrayList<Integer> newOrders) {
+        for (StoryPiece sp : storyPieces) {
+            if (!sp.isFixed()) sp.setOrder(newOrders.remove(0));
+        }
+    }
+
     public void shuffleStoryPieces() {
-        ArrayList<Integer> remainingOrders = new ArrayList<>();
         ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(storyPieces);
+        ArrayList<Integer> shuffableOrders;
         boolean sameResultOrder = true;
 
         while (sameResultOrder) {
-            for (int i=1; i<=storyPieces.size(); i++) {
-                remainingOrders.add(i);
-            }
+            shuffableOrders = obtainShuffableOrders();
+            // If there is less than two shuffable orders, there is nothing to be done
+            if (shuffableOrders.size() <= 1) return;
 
-            // Return if there are not enough shuffable StoryPieces
-            if (remainingOrders.size() <= 1) return;
-
-            Collections.shuffle(remainingOrders);
-
-            for (StoryPiece sp : storyPieces) {
-                sp.setOrder(remainingOrders.remove(0));
-            }
-
+            Collections.shuffle(shuffableOrders);
+            reassignStoryPieceOrders(shuffableOrders);
             sortStoryPiecesByOrder();
+
             // If the result of the shuffle is the same StoryPiece order as before, we will repeat the process
             sameResultOrder = storyPiecesOriginalOrder.equals(storyPieces);
         }

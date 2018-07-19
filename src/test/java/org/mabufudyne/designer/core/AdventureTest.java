@@ -42,6 +42,12 @@ public class AdventureTest {
     }
 
     @Test
+    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithFixedStatusFalseByDefault() {
+        assertFalse(defaultStoryPiece.isFixed(),
+                "StoryPieces should be created with Fixed status set to false by default.");
+    }
+
+    @Test
     public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithTitle_GivenTheName() {
         String spTitle = "Beginning";
         StoryPiece newSP = defaultAdventure.createNewStoryPiece("Beginning");
@@ -220,7 +226,7 @@ public class AdventureTest {
         defaultAdventure.createNewStoryPiece();
 
         // 50% chance of the correct order after shuffle even if the method does not work correctly, so repeat 10 times
-        // to reduce the chance that the order gets shuffled correctly each time by chance to ~0.09%
+        // to reduce the probability that the order gets shuffled correctly each time by chance to ~0.09%
         for (int i=0; i<10; i++) {
             ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
             defaultAdventure.shuffleStoryPieces();
@@ -228,9 +234,38 @@ public class AdventureTest {
                     "The order of the StoryPieces has not changed after shuffle even though there are two" +
                             "shuffable StoryPieces.");
         }
+    }
 
+    @Test
+    public void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPiecesWithFixedStatus() {
+        for (int i=0; i<5; i++) {
+            defaultAdventure.createNewStoryPiece();
+        }
 
+        StoryPiece fixedSP1 = defaultAdventure.getStoryPieces().get(3);
+        StoryPiece fixedSP2 = defaultAdventure.getStoryPieces().get(4);
+        int originalOrder1 = fixedSP1.getOrder();
+        int originalOrder2 = fixedSP2.getOrder();
+        fixedSP1.setFixed(true);
+        fixedSP2.setFixed(true);
 
+        defaultAdventure.shuffleStoryPieces();
+
+        assertEquals(originalOrder1, fixedSP1.getOrder(),
+                String.format("The order of a fixed StoryPiece has been changed, %d -> %d.", originalOrder1, fixedSP1.getOrder()));
+        assertEquals(originalOrder2, fixedSP2.getOrder(),
+                String.format("The order of a fixed StoryPiece has been changed, %d -> %d.", originalOrder2, fixedSP2.getOrder()));
+
+    }
+
+    @Test
+    public void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPieces_GivenThereAreZeroShuffableStoryPieces() {
+        defaultStoryPiece.setFixed(true);
+        ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
+
+        defaultAdventure.shuffleStoryPieces();
+        assertTrue(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+                "The order of StoryPieces was changed although there are zero shuffable StoryPieces.");
     }
 
 }

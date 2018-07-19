@@ -4,11 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 @Category(ComponentTest.class)
 public class AdventureComponentTest {
@@ -85,6 +82,37 @@ public class AdventureComponentTest {
                             expectedOrder, actualOrder));
         }
 
+    }
+
+    @Test
+    public void Adventure_ShouldShuffleStoryPiecesSuchThatTheResultIsDifferentAndFixedStoryPieceOrdersAreNotChanged_GivenSomeStoryPiecesAreFixed() {
+
+        StoryPiece SP1NonFixed = defaultStoryPiece;
+        StoryPiece SP2NonFixed = defaultAdventure.createNewStoryPiece();
+        StoryPiece SP3Fixed = defaultAdventure.createNewStoryPiece();
+        StoryPiece SP4Fixed = defaultAdventure.createNewStoryPiece();
+        SP3Fixed.setFixed(true);
+        SP4Fixed.setFixed(true);
+        int SP3OriginalOrder = SP3Fixed.getOrder();
+        int SP4OriginalOrder = SP4Fixed.getOrder();
+
+        String failedShuffleMsg = "Non-fixed StoryPiece order was not shuffled with at least two shuffable StoryPieces.";
+        String failedFixedMsg = "Fixed StoryPiece order was different after a shuffle.";
+
+
+        // Out of four StoryPieces, two are fixed. We expect the other two to switch orders every shuffle
+        // while the fixed StoryPieces should keep the same orders
+        for (int i=0; i<10; i++) {
+            int SP1OriginalOrder = SP1NonFixed.getOrder();
+            int SP2OriginalOrder = SP2NonFixed.getOrder();
+
+            defaultAdventure.shuffleStoryPieces();
+
+            assertFalse(SP1NonFixed.getOrder() == SP1OriginalOrder, failedShuffleMsg);
+            assertFalse(SP2NonFixed.getOrder() == SP2OriginalOrder, failedShuffleMsg);
+            assertTrue(SP3Fixed.getOrder() == SP3OriginalOrder, failedFixedMsg);
+            assertTrue(SP4Fixed.getOrder() == SP4OriginalOrder, failedFixedMsg);
+        }
     }
 
 

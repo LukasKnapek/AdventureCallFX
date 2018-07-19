@@ -7,12 +7,15 @@ public class StoryPiece {
     private String title;
     private String story;
     private int order;
+    private boolean fixed;
     private ArrayList<Choice> choices;
 
     public StoryPiece(String title, int order) {
         this.title = title;
         this.story = "";
         this.order = order;
+        this.fixed = false;
+
         this.choices = new ArrayList<>();
     }
 
@@ -34,6 +37,14 @@ public class StoryPiece {
 
     public void setOrder(int newOrder) {
         order = newOrder;
+    }
+
+    public boolean isFixed() {
+        return fixed;
+    }
+
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
     }
 
     public ArrayList<Choice> getChoices() {
