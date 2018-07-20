@@ -1,5 +1,7 @@
 package org.mabufudyne.designer.core;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 public class StoryPiece {
@@ -8,6 +10,8 @@ public class StoryPiece {
     private String story;
     private int order;
     private boolean fixed;
+    private Color color;
+
     private ArrayList<Choice> choices;
 
     public StoryPiece(String title, int order) {
@@ -45,6 +49,14 @@ public class StoryPiece {
 
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public ArrayList<Choice> getChoices() {

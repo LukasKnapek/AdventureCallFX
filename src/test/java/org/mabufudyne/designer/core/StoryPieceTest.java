@@ -1,6 +1,8 @@
 package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import javafx.scene.paint.Color;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -28,6 +30,15 @@ public class StoryPieceTest {
         defaultStoryPiece.setStory(story);
         assertEquals(story, defaultStoryPiece.getStory(),
                 "The StoryPiece did not have the story that was given to it.");
+    }
+
+    @Test
+    public void SetColor_ShouldSetTheStoryPieceColor_GivenTheColor() {
+        Color newColor = Color.RED;
+        defaultStoryPiece.setColor(newColor);
+
+        assertEquals(Color.RED, defaultStoryPiece.getColor(),
+                "The StoryPiece did not have the color that was assigned to it.");
     }
 
     @Test

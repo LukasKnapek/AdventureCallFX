@@ -63,6 +63,12 @@ public class AdventureTest {
     }
 
     @Test
+    public void CreateNewStoryPiece_ShouldCreateAStoryPieceWithDefaultColorSetToNone() {
+        assertEquals(null, defaultStoryPiece.getColor(),
+                "StoryPiece should have no color assigned by default.");
+    }
+
+    @Test
     public void CreateNewStoryPiece_ShouldCreateAndAddStoryPieceToTheAdventure() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
         assertTrue(defaultAdventure.getStoryPieces().contains(newSP),
