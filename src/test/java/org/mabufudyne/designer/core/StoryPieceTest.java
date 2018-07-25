@@ -18,7 +18,7 @@ public class StoryPieceTest {
     @BeforeEach
     private void createDefaultStoryPiece() {
         defaultAdventure = new Adventure();
-        defaultStoryPiece = defaultAdventure.createNewStoryPiece();
+        defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
         StoryPiece choiceSP = defaultAdventure.createNewStoryPiece();
         defaultChoice = new Choice(choiceSP);
 
@@ -67,8 +67,8 @@ public class StoryPieceTest {
     @Test
     public void AddChoice_ShouldNotAddAChoice_GivenStoryPieceContainsAnotherChoiceWithTheSameStoryPiece() {
         StoryPiece sp = defaultAdventure.createNewStoryPiece();
-        Choice choiceOne = new Choice(sp);
-        Choice choiceTwo = new Choice(sp);
+        Choice choiceOne = new Choice(sp, "Go to");
+        Choice choiceTwo = new Choice(sp, "Walk to");
         defaultStoryPiece.addChoice(choiceOne);
         defaultStoryPiece.addChoice(choiceTwo);
         assertTrue(defaultStoryPiece.getChoices().contains(choiceOne) &&

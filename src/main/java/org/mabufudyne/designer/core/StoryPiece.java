@@ -2,9 +2,11 @@ package org.mabufudyne.designer.core;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class StoryPiece {
+public class StoryPiece implements Serializable {
 
     private String title;
     private String story;
@@ -13,6 +15,24 @@ public class StoryPiece {
     private Color color;
 
     private ArrayList<Choice> choices;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StoryPiece that = (StoryPiece) o;
+        return order == that.order &&
+                fixed == that.fixed &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(story, that.story) &&
+                Objects.equals(color, that.color) &&
+                Objects.equals(choices, that.choices);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, story, order, fixed, color, choices);
+    }
 
     public StoryPiece(String title, int order) {
         this.title = title;
