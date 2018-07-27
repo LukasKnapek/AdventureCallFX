@@ -5,10 +5,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 
 public class AdventureTest {
@@ -275,4 +272,41 @@ public class AdventureTest {
                 "The order of StoryPieces was changed although there are zero shuffable StoryPieces.");
     }
 
+    @Test
+    public void EqualsHashCode_ShouldBeReflexive() {
+        Adventure adv = defaultAdventure;
+
+        assertEquals(adv, adv,
+                "An Adventure is not considered equal to itself.");
+        assertEquals(adv.hashCode(), adv.hashCode(),
+                "An Adventure hashcode is not reflexive.");
+    }
+
+    @Test
+    public void EqualsHashCode_ShouldBeSymmetric() {
+        Adventure adv1 = defaultAdventure;
+        Adventure adv2 = new Adventure();
+
+        assertEquals(adv1, adv2,
+                "Two same Adventures are not considered equal.");
+        assertEquals(adv1.hashCode(), adv2.hashCode(),
+                "Two same Adventures have different hash codes.");
+    }
+
+    @Test
+    public void EqualsHashCode_ShouldBeTransitive() {
+        Adventure adv1 = defaultAdventure;
+        Adventure adv2 = new Adventure();
+        Adventure adv3 = new Adventure();
+
+        assertTrue(adv1.equals(adv2) &&
+                        adv2.equals(adv3) &&
+                        adv1.equals(adv3),
+                "The transitive property does not apply to three equal Adventures.");
+        assertTrue(adv1.hashCode() == adv2.hashCode() &&
+                        adv2.hashCode() == adv3.hashCode() &&
+                        adv1.hashCode() == adv3.hashCode(),
+                "The transitive property doest not apply to hash codes of three equal Adventures.");
+    }
+    
 }

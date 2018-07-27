@@ -135,4 +135,41 @@ public class StoryPieceTest {
                     "StoryPiece no longer contains a Choice that was not supposed to be removed.");
         }
     }
+
+    @Test
+    public void EqualsHashCode_ShouldBeReflexive() {
+        StoryPiece sp = defaultStoryPiece;
+
+        assertEquals(sp, sp,
+                "A StoryPiece is not considered equal to itself.");
+        assertEquals(sp.hashCode(), sp.hashCode(),
+                "A StoryPiece hashcode is not reflexive.");
+    }
+
+    @Test
+    public void EqualsHashCode_ShouldBeSymmetric() {
+        StoryPiece sp1 = defaultStoryPiece;
+        StoryPiece sp2 = new Adventure().getStoryPieces().get(0);
+
+        assertEquals(sp1, sp2,
+                "Two same StoryPieces are not considered equal.");
+        assertEquals(sp1.hashCode(), sp2.hashCode(),
+                "Two same StoryPieces have different hash codes.");
+    }
+
+    @Test
+    public void EqualsHashCode_ShouldBeTransitive() {
+        StoryPiece sp1 = defaultStoryPiece;
+        StoryPiece sp2 = new Adventure().getStoryPieces().get(0);
+        StoryPiece sp3 = new Adventure().getStoryPieces().get(0);
+
+        assertTrue(sp1.equals(sp2) &&
+                        sp2.equals(sp3) &&
+                        sp1.equals(sp3),
+                "The transitive property does not apply to three equal StoryPieces.");
+        assertTrue(sp1.hashCode() == sp2.hashCode() &&
+                        sp2.hashCode() == sp3.hashCode() &&
+                        sp1.hashCode() == sp3.hashCode(),
+                "The transitive property doest not apply to hash codes of three equal StoryPieces.");
+    }
 }

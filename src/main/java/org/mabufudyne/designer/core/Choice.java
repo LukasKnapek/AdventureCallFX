@@ -37,7 +37,6 @@ public class Choice {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(choiceSP, text);
     }
 

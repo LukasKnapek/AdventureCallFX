@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class Adventure implements Serializable {
 
     private static String DEFAULT_NAME = "New Adventure";
     private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
     private static ArrayList<Integer> availableOrders = new ArrayList<>();
+    private final static Logger LOGGER = Logger.getLogger(Adventure.class.getName());
 
     private ArrayList<StoryPiece> storyPieces;
     private String name;
@@ -24,34 +26,23 @@ public class Adventure implements Serializable {
     public Adventure(String name) {
         this.name = name;
         this.storyPieces = new ArrayList<>();
+        resetAvailableOrders();
 
         this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
     }
 
-    /** Overriden methods **/
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (!(obj instanceof Adventure)) return false;
-
-        Adventure other = (Adventure) obj;
-        ArrayList<StoryPiece> otherStoryPieces = other.getStoryPieces();
-
-        if (!name.equals(other.getName())) return false;
-        if (storyPieces.size() != otherStoryPieces.size()) return false;
-
-        for (int i = 0; i < storyPieces.size(); i++) {
-            StoryPiece thisSP = storyPieces.get(i);
-            StoryPiece otherSP = storyPieces.get(i);
-            if (!thisSP.equals(otherSP)) return false;
-        }
-
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Adventure adventure = (Adventure) o;
+        return Objects.equals(storyPieces, adventure.storyPieces) &&
+                Objects.equals(name, adventure.name);
     }
 
     @Override
     public int hashCode() {
+
         return Objects.hash(storyPieces, name);
     }
 
@@ -72,6 +63,10 @@ public class Adventure implements Serializable {
     public static String getDefaultStoryPieceTitle() { return DEFAULT_STORYPIECE_TITLE; }
 
     /** Private helper methods **/
+
+    private void resetAvailableOrders() {
+        availableOrders = new ArrayList<Integer>();
+    }
 
     private void sortStoryPiecesByOrder() {
         Collections.sort(storyPieces, Comparator.comparing(StoryPiece::getOrder));
@@ -159,20 +154,18 @@ public class Adventure implements Serializable {
     }
 
     public void save(String location, String fileName) {
-        try {
-            if (!fileName.endsWith(".adv")) {
-                fileName = fileName + ".adv";
-            }
 
+        fileName = fileName.endsWith(".adv") ? fileName : fileName + ".adv";
+
+        try (
             FileOutputStream fileOut = new FileOutputStream(location + File.separator + fileName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut)
+        ) {
             out.writeObject(this);
-            out.close();
-            fileOut.close();
         }
         catch (IOException e) {
-            System.out.println("Encountered an error while saving the Adventure");
-            System.out.println(e.getMessage());
+            LOGGER.severe(String.format("Encountered an error while saving the Adventure to '%s': '%s'",
+                    location, e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -180,23 +173,23 @@ public class Adventure implements Serializable {
     public static Adventure load(String filePath) {
         Adventure loadedAdv = null;
 
-        try {
+        try (
             FileInputStream fileIn = new FileInputStream(filePath);
-            ObjectInput in = new ObjectInputStream(fileIn);
+            ObjectInput in = new ObjectInputStream(fileIn)
+        ) {
             loadedAdv = (Adventure) in.readObject();
         } catch (FileNotFoundException e) {
-            System.out.println("File at the given path does not exist: " + filePath);
+            LOGGER.severe(String.format("File at the path '%s' does not exist.", filePath));
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Error while trying to load the file");
-            System.out.println(e.getMessage());
+            LOGGER.severe("Error while trying to load the file: " + e.getMessage());
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("The given file cannot be loaded as an Adventure object");
+        } catch (ClassNotFoundException | ClassCastException e) {
+            LOGGER.severe(String.format("The given file '%s' cannot be loaded as an Adventure object", filePath));
             e.printStackTrace();
-        } finally {
-            return loadedAdv;
         }
+
+        return loadedAdv;
     }
 
 
