@@ -9,10 +9,12 @@ import java.util.logging.Logger;
 
 public class Adventure implements Serializable {
 
+    private final static Logger LOGGER = Logger.getLogger(Adventure.class.getName());
+    private static Adventure activeAdventure;
+
     private static String DEFAULT_NAME = "New Adventure";
     private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
     private static ArrayList<Integer> availableOrders = new ArrayList<>();
-    private final static Logger LOGGER = Logger.getLogger(Adventure.class.getName());
 
     private ArrayList<StoryPiece> storyPieces;
     private String name;
@@ -29,6 +31,7 @@ public class Adventure implements Serializable {
         resetAvailableOrders();
 
         this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
+        setActiveAdventure(this);
     }
 
     @Override
@@ -62,10 +65,18 @@ public class Adventure implements Serializable {
 
     public static String getDefaultStoryPieceTitle() { return DEFAULT_STORYPIECE_TITLE; }
 
+    public static Adventure getActiveAdventure() {
+        return activeAdventure;
+    }
+
+    public static void setActiveAdventure(Adventure adv) {
+        activeAdventure = adv;
+    }
+
     /** Private helper methods **/
 
-    private void resetAvailableOrders() {
-        availableOrders = new ArrayList<Integer>();
+    private static void resetAvailableOrders() {
+        availableOrders = new ArrayList<>();
     }
 
     private void sortStoryPiecesByOrder() {
@@ -176,8 +187,10 @@ public class Adventure implements Serializable {
         try (
             FileInputStream fileIn = new FileInputStream(filePath);
             ObjectInput in = new ObjectInputStream(fileIn)
-        ) {
+        )
+        {
             loadedAdv = (Adventure) in.readObject();
+            Adventure.setActiveAdventure(loadedAdv);
         } catch (FileNotFoundException e) {
             LOGGER.severe(String.format("File at the path '%s' does not exist.", filePath));
             e.printStackTrace();

@@ -40,6 +40,13 @@ public class AdventureTest {
     }
 
     @Test
+    public void Constructor_ShouldSetTheNewlyCreatedAdventureAsActive() {
+        Adventure newAdv = new Adventure();
+        assertTrue(newAdv == Adventure.getActiveAdventure(),
+                "Newly created Adventure was not set as active.");
+    }
+
+    @Test
     public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithFixedStatusFalseByDefault() {
         assertFalse(defaultStoryPiece.isFixed(),
                 "StoryPieces should be created with Fixed status set to false by default.");

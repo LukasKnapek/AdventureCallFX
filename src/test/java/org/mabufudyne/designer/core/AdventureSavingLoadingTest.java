@@ -93,6 +93,16 @@ public class AdventureSavingLoadingTest {
     }
 
     @Test
+    public void Load_ShouldSetTheLoadedAdventureAsActive() {
+        String saveName = "ToBeLoaded.adv";
+        defaultAdventure.save(tempDirectory.toString(), saveName);
+
+        Adventure loadedAdv = (Adventure) Adventure.load(tempDirectory.toString() + File.separator + saveName);
+        assertTrue(loadedAdv == Adventure.getActiveAdventure(),
+                "Loaded Adventure was not set as the active Adventure.");
+    }
+
+    @Test
     public void Adventure_ShouldNotChangeWhenSavedAndLoaded() {
         String saveName = "Adventure.adv";
         defaultAdventure.save(tempDirectory.toString(), saveName);
