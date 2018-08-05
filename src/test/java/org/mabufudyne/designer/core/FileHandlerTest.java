@@ -24,7 +24,6 @@ public class FileHandlerTest {
         String tempSaveFolderPath = System.getProperty("user.dir") + File.separator + "testSavingLoading";
         tempDirectory = new File(tempSaveFolderPath);
         tempDirectory.mkdir();
-
     }
 
     @AfterAll
@@ -45,7 +44,16 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Save_ShouldSaveTheAdventureToAFile_GivenTheSaveLocation() {
+    public void SaveAdventure_ShouldReturnNull_GivenAnExceptionOccursWhileSaving() {
+
+        String savedFilePath = FileHandler.saveAdventure(defaultAdventure,"nonexistent-file-path", "blah.adv");
+
+        assertEquals(null, savedFilePath,
+                "The savedFilePath should be null in case save is not successful.");
+    }
+
+    @Test
+    public void SaveAdventure_ShouldSaveTheAdventureToAFile_GivenTheSaveLocation() {
 
         String fileName = "TestAdventure.adv";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), fileName);
@@ -56,7 +64,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Save_ShouldSaveTheAdventureToAFileWithADVSuffix_GivenAFileNameWithNoSuffix() {
+    public void SaveAdventure_ShouldSaveTheAdventureToAFileWithADVSuffix_GivenAFileNameWithNoSuffix() {
         String fileName = "TestAdventure";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), fileName);
 
@@ -66,7 +74,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Load_ShouldLoadTheAdventureAndReturnIt_GivenAPathToValidSavedAdventureFile() {
+    public void LoadAdventure_ShouldLoadTheAdventureAndReturnIt_GivenAPathToValidSavedAdventureFile() {
         String saveName = "ToBeLoaded.adv";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
 
@@ -76,13 +84,13 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Load_ShouldReturnNull_GivenANonExistentFilePath() {
+    public void LoadAdventure_ShouldReturnNull_GivenANonExistentFilePath() {
         assertEquals(null, FileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
                 "Load did not return null given a nonexistent file path.");
     }
 
     @Test
-    public void Load_ShouldReturnNull_GivenAnInvalidAdventureFile() throws IOException {
+    public void LoadAdventure_ShouldReturnNull_GivenAnInvalidAdventureFile() throws IOException {
         String fileName = "NotActuallyAnAdventure.adv";
         FileOutputStream fileOut = new FileOutputStream(tempDirectory + File.separator + fileName);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -93,7 +101,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Load_ShouldSetTheLoadedAdventureAsActive() {
+    public void LoadAdventure_ShouldSetTheLoadedAdventureAsActive() {
         String saveName = "ToBeLoaded.adv";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
 
@@ -103,7 +111,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Adventure_ShouldNotChangeWhenSavedAndLoaded() {
+    public void LoadAdventure_ShouldLoadTheSameAdventureObjectThatWasSaved() {
         String saveName = "Adventure.adv";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
         Adventure loadedAdventure = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 public class Adventure implements Serializable {
 
-    private final static Logger LOGGER = Logger.getLogger(Adventure.class.getName());
     private static Adventure activeAdventure;
 
     private static String DEFAULT_NAME = "New Adventure";

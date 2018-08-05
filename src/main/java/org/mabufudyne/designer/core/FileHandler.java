@@ -7,7 +7,9 @@ public class FileHandler {
 
     private final static Logger LOGGER = Logger.getLogger(FileHandler.class.getName());
 
-    public static void saveAdventure(Adventure adv, String location, String fileName) {
+    private FileHandler() {}
+
+    public static String saveAdventure(Adventure adv, String location, String fileName) {
 
         fileName = fileName.endsWith(".adv") ? fileName : fileName + ".adv";
 
@@ -16,11 +18,14 @@ public class FileHandler {
                 ObjectOutputStream out = new ObjectOutputStream(fileOut)
         ) {
             out.writeObject(adv);
+            return location + File.separator + fileName;
         }
         catch (IOException e) {
             LOGGER.severe(String.format("Encountered an error while saving the Adventure to '%s': '%s'",
                     location, e.getMessage()));
             e.printStackTrace();
+
+            return null;
         }
     }
 
@@ -34,9 +39,6 @@ public class FileHandler {
         {
             loadedAdv = (Adventure) in.readObject();
             Adventure.setActiveAdventure(loadedAdv);
-        } catch (FileNotFoundException e) {
-            LOGGER.severe(String.format("File at the path '%s' does not exist.", filePath));
-            e.printStackTrace();
         } catch (IOException e) {
             LOGGER.severe("Error while trying to load the file: " + e.getMessage());
             e.printStackTrace();
