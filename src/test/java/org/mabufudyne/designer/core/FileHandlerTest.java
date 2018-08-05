@@ -5,18 +5,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileHandlerTest {
 
     private Adventure defaultAdventure;
-    private StoryPiece defaultStoryPiece;
     private static File tempDirectory;
 
     @BeforeAll
@@ -40,7 +37,11 @@ public class FileHandlerTest {
     @BeforeEach
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
-        defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
+    }
+
+    @Test
+    public void Constructor_ShouldBeInaccessible_GivenThatFileHandlerItUtilityClass() {
+        assertThrows(IllegalAccessException.class, FileHandler.class::newInstance);
     }
 
     @Test
