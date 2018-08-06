@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class FileHandlerTest {
 
@@ -37,11 +37,6 @@ public class FileHandlerTest {
     @BeforeEach
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
-    }
-
-    @Test
-    public void Constructor_ShouldBeInaccessible_GivenThatFileHandlerItUtilityClass() {
-        assertThrows(IllegalAccessException.class, FileHandler.class::newInstance);
     }
 
     @Test
