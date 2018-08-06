@@ -6,8 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -37,6 +39,20 @@ public class FileHandlerTest {
     @BeforeEach
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
+    }
+
+    @Test
+    public void Constructor_ShouldBeInaccessible_GivenFileHandlerIsAUtilityClass() throws Exception {
+        Constructor[] fhConstructors = FileHandler.class.getDeclaredConstructors();
+        assertEquals(1, fhConstructors.length,
+                "FileHandler class should only have one constructor.");
+        Constructor fhConstructor = fhConstructors[0];
+        assertFalse(fhConstructor.isAccessible(),
+                "FileHandler constructor should be inaccessible - private");
+
+        fhConstructor.setAccessible(true);
+        // Instantiating just to get that sweet, sweet test coverage
+        assertEquals(FileHandler.class, fhConstructor.newInstance().getClass());
     }
 
     @Test
