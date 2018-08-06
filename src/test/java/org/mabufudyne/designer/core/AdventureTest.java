@@ -315,5 +315,14 @@ public class AdventureTest {
                         adv1.hashCode() == adv3.hashCode(),
                 "The transitive property doest not apply to hash codes of three equal Adventures.");
     }
+
+    @Test
+    public void SetName_ShouldSetTheAdventureName_GivenTheName() {
+        String newName = "Unicorn land!";
+        defaultAdventure.setName(newName);
+
+        assertEquals(newName, defaultAdventure.getName(),
+                "Adventure does not have the name that was assigned to it.");
+    }
     
 }

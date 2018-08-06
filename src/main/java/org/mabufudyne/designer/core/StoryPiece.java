@@ -16,23 +16,7 @@ public class StoryPiece implements Serializable {
 
     private ArrayList<Choice> choices;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StoryPiece that = (StoryPiece) o;
-        return order == that.order &&
-                fixed == that.fixed &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(story, that.story) &&
-                Objects.equals(color, that.color) &&
-                Objects.equals(choices, that.choices);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, story, order, fixed, color, choices);
-    }
+    /** Constructors **/
 
     public StoryPiece(String title, int order) {
         this.title = title;
@@ -43,9 +27,13 @@ public class StoryPiece implements Serializable {
         this.choices = new ArrayList<>();
     }
 
+    /** Getters and Setters **/
+
     public String getTitle() {
         return title;
     }
+
+    public void setTitle(String newTitle) { this.title = newTitle; }
 
     public String getStory() {
         return story;
@@ -83,6 +71,8 @@ public class StoryPiece implements Serializable {
         return choices;
     }
 
+    /** Public methods **/
+
     public void addChoice(Choice choice) {
 
         for (Choice existingChoice : choices) {
@@ -103,7 +93,25 @@ public class StoryPiece implements Serializable {
         }
     }
 
+    /** Overriden methods **/
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StoryPiece that = (StoryPiece) o;
+        return order == that.order &&
+                fixed == that.fixed &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(story, that.story) &&
+                Objects.equals(color, that.color) &&
+                Objects.equals(choices, that.choices);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, story, order, fixed, color, choices);
+    }
 
 
 }

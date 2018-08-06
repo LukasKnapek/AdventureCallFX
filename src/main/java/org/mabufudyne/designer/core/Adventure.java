@@ -33,28 +33,15 @@ public class Adventure implements Serializable {
         setActiveAdventure(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Adventure adventure = (Adventure) o;
-        return Objects.equals(storyPieces, adventure.storyPieces) &&
-                Objects.equals(name, adventure.name);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(storyPieces, name);
-    }
-
     /** Getters and Setters **/
 
     public String getName() {
         return this.name;
     }
 
-    public  ArrayList<StoryPiece> getStoryPieces() {
+    public void setName(String newName) { this.name = newName; }
+
+    public ArrayList<StoryPiece> getStoryPieces() {
         return this.storyPieces;
     }
 
@@ -162,5 +149,23 @@ public class Adventure implements Serializable {
 
 
     }
+
+    /** Overriden methods **/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Adventure adventure = (Adventure) o;
+        return Objects.equals(storyPieces, adventure.storyPieces) &&
+                Objects.equals(name, adventure.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(storyPieces, name);
+    }
+
 
 }

@@ -9,6 +9,8 @@ public class Choice {
 
     private static String DEFAULT_TEXT = "Go to";
 
+    /** Constructors **/
+
     public Choice(StoryPiece choiceSP, String text) {
         this.choiceSP = choiceSP;
         this.text = text;
@@ -18,13 +20,25 @@ public class Choice {
         this(choiceSP, DEFAULT_TEXT);
     }
 
+    /** Getters and Setters **/
+
     public String getText() {
         return text;
     }
 
+    public void setText(String newText) { this.text = newText; }
+
     public StoryPiece getStoryPiece() {
         return choiceSP;
     }
+
+    /** Private helper methods **/
+
+    public static String getDefaultText() {
+        return DEFAULT_TEXT;
+    }
+
+    /** Overriden methods **/
 
     @Override
     public boolean equals(Object o) {
@@ -39,10 +53,5 @@ public class Choice {
     public int hashCode() {
         return Objects.hash(choiceSP, text);
     }
-
-    public static String getDefaultText() {
-        return DEFAULT_TEXT;
-    }
-
 
 }

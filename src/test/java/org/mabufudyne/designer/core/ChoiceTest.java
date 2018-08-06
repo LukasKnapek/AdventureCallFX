@@ -33,6 +33,15 @@ public class ChoiceTest {
     }
 
     @Test
+    public void SetText_ShouldSetTheChoiceText_GivenTheText() {
+        String newText = "Go down the beaten path";
+        Choice ch = new Choice(defaultStoryPiece);
+        ch.setText(newText);
+        assertEquals(newText, ch.getText(),
+                "Choice did not have text that was assigned to it.");
+    }
+
+    @Test
     public void EqualsHashCode_ShouldBeReflexive() {
         Choice ch1 = new Choice(defaultStoryPiece, "Walk to");
 

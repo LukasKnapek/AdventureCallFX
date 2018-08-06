@@ -25,11 +25,19 @@ public class StoryPieceTest {
     }
 
     @Test
+    public void SetTitle_ShouldSetTheStoryPieceTitle_GivenTheTitle() {
+        String newTitle = "On the verge of death";
+        defaultStoryPiece.setTitle(newTitle);
+        assertEquals(newTitle, defaultStoryPiece.getTitle(),
+                "StoryPiece did not have the title that was assigned to it.");
+    }
+
+    @Test
     public void SetStory_ShouldSetTheStoryPieceStory_GivenTheStory() {
         String story = "Once upon a time, there was a vast and a beautiful kingdom.";
         defaultStoryPiece.setStory(story);
         assertEquals(story, defaultStoryPiece.getStory(),
-                "The StoryPiece did not have the story that was given to it.");
+                "StoryPiece did not have the story that was given to it.");
     }
 
     @Test
@@ -38,7 +46,7 @@ public class StoryPieceTest {
         defaultStoryPiece.setColor(newColor);
 
         assertEquals(Color.RED, defaultStoryPiece.getColor(),
-                "The StoryPiece did not have the color that was assigned to it.");
+                "StoryPiece did not have the color that was assigned to it.");
     }
 
     @Test
