@@ -62,7 +62,7 @@ public class AdventureComponentTest {
             int expectedOrder = i+1;
             int actualOrder = defaultAdventure.getStoryPieces().get(i).getOrder();
             assertEquals(expectedOrder, actualOrder,
-                    String.format("The order of the StoryPiece before modifications is {}, expected {}",
+                    String.format("The order of the StoryPiece before modifications is %s, expected %s",
                             expectedOrder, actualOrder));
         }
 
@@ -78,7 +78,7 @@ public class AdventureComponentTest {
             int expectedOrder = i+1;
             int actualOrder = defaultAdventure.getStoryPieces().get(i).getOrder();
             assertEquals(expectedOrder, actualOrder,
-                    String.format("The order of the StoryPiece after modifications is {}, expected {}",
+                    String.format("The order of the StoryPiece after modifications is %s, expected %s",
                             expectedOrder, actualOrder));
         }
 
@@ -110,8 +110,8 @@ public class AdventureComponentTest {
 
             assertFalse(SP1NonFixed.getOrder() == SP1OriginalOrder, failedShuffleMsg);
             assertFalse(SP2NonFixed.getOrder() == SP2OriginalOrder, failedShuffleMsg);
-            assertTrue(SP3Fixed.getOrder() == SP3OriginalOrder, failedFixedMsg);
-            assertTrue(SP4Fixed.getOrder() == SP4OriginalOrder, failedFixedMsg);
+            assertEquals(SP3Fixed.getOrder(), SP3OriginalOrder, failedFixedMsg);
+            assertEquals(SP4Fixed.getOrder(), SP4OriginalOrder, failedFixedMsg);
         }
     }
 

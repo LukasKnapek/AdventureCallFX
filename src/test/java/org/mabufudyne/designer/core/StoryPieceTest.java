@@ -140,7 +140,7 @@ public class StoryPieceTest {
     public void RemoveChoice_ShouldRemoveChoiceFromStoryPiece_GivenTheChoice() {
         defaultStoryPiece.addChoice(defaultChoice);
         defaultStoryPiece.removeChoice(defaultChoice);
-        assertTrue(defaultStoryPiece.getChoices().size() == 0,
+        assertEquals(0, defaultStoryPiece.getChoices().size(),
                 "The only Choice that was added to the StoryPiece should have been removed.");
     }
 
@@ -157,7 +157,7 @@ public class StoryPieceTest {
             defaultStoryPiece.removeChoice(choice);
         }
 
-        assertTrue(defaultStoryPiece.getChoices().size() == 0,
+        assertEquals(0, defaultStoryPiece.getChoices().size(),
                 "All Choices that were added to the StoryPiece should have been removed.");
     }
 
@@ -248,7 +248,7 @@ public class StoryPieceTest {
         Application app = Application.getApp();
 
         // If there are X saved states, there should be X saved states in the undo history
-        assertTrue(app.getUndoList().size() == expectedSavedStates,
+        assertEquals(app.getUndoList().size(), expectedSavedStates,
                 String.format("Expected %s new saved state(s) after the operation, there are %s instead",
                         expectedSavedStates, app.getUndoList().size()));
 

@@ -34,9 +34,9 @@ public class ApplicationTest {
         // Modify Adventure, the new Adventure state should be saved
         Adventure.getActiveAdventure().createNewStoryPiece();
 
-        assertEquals(originalState, app.getUndoList().peek(),
+        assertSame(originalState, app.getUndoList().peek(),
                 "Former current Memento was not moved to the undo stack after save state operation");
-        assertNotEquals(originalState, app.getCurrentState(),
+        assertNotSame(originalState, app.getCurrentState(),
                 "New current state should not be equal to the former state");
     }
 
@@ -90,7 +90,7 @@ public class ApplicationTest {
         assertEquals(initialState, app.getUndoList().peek(),
                 "The method did not move the old current state to the undo stack");
         // Compare by reference, not by contents
-        assertTrue(initialState != app.getCurrentState(),
+        assertNotSame(initialState, app.getCurrentState(),
                 "The method did not create a new current state");
     }
 

@@ -19,10 +19,9 @@ public class Application {
         return app;
     }
 
-    public void initialize() {
+    public Adventure initialize() {
         Adventure initialAdventure = new Adventure();
-        Memento initialState = new Memento(initialAdventure);
-        currentState = initialState;
+        return initialAdventure;
     }
 
     public Memento getCurrentState() { return currentState; }
@@ -34,7 +33,7 @@ public class Application {
 
     public void saveState() {
         Memento newState = new Memento(Adventure.getActiveAdventure());
-        undoList.push(currentState);
+        if (currentState != null) undoList.push(currentState);
         currentState = newState;
     }
 

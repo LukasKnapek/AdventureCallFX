@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.lang.reflect.Constructor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class FileHandlerTest {
@@ -60,7 +58,7 @@ public class FileHandlerTest {
 
         String savedFilePath = FileHandler.saveAdventure(defaultAdventure,"nonexistent-file-path", "blah.adv");
 
-        assertEquals(null, savedFilePath,
+        assertNull(savedFilePath,
                 "The savedFilePath should be null in case save is not successful.");
     }
 
@@ -97,7 +95,7 @@ public class FileHandlerTest {
 
     @Test
     public void LoadAdventure_ShouldReturnNull_GivenANonExistentFilePath() {
-        assertEquals(null, FileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
+        assertNull(FileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
                 "Load did not return null given a nonexistent file path.");
     }
 
@@ -109,7 +107,8 @@ public class FileHandlerTest {
         out.writeObject("I am just a plain string!");
         out.close();
         fileOut.close();
-        assertEquals(null, FileHandler.loadAdventure(tempDirectory + File.separator + fileName));
+        assertNull(FileHandler.loadAdventure(tempDirectory + File.separator + fileName),
+                "LoadAdventure did not return null when given an invalid Adventure file");
     }
 
     @Test
@@ -118,7 +117,7 @@ public class FileHandlerTest {
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
 
         Adventure loadedAdv = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
-        assertTrue(loadedAdv == Adventure.getActiveAdventure(),
+        assertSame(loadedAdv, Adventure.getActiveAdventure(),
                 "Loaded Adventure was not set as the active Adventure.");
     }
 
@@ -127,7 +126,8 @@ public class FileHandlerTest {
         String saveName = "Adventure.adv";
         FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
         Adventure loadedAdventure = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
-        assertTrue(loadedAdventure.equals(defaultAdventure));
+        assertEquals(loadedAdventure, defaultAdventure,
+                "The loaded Adventure is not equal to the Adventure that was saved");
     }
 
 }

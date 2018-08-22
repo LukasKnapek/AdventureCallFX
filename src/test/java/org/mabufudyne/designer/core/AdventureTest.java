@@ -43,7 +43,7 @@ public class AdventureTest {
     @Test
     public void Constructor_ShouldSetTheNewlyCreatedAdventureAsActive() {
         Adventure newAdv = new Adventure();
-        assertTrue(newAdv == Adventure.getActiveAdventure(),
+        assertSame(newAdv, Adventure.getActiveAdventure(),
                 "Newly created Adventure was not set as active.");
     }
 
@@ -70,7 +70,7 @@ public class AdventureTest {
 
     @Test
     public void CreateNewStoryPiece_ShouldCreateAStoryPieceWithDefaultColorSetToNone() {
-        assertEquals(null, defaultStoryPiece.getColor(),
+        assertNull(defaultStoryPiece.getColor(),
                 "StoryPiece should have no color assigned by default.");
     }
 
@@ -273,9 +273,9 @@ public class AdventureTest {
         for (int i=0; i<10; i++) {
             ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
             defaultAdventure.shuffleStoryPieces();
-            assertFalse(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+            assertNotEquals(storyPiecesOriginalOrder, defaultAdventure.getStoryPieces(),
                     "The order of the StoryPieces has not changed after shuffle even though there are two" +
-                            "shuffable StoryPieces.");
+                    "shuffable StoryPieces.");
         }
     }
 
@@ -307,7 +307,7 @@ public class AdventureTest {
         ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
 
         defaultAdventure.shuffleStoryPieces();
-        assertTrue(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+        assertEquals(storyPiecesOriginalOrder, defaultAdventure.getStoryPieces(),
                 "The order of StoryPieces was changed although there are zero shuffable StoryPieces.");
     }
 
@@ -373,7 +373,7 @@ public class AdventureTest {
         Application app = Application.getApp();
 
         // If there are X saved states, there should be X saved states in the undo history
-        assertTrue(app.getUndoList().size() == expectedSavedStates,
+        assertEquals(app.getUndoList().size(), expectedSavedStates,
                 String.format("Expected %s new saved state(s) after the operation, there are %s instead",
                         expectedSavedStates, app.getUndoList().size()));
 
