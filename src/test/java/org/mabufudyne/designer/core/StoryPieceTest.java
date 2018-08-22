@@ -2,7 +2,6 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javafx.scene.paint.Color;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -33,6 +32,14 @@ public class StoryPieceTest {
     }
 
     @Test
+    public void SetTitle_ShouldPerformAfterTaskOperationsAfterSettingTheTitle() {
+        Application.getApp().resetStateHistory();
+        defaultStoryPiece.setTitle("New title");
+
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
     public void SetStory_ShouldSetTheStoryPieceStory_GivenTheStory() {
         String story = "Once upon a time, there was a vast and a beautiful kingdom.";
         defaultStoryPiece.setStory(story);
@@ -41,12 +48,48 @@ public class StoryPieceTest {
     }
 
     @Test
+    public void SetStory_ShouldPerformAfterTaskOperationsAfterSettingTheStory() {
+        Application.getApp().resetStateHistory();
+        defaultStoryPiece.setStory("New story");
+
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
     public void SetColor_ShouldSetTheStoryPieceColor_GivenTheColor() {
-        Color newColor = Color.RED;
+        String newColor = "FF0000";
         defaultStoryPiece.setColor(newColor);
 
-        assertEquals(Color.RED, defaultStoryPiece.getColor(),
+        assertEquals(newColor, defaultStoryPiece.getColor(),
                 "StoryPiece did not have the color that was assigned to it.");
+    }
+
+    @Test
+    public void SetColor_ShouldPerformAfterTaskOperationsAfterSettingTheColor() {
+        Application.getApp().resetStateHistory();
+
+        defaultStoryPiece.setColor("FFFF00");
+
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
+    public void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
+        Application.getApp().resetStateHistory();
+
+        defaultStoryPiece.setFixed(true);
+
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
+    public void SetOrder_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
+        defaultAdventure.createNewStoryPiece();
+
+        Application.getApp().resetStateHistory();
+        defaultStoryPiece.setOrder(2);
+
+        WereAfterTasksPerformedCorrectly(1);
     }
 
     @Test
@@ -82,6 +125,15 @@ public class StoryPieceTest {
         assertTrue(defaultStoryPiece.getChoices().contains(choiceOne) &&
                 !defaultStoryPiece.getChoices().contains(choiceTwo),
                 "StoryPiece should not add a Choice with the same StoryPiece that another existing Choice points to.");
+    }
+
+    @Test
+    public void AddChoice_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
+        Application.getApp().resetStateHistory();
+
+        defaultStoryPiece.addChoice(defaultChoice);
+
+        WereAfterTasksPerformedCorrectly(1);
     }
 
     @Test
@@ -145,6 +197,15 @@ public class StoryPieceTest {
     }
 
     @Test
+    public void RemoveChoice_ShouldPerformAfterTaskOperationsAfterRemovingTheChoice() {
+        defaultStoryPiece.addChoice(defaultChoice);
+        Application.getApp().resetStateHistory();
+
+        defaultStoryPiece.removeChoice(defaultChoice);
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
     public void EqualsHashCode_ShouldBeReflexive() {
         StoryPiece sp = defaultStoryPiece;
 
@@ -179,5 +240,17 @@ public class StoryPieceTest {
                         sp2.hashCode() == sp3.hashCode() &&
                         sp1.hashCode() == sp3.hashCode(),
                 "The transitive property doest not apply to hash codes of three equal StoryPieces.");
+    }
+
+    /** Helpers **/
+
+    private static void WereAfterTasksPerformedCorrectly(int expectedSavedStates) {
+        Application app = Application.getApp();
+
+        // If there are X saved states, there should be X saved states in the undo history
+        assertTrue(app.getUndoList().size() == expectedSavedStates,
+                String.format("Expected %s new saved state(s) after the operation, there are %s instead",
+                        expectedSavedStates, app.getUndoList().size()));
+
     }
 }

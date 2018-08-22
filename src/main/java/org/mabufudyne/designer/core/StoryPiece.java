@@ -12,7 +12,7 @@ public class StoryPiece implements Serializable {
     private String story;
     private int order;
     private boolean fixed;
-    private Color color;
+    private String color;
 
     private ArrayList<Choice> choices;
 
@@ -33,7 +33,10 @@ public class StoryPiece implements Serializable {
         return title;
     }
 
-    public void setTitle(String newTitle) { this.title = newTitle; }
+    public void setTitle(String newTitle) {
+        this.title = newTitle;
+        Application.getApp().performAfterTaskActions();
+    }
 
     public String getStory() {
         return story;
@@ -41,14 +44,19 @@ public class StoryPiece implements Serializable {
 
     public void setStory(String story) {
         this.story = story;
+        Application.getApp().performAfterTaskActions();
     }
 
     public int getOrder() {
         return order;
     }
 
-    public void setOrder(int newOrder) {
+    public void setOrder(int newOrder) { setOrder(newOrder, true); }
+
+    public void setOrder(int newOrder, boolean performAfterTaskActions) {
         order = newOrder;
+        if (performAfterTaskActions)
+            Application.getApp().performAfterTaskActions();
     }
 
     public boolean isFixed() {
@@ -57,14 +65,16 @@ public class StoryPiece implements Serializable {
 
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
+        Application.getApp().performAfterTaskActions();
     }
 
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
+        Application.getApp().performAfterTaskActions();
     }
 
     public ArrayList<Choice> getChoices() {
@@ -81,12 +91,16 @@ public class StoryPiece implements Serializable {
 
         if (choice.getStoryPiece() != this) {
             choices.add(choice);
+
+            Application.getApp().performAfterTaskActions();
         }
     }
 
     public void removeChoice(Choice choice) {
         if (choices.contains(choice)) {
             choices.remove(choice);
+
+            Application.getApp().performAfterTaskActions();
         }
         else {
             throw new IllegalArgumentException("StoryPiece does not contain the given Choice.");

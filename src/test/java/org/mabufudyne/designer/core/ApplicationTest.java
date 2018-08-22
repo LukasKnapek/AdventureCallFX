@@ -1,72 +1,60 @@
 package org.mabufudyne.designer.core;
 
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
 
-    @Test
-    public void Constructor_ShouldBeInaccessible_GivenApplicationIsOnlyUsedStatically() throws Exception {
-        Constructor[] appConstructors = Application.class.getDeclaredConstructors();
-        assertEquals(1, appConstructors.length,
-                "Application class should only have one constructor.");
-        Constructor appConstructor = appConstructors[0];
-        assertFalse(appConstructor.isAccessible(),
-                "Application constructor should be inaccessible - private");
+    private static Application app;
 
-        appConstructor.setAccessible(true);
-        // Instantiating just to get that sweet, sweet test coverage
-        assertEquals(Application.class, appConstructor.newInstance().getClass());
+    @BeforeAll
+    public static void obtainApplicationInstance() {
+        app = Application.getApp();
     }
 
     @Test
     public void Initialize_ShouldCreateAdventureAndPopulateCurrentStateWithTheAdventure() {
+        app.initialize();
 
-        Application.initialize();
-
-        assertNotNull(Application.getCurrentState(),
+        assertNotNull(app.getCurrentState(),
                 "Application currentMemento should be populated after initialization");
-        assertEquals(Application.getCurrentState().getAdventure(), Adventure.getActiveAdventure(),
+        assertEquals(app.getCurrentState().getAdventure(), Adventure.getActiveAdventure(),
                 "Application currentMemento does not contain the Adventure created on initialization");
-
-
     }
 
     @Test
     public void SaveState_ShouldMoveCurrentStateToUndoStackAndCreateNewCurrentMemento() {
 
-        Application.initialize();
-        Memento originalState = Application.getCurrentState();
+        app.initialize();
+        Memento originalState = app.getCurrentState();
 
-        // Modify Adventure and save state, the new state should be different from the old one
+        // Modify Adventure, the new Adventure state should be saved
         Adventure.getActiveAdventure().createNewStoryPiece();
-        Application.saveState();
 
-
-        assertEquals(originalState, Application.getUndoStack().peek(),
+        assertEquals(originalState, app.getUndoList().peek(),
                 "Former current Memento was not moved to the undo stack after save state operation");
-        assertNotEquals(originalState, Application.getCurrentState(),
+        assertNotEquals(originalState, app.getCurrentState(),
                 "New current state should not be equal to the former state");
     }
 
     @Test
     public void Undo_ShouldMoveCurrentStateToRedoStackAndMakeTheTopOfUndoStackTheNewCurrentState_GivenUndoStackIsNotEmpty() {
         // Set up - we will have a current state, 1 state in undo stack and 0 states in redo stack
-        Application.initialize();
+        app.initialize();
         Adventure.getActiveAdventure().createNewStoryPiece();
-        Application.saveState();
+        app.saveState();
 
-        Memento currentState = Application.getCurrentState();
-        Memento undoState = Application.getUndoStack().peek();
+        Memento currentState = app.getCurrentState();
+        Memento undoState = app.getUndoList().peek();
 
-        Application.undo();
+        app.undo();
 
-        assertEquals(currentState, Application.getRedoStack().peek(),
+        assertEquals(currentState, app.getRedoList().peek(),
                 "Former current state was not moved to the redo stack after undo operation");
-        assertEquals(undoState, Application.getCurrentState(),
+        assertEquals(undoState, app.getCurrentState(),
                 "First undo state was not popped and made the new current state after undo operation");
 
     }
@@ -74,21 +62,36 @@ public class ApplicationTest {
     @Test
     public void Redo_ShouldMoveCurrentStateToUndoStackAndMakeTheTopOfRedoStackTheNewCurentState_GivenRedoStackIsNotEmpty() {
         // Set up - we will have a current state, 0 states in undo stack and 1 state in redo stack
-        Application.initialize();
+        app.initialize();
         Adventure.getActiveAdventure().createNewStoryPiece("New SP");
-        Application.saveState();
-        Application.undo();
+        app.saveState();
+        app.undo();
 
-        Memento currentState = Application.getCurrentState();
-        Memento redoState = Application.getRedoStack().peek();
+        Memento currentState = app.getCurrentState();
+        Memento redoState = app.getRedoList().peek();
 
-        Application.redo();
+        app.redo();
 
-        assertEquals(currentState, Application.getUndoStack().peek(),
+        assertEquals(currentState, app.getUndoList().peek(),
                 "Former current state was not moved to the undo stack after redo operation");
-        assertEquals(redoState, Application.getCurrentState(),
+        assertEquals(redoState, app.getCurrentState(),
                 "First redo state was not popped and made the new current state after redo operation");
 
+    }
+
+    @Test
+    public void PerformAfterTaskActions_ShouldSaveTheCurrentStateWheneverItIsCalled() {
+
+        app.initialize();
+        Memento initialState = app.getCurrentState();
+
+        app.performAfterTaskActions();
+
+        assertEquals(initialState, app.getUndoList().peek(),
+                "The method did not move the old current state to the undo stack");
+        // Compare by reference, not by contents
+        assertTrue(initialState != app.getCurrentState(),
+                "The method did not create a new current state");
     }
 
 }

@@ -1,6 +1,7 @@
 package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -103,6 +104,16 @@ public class AdventureTest {
     }
 
     @Test
+    public void CreateNewStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterCreatingTheStoryPiece() {
+        Application.getApp().resetStateHistory();
+
+        defaultAdventure.createNewStoryPiece();
+
+        WereAfterTasksPerformedCorrectly(1);
+
+    }
+
+    @Test
     public void RemoveStoryPiece_ShouldRemoveStoryPieceFromAdventure_GivenTheStoryPiece() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
         defaultAdventure.removeStoryPiece(newSP);
@@ -176,6 +187,17 @@ public class AdventureTest {
     }
 
     @Test
+    public void RemoveStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterRemovingTheStoryPiece() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+
+        Application.getApp().resetStateHistory();
+        defaultAdventure.removeStoryPiece(newSP);
+
+        WereAfterTasksPerformedCorrectly(1);
+
+    }
+
+    @Test
     public void SwitchStoryPieceOrder_ShouldSwitchTheOrderOfTheStoryPieces_GivenTheFirstStoryPieceAndItsNewOrder() {
 
         for (int i=0; i<5; i++) {
@@ -214,6 +236,16 @@ public class AdventureTest {
         });
         assertEquals("The requested new order is out of range (1-Number of existing StoryPieces).", ex.getMessage(),
                 "The exception did not have the correct message.");
+    }
+
+    @Test
+    public void SwitchStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsAfterSwitchingTheOrder() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+
+        Application.getApp().resetStateHistory();
+        defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
+
+        WereAfterTasksPerformedCorrectly(1);
     }
 
     @Test
@@ -280,6 +312,16 @@ public class AdventureTest {
     }
 
     @Test
+    public void ShuffleStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsOnceAfterShufflingTheOrder() {
+        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+
+        Application.getApp().resetStateHistory();
+        defaultAdventure.shuffleStoryPieces();
+
+        WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
     public void EqualsHashCode_ShouldBeReflexive() {
         Adventure adv = defaultAdventure;
 
@@ -323,6 +365,18 @@ public class AdventureTest {
 
         assertEquals(newName, defaultAdventure.getName(),
                 "Adventure does not have the name that was assigned to it.");
+    }
+
+    /** Helpers **/
+
+    private static void WereAfterTasksPerformedCorrectly(int expectedSavedStates) {
+        Application app = Application.getApp();
+
+        // If there are X saved states, there should be X saved states in the undo history
+        assertTrue(app.getUndoList().size() == expectedSavedStates,
+                String.format("Expected %s new saved state(s) after the operation, there are %s instead",
+                        expectedSavedStates, app.getUndoList().size()));
+
     }
     
 }

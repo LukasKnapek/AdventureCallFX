@@ -1,8 +1,9 @@
 package org.mabufudyne.designer.core;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Choice {
+public class Choice implements Serializable {
 
     private StoryPiece choiceSP;
     private String text;

@@ -90,7 +90,7 @@ public class Adventure implements Serializable {
 
     private void reassignStoryPieceOrders(ArrayList<Integer> newOrders) {
         for (StoryPiece sp : storyPieces) {
-            if (!sp.isFixed()) sp.setOrder(newOrders.remove(0));
+            if (!sp.isFixed()) sp.setOrder(newOrders.remove(0), false);
         }
     }
 
@@ -100,6 +100,9 @@ public class Adventure implements Serializable {
         StoryPiece newSP = new StoryPiece(title, obtainNextStoryPieceOrder());
         storyPieces.add(newSP);
         sortStoryPiecesByOrder();
+
+        Application.getApp().performAfterTaskActions();
+
         return newSP;
     }
 
@@ -111,6 +114,8 @@ public class Adventure implements Serializable {
         if (storyPieces.size() > 1) {
             freeUpOrder(sp.getOrder());
             this.storyPieces.remove(sp);
+
+            Application.getApp().performAfterTaskActions();
         }
     }
 
@@ -122,9 +127,12 @@ public class Adventure implements Serializable {
         for (StoryPiece sp : storyPieces) {
             if (sp.getOrder() == newOrder) {
                 int temp = firstSP.getOrder();
-                firstSP.setOrder(sp.getOrder());
-                sp.setOrder(temp);
-                return;
+                firstSP.setOrder(sp.getOrder(), false);
+                sp.setOrder(temp, false);
+
+                Application.getApp().performAfterTaskActions();
+
+                break;
             }
         }
     }
@@ -146,6 +154,8 @@ public class Adventure implements Serializable {
             // If the result of the shuffle is the same StoryPiece order as before, we will repeat the process
             sameResultOrder = storyPiecesOriginalOrder.equals(storyPieces);
         }
+
+        Application.getApp().performAfterTaskActions();
 
 
     }
