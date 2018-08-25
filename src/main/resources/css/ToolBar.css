@@ -1,0 +1,19 @@
+#btnNewFile{
+    -fx-background-image: url("icons/icoNewFile.png");
+    -fx-background-repeat: stretch;
+    -fx-background-position: center center;
+}
+
+.toolBarButton {
+    -fx-background-color: gray, f2f2f2;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 2, 2;
+}
+
+.toolBarButton:hover {
+    -fx-background-color: gray, e6e6e6;
+}
+
+.toolBarButton:pressed {
+    -fx-background-color: gray, bfbfbf;
+}
