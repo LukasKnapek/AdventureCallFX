@@ -2,7 +2,7 @@
 
 # Adventure Call FX
 
-[Gamebook / Choose-Your-Own-Adventure](https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure) designer.
+A [Gamebook / Choose-Your-Own-Adventure](https://en.wikipedia.org/wiki/Choose_Your_Own_Adventure) designer / side-project created using Test-Driven Development (TDD) methodology.
 
 ## About
 
@@ -12,7 +12,7 @@ In short, a Gamebook is an interactive story read in a non-linear order that is 
 
 Gamebooks consist of sections, each of which contains a part of the story and usually some choices. Once player makes a choice, he continues by reading the next section associated with the choice they made.
 
-The goal is then to reach the ending of the story by selecting the correct choices (a good one, hopefully).
+The goal is to reach an ending of the story (the good one, hopefully) by picking the right choices.
 
 **What was Adventure Call FX created in?**
 
@@ -21,5 +21,5 @@ The goal is then to reach the ending of the story by selecting the correct choic
 
 **What's up with the name?**
 
-Adventure Call refers to a [sketch](https://www.youtube.com/watch?v=sdQ11fTRpCg) from the excellent Limmy's Show.  
-FX then simply refers to JavaFX.
+Adventure Call comes from a [sketch](https://www.youtube.com/watch?v=sdQ11fTRpCg) from the excellent Limmy's Show.  
+FX as in JavaFX.
