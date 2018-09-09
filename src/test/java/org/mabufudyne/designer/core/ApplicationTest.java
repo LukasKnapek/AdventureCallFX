@@ -1,6 +1,5 @@
 package org.mabufudyne.designer.core;
 
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

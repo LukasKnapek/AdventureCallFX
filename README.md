@@ -16,7 +16,7 @@ The goal is to reach an ending of the story (the good one, hopefully) by picking
 
 **What was Adventure Call FX created in?**
 
-**Language**: Java 8  
+**Language**: Java 10  
 **GUI**: JavaFX + SceneBuilder
 
 **What's up with the name?**

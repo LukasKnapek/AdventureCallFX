@@ -2,12 +2,8 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
-
-@Category(ComponentTest.class)
 public class AdventureComponentTest {
 
     private Adventure defaultAdventure;

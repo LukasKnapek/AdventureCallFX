@@ -1,7 +1,5 @@
 package org.mabufudyne.designer.core;
 
-import javafx.scene.paint.Color;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;

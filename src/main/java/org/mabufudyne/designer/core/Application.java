@@ -2,7 +2,7 @@ package org.mabufudyne.designer.core;
 
 import java.util.LinkedList;
 
-public class Application {
+public class Application  {
 
     private static Application app;
 
@@ -21,6 +21,7 @@ public class Application {
 
     public Adventure initialize() {
         Adventure initialAdventure = new Adventure();
+        Adventure.setActiveAdventure(initialAdventure);
         return initialAdventure;
     }
 
@@ -29,7 +30,6 @@ public class Application {
     public LinkedList<Memento> getUndoList() { return undoList; }
 
     public LinkedList<Memento> getRedoList() { return redoList; }
-
 
     public void saveState() {
         Memento newState = new Memento(Adventure.getActiveAdventure());
