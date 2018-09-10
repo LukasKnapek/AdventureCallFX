@@ -8,9 +8,8 @@ before_script:
   - ./cc-test-reporter before-build --debug
 script:
 # Use X Virtual Framebuffer to imitate display for GUI tests
-  - xvfb-run --server-args="-screen 0 1920x1080x24" make test
 # Force Cobertura to generate an XML report (so Code Climate test-reporter can process it)
-  - mvn cobertura:cobertura -Dcobertura.report.format=xml
+  - xvfb-run --server-args="-screen 0 1920x1080x24" mvn cobertura:cobertura -Dcobertura.report.format=xml
 after_script:
 # Point test-reporter to the XML coverage report from Cobertura
   - ./cc-test-reporter format-coverage --input-type cobertura target/site/cobertura/coverage.xml --debug
