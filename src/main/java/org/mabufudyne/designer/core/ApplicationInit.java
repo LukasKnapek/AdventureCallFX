@@ -24,10 +24,10 @@ public class ApplicationInit extends javafx.application.Application {
 
         // If we pass testing argument to the application, hide the stage immediately, exiting the app
         // This is used to test that the app launches successfully
-        if (getParameters().getNamed().get("testRun").equals("true")) {
+        String testParamValue = getParameters().getNamed().get("testRun");
+        if (testParamValue != null && testParamValue.equals("true")) {
             primaryStage.hide();
         }
-
     }
 
     @Override
