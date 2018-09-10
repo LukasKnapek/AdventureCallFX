@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Mabufudyne/AdventureCallFX.svg?branch=master)](https://travis-ci.com/Mabufudyne/AdventureCallFX) [![Maintainability](https://api.codeclimate.com/v1/badges/8395f6cfee76416e8d06/maintainability)](https://codeclimate.com/github/Mabufudyne/AdventureDesignerFX/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/8395f6cfee76416e8d06/test_coverage)](https://codeclimate.com/github/Mabufudyne/AdventureDesignerFX/test_coverage)
+[![Build Status](https://travis-ci.com/Mabufudyne/AdventureCallFX.svg?branch=master)](https://travis-ci.com/Mabufudyne/AdventureCallFX) [![Maintainability](https://api.codeclimate.com/v1/badges/3db614c2755414edbab9/maintainability)](https://codeclimate.com/github/Mabufudyne/AdventureCallFX/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/3db614c2755414edbab9/test_coverage)](https://codeclimate.com/github/Mabufudyne/AdventureCallFX/test_coverage)
 
 # Adventure Call FX
 
