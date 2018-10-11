@@ -2,6 +2,10 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -21,6 +25,11 @@ public class StoryPieceTest {
         StoryPiece choiceSP = defaultAdventure.createNewStoryPiece();
         defaultChoice = new Choice(choiceSP);
 
+    }
+
+    @Test
+    public void Title_ShouldBeSimpleStringProperty() {
+        assertTrue(defaultStoryPiece.titleProperty() instanceof SimpleStringProperty);
     }
 
     @Test
@@ -74,12 +83,22 @@ public class StoryPieceTest {
     }
 
     @Test
+    public void Fixed_ShouldBeSimpleBooleanProperty() {
+        assertTrue(defaultStoryPiece.fixedProperty() instanceof SimpleBooleanProperty);
+    }
+
+    @Test
     public void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
         Application.getApp().resetStateHistory();
 
         defaultStoryPiece.setFixed(true);
 
         WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
+    public void Order_ShouldBeSimpleIntegerProperty() {
+        assertTrue(defaultStoryPiece.orderProperty() instanceof SimpleIntegerProperty);
     }
 
     @Test
@@ -90,6 +109,11 @@ public class StoryPieceTest {
         defaultStoryPiece.setOrder(2);
 
         WereAfterTasksPerformedCorrectly(1);
+    }
+
+    @Test
+    public void Choices_IsAnObservableList() {
+        assertTrue(defaultStoryPiece.getChoices() instanceof ObservableList);
     }
 
     @Test
@@ -218,7 +242,7 @@ public class StoryPieceTest {
     @Test
     public void EqualsHashCode_ShouldBeSymmetric() {
         StoryPiece sp1 = defaultStoryPiece;
-        StoryPiece sp2 = new Adventure().getStoryPieces().get(0);
+        StoryPiece sp2 = defaultAdventure.getStoryPieces().get(0);
 
         assertEquals(sp1, sp2,
                 "Two same StoryPieces are not considered equal.");
@@ -229,8 +253,8 @@ public class StoryPieceTest {
     @Test
     public void EqualsHashCode_ShouldBeTransitive() {
         StoryPiece sp1 = defaultStoryPiece;
-        StoryPiece sp2 = new Adventure().getStoryPieces().get(0);
-        StoryPiece sp3 = new Adventure().getStoryPieces().get(0);
+        StoryPiece sp2 = defaultAdventure.getStoryPieces().get(0);
+        StoryPiece sp3 = defaultAdventure.getStoryPieces().get(0);
 
         assertTrue(sp1.equals(sp2) &&
                         sp2.equals(sp3) &&

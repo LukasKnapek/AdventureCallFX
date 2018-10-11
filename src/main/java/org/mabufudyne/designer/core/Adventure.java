@@ -1,11 +1,16 @@
 package org.mabufudyne.designer.core;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class Adventure implements Serializable {
 
@@ -15,7 +20,7 @@ public class Adventure implements Serializable {
     private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
     private static ArrayList<Integer> availableOrders = new ArrayList<>();
 
-    private ArrayList<StoryPiece> storyPieces;
+    private transient ObservableList<StoryPiece> storyPieces;
     private String name;
 
     /** Constructors **/
@@ -26,7 +31,7 @@ public class Adventure implements Serializable {
 
     public Adventure(String name) {
         this.name = name;
-        this.storyPieces = new ArrayList<>();
+        this.storyPieces = FXCollections.observableArrayList();
         resetAvailableOrders();
 
         this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
@@ -41,7 +46,7 @@ public class Adventure implements Serializable {
 
     public void setName(String newName) { this.name = newName; }
 
-    public ArrayList<StoryPiece> getStoryPieces() {
+    public ObservableList<StoryPiece> getStoryPieces() {
         return this.storyPieces;
     }
 
@@ -177,5 +182,17 @@ public class Adventure implements Serializable {
         return Objects.hash(storyPieces, name);
     }
 
+    /** Serialization **/
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(new ArrayList<>(storyPieces));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.storyPieces = FXCollections.observableArrayList((ArrayList<StoryPiece>) in.readObject());
+    }
 
 }

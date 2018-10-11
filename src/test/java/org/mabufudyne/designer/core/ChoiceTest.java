@@ -1,5 +1,6 @@
 package org.mabufudyne.designer.core;
 
+import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,12 @@ public class ChoiceTest {
     private void createDefaultStoryPiece() {
         defaultAdventure = new Adventure();
         defaultStoryPiece = defaultAdventure.createNewStoryPiece();
+    }
+
+    @Test
+    public void Text_ShouldBeSimpleStringProperty() {
+        Choice choice = new Choice(defaultStoryPiece);
+        assertTrue(choice.textProperty() instanceof SimpleStringProperty);
     }
 
     @Test

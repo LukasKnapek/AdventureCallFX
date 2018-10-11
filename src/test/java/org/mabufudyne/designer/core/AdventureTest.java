@@ -2,6 +2,7 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javafx.collections.ObservableList;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,6 +19,11 @@ public class AdventureTest {
     protected void createDefaultObjects() {
         defaultAdventure = new Adventure();
         defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
+    }
+
+    @Test
+    public void StoryPieces_ShouldBeAnObservableList() {
+        assertTrue(defaultAdventure.getStoryPieces() instanceof ObservableList);
     }
 
     @Test

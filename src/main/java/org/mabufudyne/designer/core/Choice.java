@@ -1,12 +1,17 @@
 package org.mabufudyne.designer.core;
 
+import javafx.beans.property.SimpleStringProperty;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Choice implements Serializable {
 
     private StoryPiece choiceSP;
-    private String text;
+    private transient SimpleStringProperty text;
 
     private static String DEFAULT_TEXT = "Go to";
 
@@ -14,7 +19,7 @@ public class Choice implements Serializable {
 
     public Choice(StoryPiece choiceSP, String text) {
         this.choiceSP = choiceSP;
-        this.text = text;
+        this.text = new SimpleStringProperty(text);
     }
 
     public Choice(StoryPiece choiceSP) {
@@ -23,11 +28,11 @@ public class Choice implements Serializable {
 
     /** Getters and Setters **/
 
-    public String getText() {
-        return text;
-    }
+    public String getText() { return text.get(); }
 
-    public void setText(String newText) { this.text = newText; }
+    public void setText(String newText) { this.text.set(newText); }
+
+    public SimpleStringProperty textProperty() { return text; }
 
     public StoryPiece getStoryPiece() {
         return choiceSP;
@@ -47,12 +52,24 @@ public class Choice implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Choice choice = (Choice) o;
         return Objects.equals(choiceSP, choice.choiceSP) &&
-                Objects.equals(text, choice.text);
+                Objects.equals(text.get(), choice.text.get());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(choiceSP, text);
+        return Objects.hash(choiceSP, text.get());
+    }
+
+    /** Serialization **/
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(getText());
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.text = new SimpleStringProperty(in.readUTF());
     }
 
 }
