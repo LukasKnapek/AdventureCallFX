@@ -1,6 +1,10 @@
 package org.mabufudyne.designer.core;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Properties;
 
 public class Application  {
 
@@ -9,6 +13,7 @@ public class Application  {
     private Memento currentState;
     private LinkedList<Memento> undoList = new LinkedList<>();
     private LinkedList<Memento> redoList = new LinkedList<>();
+    private Properties properties = new Properties();
 
     private Application() {}
 
@@ -20,9 +25,20 @@ public class Application  {
     }
 
     public Adventure initialize() {
+        loadDefaultProperties();
         Adventure initialAdventure = new Adventure();
         Adventure.setActiveAdventure(initialAdventure);
+
         return initialAdventure;
+    }
+
+    private void loadDefaultProperties() {
+        try {
+            FileInputStream in = new FileInputStream("config.properties");
+            properties.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Memento getCurrentState() { return currentState; }
@@ -31,10 +47,16 @@ public class Application  {
 
     public LinkedList<Memento> getRedoList() { return redoList; }
 
+    public Properties getProperties() {
+        return properties;
+    }
+
     public void saveState() {
-        Memento newState = new Memento(Adventure.getActiveAdventure());
-        if (currentState != null) undoList.push(currentState);
-        currentState = newState;
+        if (properties.getProperty("saveStates") == null || properties.getProperty("saveStates").equals("true")) {
+            Memento newState = new Memento(Adventure.getActiveAdventure());
+            if (currentState != null) undoList.push(currentState);
+            currentState = newState;
+        }
     }
 
     public void undo() {

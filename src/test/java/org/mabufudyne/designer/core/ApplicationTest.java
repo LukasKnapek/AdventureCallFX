@@ -3,6 +3,11 @@ package org.mabufudyne.designer.core;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationTest {
@@ -12,6 +17,29 @@ public class ApplicationTest {
     @BeforeAll
     public static void obtainApplicationInstance() {
         app = Application.getApp();
+    }
+
+    @Test
+    public void Initialize_ShouldCreateAppPropertiesUsingPropertiesClass() {
+        app.initialize();
+
+        assertTrue(app.getProperties() instanceof Properties);
+    }
+
+    @Test
+    public void Initialize_ShouldCreateDefaultProperties() {
+        app.initialize();
+
+        try {
+            FileInputStream in = new FileInputStream("config.properties");
+            Properties defaultProps = new Properties();
+            defaultProps.load(in);
+
+            assertEquals(app.getProperties(), defaultProps);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -37,6 +65,19 @@ public class ApplicationTest {
                 "Former current Memento was not moved to the undo stack after save state operation");
         assertNotSame(originalState, app.getCurrentState(),
                 "New current state should not be equal to the former state");
+    }
+
+    @Test
+    public void SaveState_ShouldNotBeExecuted_GivenSaveStatePropertyIsFalse() {
+        Adventure initialAdventure = app.initialize();
+        app.getProperties().setProperty("saveStates", "false");
+
+        Memento initialState = app.getCurrentState();
+        // Should not create a new state
+        initialAdventure.createNewStoryPiece();
+
+        assertEquals(initialState, app.getCurrentState());
+
     }
 
     @Test
