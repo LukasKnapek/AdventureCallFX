@@ -170,9 +170,10 @@ public class StoryPieceTest {
 
     @Test
     public void RemoveChoice_ShouldRemoveChoicesFromStoryPiece_GivenTheChoices() {
-        Choice[] choices = new Choice[5];
+        //Application.getApp().getProperties().setProperty("saveStates", "false");
+        Choice[] choices = new Choice[2];
 
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<2; i++) {
             choices[i] = new Choice(defaultAdventure.createNewStoryPiece());
             defaultStoryPiece.addChoice(choices[i]);
         }

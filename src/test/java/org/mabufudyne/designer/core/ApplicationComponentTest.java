@@ -3,6 +3,8 @@ package org.mabufudyne.designer.core;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ApplicationComponentTest {
 
     @BeforeEach
-    public void SetUpCleanApplicationAndAdventure() {
+    public void SetUpCleanApplicationAndAdventure() throws IOException {
         // Clean Adventure
         Application.getApp().initialize();
         // Clean Application state history
@@ -18,7 +20,7 @@ public class ApplicationComponentTest {
     }
 
     @Test
-    public void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoRedoAreAvailable() {
+    public void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoRedoAreAvailable() throws IOException {
 
         // Initial current state, empty undo/redo stacks
         Application.getApp().initialize();
@@ -43,7 +45,7 @@ public class ApplicationComponentTest {
     }
 
     @Test
-    public void Application_CurrentStateShouldContainTheCorrectAdventureAfterASequenceOfStateChanges() {
+    public void Application_CurrentStateShouldContainTheCorrectAdventureAfterASequenceOfStateChanges() throws IOException {
         // Initial state with one SP
         Application.getApp().initialize();
 

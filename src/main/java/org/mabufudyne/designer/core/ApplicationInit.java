@@ -5,7 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ApplicationInit extends javafx.application.Application {
+
+    private static final Logger LOGGER = Logger.getLogger( ApplicationInit.class.getName() );
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -33,7 +39,13 @@ public class ApplicationInit extends javafx.application.Application {
     @Override
     public void init() {
         Application app = Application.getApp();
-        app.initialize();
+        try {
+            app.initialize();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while initializing application:");
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            System.exit(1);
+        }
     }
 
     public static void main(String[] args) {

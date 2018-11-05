@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Application  {
 
@@ -15,6 +17,8 @@ public class Application  {
     private LinkedList<Memento> redoList = new LinkedList<>();
     private Properties properties = new Properties();
 
+    private static final Logger LOGGER = Logger.getLogger( Application.class.getName() );
+
     private Application() {}
 
     public static Application getApp() {
@@ -24,20 +28,25 @@ public class Application  {
         return app;
     }
 
-    public Adventure initialize() {
-        loadDefaultProperties();
+    public Adventure initialize() throws IOException {
+        return initialize("config.properties");
+    }
+
+    public Adventure initialize(String defaultsPath) throws IOException {
+        loadDefaultProperties(defaultsPath);
         Adventure initialAdventure = new Adventure();
         Adventure.setActiveAdventure(initialAdventure);
 
         return initialAdventure;
     }
 
-    private void loadDefaultProperties() {
+    private void loadDefaultProperties(String path) throws IOException {
         try {
-            FileInputStream in = new FileInputStream("config.properties");
+            FileInputStream in = new FileInputStream(path);
             properties.load(in);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error while loading default properties:");
+            throw e;
         }
     }
 
