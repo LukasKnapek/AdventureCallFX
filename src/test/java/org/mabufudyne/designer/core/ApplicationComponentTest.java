@@ -16,7 +16,7 @@ public class ApplicationComponentTest {
         // Clean Adventure
         Application.getApp().initialize();
         // Clean Application state history
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
     }
 
     @Test

@@ -5,13 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApplicationInit extends javafx.application.Application {
 
     private static final Logger LOGGER = Logger.getLogger( ApplicationInit.class.getName() );
+    private Application app;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,15 +36,21 @@ public class ApplicationInit extends javafx.application.Application {
         }
     }
 
+    public void setApp(Application newApp) {
+        app = newApp;
+    }
+
     @Override
-    public void init() {
-        Application app = Application.getApp();
+    public void init() throws Exception{
+        if (app == null)
+            app = Application.getApp();
+
         try {
             app.initialize();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error while initializing application:");
             LOGGER.log(Level.SEVERE, e.toString(), e);
-            System.exit(1);
+            throw e;
         }
     }
 

@@ -1,9 +1,11 @@
 package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
 
 
 public class ApplicationInitTest {
@@ -20,8 +22,12 @@ public class ApplicationInitTest {
     }
 
     @Test
-    public void Init_ShouldInitializeTheApplicationState() {
+    public void Init_ShouldInitializeTheApplicationState() throws Exception {
         ApplicationInit appInit = new ApplicationInit();
+        Application app = Application.getApp();
+        app.reset();
+
+        appInit.setApp(app);
         appInit.init();
 
         Adventure adv = Adventure.getActiveAdventure();
@@ -29,5 +35,18 @@ public class ApplicationInitTest {
                 "After Application initialization, there should be an active Adventure");
         assertEquals(1, adv.getStoryPieces().size(),
                 "After Application initialization, the active Adventure should have a default StoryPiece");
+    }
+
+    @Test
+    public void Init_ShouldExit_GivenAnExceptionDuringInitialisation() throws Exception {
+        Application app = Application.getApp();
+        ApplicationInit initializer = new ApplicationInit();
+
+        app.setPropertiesPath("nonexistent path");
+        initializer.setApp(app);
+
+        assertThrows(Exception.class, initializer::init,
+                "Init did not raise exception even though fake path was given");
+
     }
 }

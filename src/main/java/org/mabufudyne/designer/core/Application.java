@@ -15,6 +15,8 @@ public class Application  {
     private Memento currentState;
     private LinkedList<Memento> undoList = new LinkedList<>();
     private LinkedList<Memento> redoList = new LinkedList<>();
+
+    private String propertiesPath = "config.properties";
     private Properties properties = new Properties();
 
     private static final Logger LOGGER = Logger.getLogger( Application.class.getName() );
@@ -29,11 +31,7 @@ public class Application  {
     }
 
     public Adventure initialize() throws IOException {
-        return initialize("config.properties");
-    }
-
-    public Adventure initialize(String defaultsPath) throws IOException {
-        loadDefaultProperties(defaultsPath);
+        loadDefaultProperties(propertiesPath);
         Adventure initialAdventure = new Adventure();
         Adventure.setActiveAdventure(initialAdventure);
 
@@ -60,6 +58,10 @@ public class Application  {
         return properties;
     }
 
+    public void setPropertiesPath(String path) {
+        propertiesPath = path;
+    }
+
     public void saveState() {
         if (properties.getProperty("saveStates") == null || properties.getProperty("saveStates").equals("true")) {
             Memento newState = new Memento(Adventure.getActiveAdventure());
@@ -82,9 +84,9 @@ public class Application  {
         app.saveState();
     }
 
-    public void resetStateHistory() {
+    public void reset() {
         undoList.clear();
         redoList.clear();
+        propertiesPath = "config.properties";
     }
-
 }

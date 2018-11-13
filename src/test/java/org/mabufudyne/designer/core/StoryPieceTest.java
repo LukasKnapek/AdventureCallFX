@@ -42,7 +42,7 @@ public class StoryPieceTest {
 
     @Test
     public void SetTitle_ShouldPerformAfterTaskOperationsAfterSettingTheTitle() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultStoryPiece.setTitle("New title");
 
         WereAfterTasksPerformedCorrectly(1);
@@ -58,7 +58,7 @@ public class StoryPieceTest {
 
     @Test
     public void SetStory_ShouldPerformAfterTaskOperationsAfterSettingTheStory() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultStoryPiece.setStory("New story");
 
         WereAfterTasksPerformedCorrectly(1);
@@ -75,7 +75,7 @@ public class StoryPieceTest {
 
     @Test
     public void SetColor_ShouldPerformAfterTaskOperationsAfterSettingTheColor() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
 
         defaultStoryPiece.setColor("FFFF00");
 
@@ -89,7 +89,7 @@ public class StoryPieceTest {
 
     @Test
     public void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
 
         defaultStoryPiece.setFixed(true);
 
@@ -105,7 +105,7 @@ public class StoryPieceTest {
     public void SetOrder_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
         defaultAdventure.createNewStoryPiece();
 
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultStoryPiece.setOrder(2);
 
         WereAfterTasksPerformedCorrectly(1);
@@ -153,7 +153,7 @@ public class StoryPieceTest {
 
     @Test
     public void AddChoice_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
 
         defaultStoryPiece.addChoice(defaultChoice);
 
@@ -224,7 +224,7 @@ public class StoryPieceTest {
     @Test
     public void RemoveChoice_ShouldPerformAfterTaskOperationsAfterRemovingTheChoice() {
         defaultStoryPiece.addChoice(defaultChoice);
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
 
         defaultStoryPiece.removeChoice(defaultChoice);
         WereAfterTasksPerformedCorrectly(1);

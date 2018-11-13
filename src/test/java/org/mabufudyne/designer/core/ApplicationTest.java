@@ -28,6 +28,7 @@ public class ApplicationTest {
 
     @Test
     public void Initialize_ShouldCreateDefaultProperties() throws IOException {
+        app.reset();
         app.initialize();
 
         try {
@@ -44,13 +45,16 @@ public class ApplicationTest {
 
     @Test
     public void Initialize_ShouldThrowException_GivenDefaultPropertiesFileDoesNotExist() {
+        app.setPropertiesPath("non-existent path");
+
         assertThrows(IOException.class, () -> {
-            app.initialize("nonexistentpath");
+            app.initialize();
         }, "Initialize was given a fake settings path, but it didn't throw an exception");
     }
 
     @Test
     public void Initialize_ShouldCreateAdventureAndPopulateCurrentStateWithTheAdventure() throws IOException {
+        app.reset();
         app.initialize();
 
         assertNotNull(app.getCurrentState(),

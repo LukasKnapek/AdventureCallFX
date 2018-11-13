@@ -111,7 +111,7 @@ public class AdventureTest {
 
     @Test
     public void CreateNewStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterCreatingTheStoryPiece() {
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
 
         defaultAdventure.createNewStoryPiece();
 
@@ -196,7 +196,7 @@ public class AdventureTest {
     public void RemoveStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterRemovingTheStoryPiece() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
 
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultAdventure.removeStoryPiece(newSP);
 
         WereAfterTasksPerformedCorrectly(1);
@@ -248,7 +248,7 @@ public class AdventureTest {
     public void SwitchStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsAfterSwitchingTheOrder() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
 
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
 
         WereAfterTasksPerformedCorrectly(1);
@@ -321,7 +321,7 @@ public class AdventureTest {
     public void ShuffleStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsOnceAfterShufflingTheOrder() {
         StoryPiece newSP = defaultAdventure.createNewStoryPiece();
 
-        Application.getApp().resetStateHistory();
+        Application.getApp().reset();
         defaultAdventure.shuffleStoryPieces();
 
         WereAfterTasksPerformedCorrectly(1);
