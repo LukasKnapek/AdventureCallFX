@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,13 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileHandlerTest {
 
     private Adventure defaultAdventure;
+
     private static File tempDirectory;
+    private static FileHandler fileHandler;
 
     @BeforeAll
-    protected static void createTempFolderAndTestFiles() {
+    protected static void createTempFolderFilesHandler() {
         String tempSaveFolderPath = System.getProperty("user.dir") + File.separator + "testSavingLoading";
         tempDirectory = new File(tempSaveFolderPath);
         tempDirectory.mkdir();
+
+        fileHandler = new FileHandler();
     }
 
     @AfterAll
@@ -40,33 +43,15 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void Constructor_ShouldBeInaccessible_GivenFileHandlerIsAUtilityClass() throws Exception {
-        Constructor[] fhConstructors = FileHandler.class.getDeclaredConstructors();
-        assertEquals(1, fhConstructors.length,
-                "FileHandler class should only have one constructor.");
-        Constructor fhConstructor = fhConstructors[0];
-        assertFalse(fhConstructor.isAccessible(),
-                "FileHandler constructor should be inaccessible - private");
-
-        fhConstructor.setAccessible(true);
-        // Instantiating just to get that sweet, sweet test coverage
-        assertEquals(FileHandler.class, fhConstructor.newInstance().getClass());
-    }
-
-    @Test
     public void SaveAdventure_ShouldReturnNull_GivenAnExceptionOccursWhileSaving() {
-
-        String savedFilePath = FileHandler.saveAdventure(defaultAdventure,"nonexistent-file-path", "blah.adv");
-
-        assertNull(savedFilePath,
-                "The savedFilePath should be null in case save is not successful.");
+        assertFalse(fileHandler.saveAdventure(defaultAdventure,"nonexistent-file-path/blah.adv"),
+                "SaveAdventure was given non-existent path, should have returned false.");
     }
 
     @Test
     public void SaveAdventure_ShouldSaveTheAdventureToAFile_GivenTheSaveLocation() {
-
         String fileName = "TestAdventure.adv";
-        FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), fileName);
+        fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + fileName);
 
         File savedFile = new File(tempDirectory.toString() + File.separator + fileName);
         assertTrue(savedFile.exists(),
@@ -76,7 +61,7 @@ public class FileHandlerTest {
     @Test
     public void SaveAdventure_ShouldSaveTheAdventureToAFileWithADVSuffix_GivenAFileNameWithNoSuffix() {
         String fileName = "TestAdventure";
-        FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), fileName);
+        fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + fileName);
 
         File savedFile = new File(tempDirectory.toString() + File.separator + fileName + ".adv");
         assertTrue(savedFile.exists(),
@@ -86,16 +71,16 @@ public class FileHandlerTest {
     @Test
     public void LoadAdventure_ShouldLoadTheAdventureAndReturnIt_GivenAPathToValidSavedAdventureFile() {
         String saveName = "ToBeLoaded.adv";
-        FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
+        fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + saveName);
 
-        Object loadedAdv = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
+        Object loadedAdv = fileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
         assertTrue(loadedAdv instanceof Adventure,
                 "The saved Adventure was not loaded as an Adventure object.");
     }
 
     @Test
     public void LoadAdventure_ShouldReturnNull_GivenANonExistentFilePath() {
-        assertNull(FileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
+        assertNull(fileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
                 "Load did not return null given a nonexistent file path.");
     }
 
@@ -107,27 +92,17 @@ public class FileHandlerTest {
         out.writeObject("I am just a plain string!");
         out.close();
         fileOut.close();
-        assertNull(FileHandler.loadAdventure(tempDirectory + File.separator + fileName),
+
+        assertNull(fileHandler.loadAdventure(tempDirectory + File.separator + fileName),
                 "LoadAdventure did not return null when given an invalid Adventure file");
-    }
-
-    @Test
-    public void LoadAdventure_ShouldSetTheLoadedAdventureAsActive() {
-        String saveName = "ToBeLoaded.adv";
-        FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
-
-        Adventure loadedAdv = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
-        assertSame(loadedAdv, Adventure.getActiveAdventure(),
-                "Loaded Adventure was not set as the active Adventure.");
     }
 
     @Test
     public void LoadAdventure_ShouldLoadTheSameAdventureObjectThatWasSaved() {
         String saveName = "Adventure.adv";
-        FileHandler.saveAdventure(defaultAdventure, tempDirectory.toString(), saveName);
-        Adventure loadedAdventure = FileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
+        fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + saveName);
+        Adventure loadedAdventure = fileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
         assertEquals(loadedAdventure, defaultAdventure,
                 "The loaded Adventure is not equal to the Adventure that was saved");
     }
-
 }

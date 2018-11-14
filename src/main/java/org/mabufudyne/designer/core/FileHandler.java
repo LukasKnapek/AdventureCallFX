@@ -1,53 +1,48 @@
 package org.mabufudyne.designer.core;
 
 import java.io.*;
-import java.util.logging.Logger;
 
-public class FileHandler {
+class FileHandler {
 
-    private final static Logger LOGGER = Logger.getLogger(FileHandler.class.getName());
+    /** Saves the given Adventure to the given location
+     * @param adv An Adventure instance to be saved
+     * @param path The location where the file should be saved
+     * @return true if the save was successful, false otherwise
+     */
+    boolean saveAdventure(Adventure adv, String path) {
+        path = path.endsWith(".adv") ? path : path + ".adv";
 
-    private FileHandler() {}
-
-    public static String saveAdventure(Adventure adv, String location, String fileName) {
-
-        fileName = fileName.endsWith(".adv") ? fileName : fileName + ".adv";
-
-        try (
-                FileOutputStream fileOut = new FileOutputStream(location + File.separator + fileName);
-                ObjectOutputStream out = new ObjectOutputStream(fileOut)
-        ) {
+        try (FileOutputStream fileOut = new FileOutputStream(path);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut))
+        {
             out.writeObject(adv);
-            return location + File.separator + fileName;
+            return true;
         }
-        catch (IOException e) {
-            LOGGER.severe(String.format("Encountered an error while saving the Adventure to '%s': '%s'",
-                    location, e.getMessage()));
+        catch (IOException e)
+        {
             e.printStackTrace();
+            return false;
+        }
+    }
 
+    /**
+     * Loads Adventure from a file found at the given path
+     * @param filePath The location of the Adventure (*.adv) file
+     * @return Adventure instance if successful, null if not
+     */
+    Adventure loadAdventure(String filePath) {
+        Adventure loadedAdv = null;
+
+        try (FileInputStream fileIn = new FileInputStream(filePath);
+             ObjectInputStream in = new ObjectInputStream(fileIn))
+        {
+            loadedAdv = (Adventure) in.readObject();
+            return loadedAdv;
+        }
+        catch (IOException | ClassNotFoundException | ClassCastException e)
+        {
+            e.printStackTrace();
             return null;
         }
     }
-
-    public static Adventure loadAdventure(String filePath) {
-        Adventure loadedAdv = null;
-
-        try (
-                FileInputStream fileIn = new FileInputStream(filePath);
-                ObjectInput in = new ObjectInputStream(fileIn)
-        )
-        {
-            loadedAdv = (Adventure) in.readObject();
-            Adventure.setActiveAdventure(loadedAdv);
-        } catch (IOException e) {
-            LOGGER.severe("Error while trying to load the file: " + e.getMessage());
-            e.printStackTrace();
-        } catch (ClassNotFoundException | ClassCastException e) {
-            LOGGER.severe(String.format("The given file '%s' cannot be loaded as an Adventure object", filePath));
-            e.printStackTrace();
-        }
-
-        return loadedAdv;
-    }
-
 }
