@@ -5,13 +5,12 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.Objects;
 
-public class Memento {
+class Memento {
 
     private Adventure storedAdventure;
 
-    public Memento(Adventure adv) {
-        Adventure deepCopyAdv = (Adventure) SerializationUtils.clone(adv);
-        storedAdventure = deepCopyAdv;
+    Memento(Adventure adv) {
+        storedAdventure = (Adventure) SerializationUtils.clone(adv);
     }
 
     public Adventure getAdventure() {

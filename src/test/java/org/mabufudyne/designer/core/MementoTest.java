@@ -6,24 +6,25 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MementoTest {
+class MementoTest {
 
     private Adventure defaultAdventure;
 
     @BeforeEach
-    public void createDefaultObjects() {
-        defaultAdventure = new Adventure();
+    void createDefaultObjects() {
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure = new Adventure(sp);
     }
 
     @Test
-    public void Constructor_ShouldCreateAMementoWithTheGivenAdventure_GivenTheAdventure() {
+    void Constructor_ShouldCreateAMementoWithTheGivenAdventure_GivenTheAdventure() {
         Memento newMemento = new Memento(defaultAdventure);
         assertEquals(defaultAdventure, newMemento.getAdventure(),
                 "Memento does not contain the Adventure that was given to it.");
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeReflexive() {
+    void EqualsHashCode_ShouldBeReflexive() {
         Memento state = new Memento(defaultAdventure);
 
         assertEquals(state, state,
@@ -33,7 +34,7 @@ public class MementoTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeSymmetric() {
+    void EqualsHashCode_ShouldBeSymmetric() {
         Memento state1 = new Memento(defaultAdventure);
         Memento state2 = new Memento(defaultAdventure);
 
@@ -44,7 +45,7 @@ public class MementoTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeTransitive() {
+    void EqualsHashCode_ShouldBeTransitive() {
         Memento state1 = new Memento(defaultAdventure);
         Memento state2 = new Memento(defaultAdventure);
         Memento state3 = new Memento(defaultAdventure);

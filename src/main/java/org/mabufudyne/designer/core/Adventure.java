@@ -1,12 +1,12 @@
 package org.mabufudyne.designer.core;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,58 +17,51 @@ public class Adventure implements Serializable {
     private static Adventure activeAdventure;
 
     private static String DEFAULT_NAME = "New Adventure";
-    private static String DEFAULT_STORYPIECE_TITLE = "Untitled";
-    private static ArrayList<Integer> availableOrders = new ArrayList<>();
+    private ArrayList<Integer> availableOrders;
 
     private transient ObservableList<StoryPiece> storyPieces;
     private String name;
 
     /** Constructors **/
 
-    public Adventure() {
-        this(DEFAULT_NAME);
+    public Adventure(StoryPiece initialSP) {
+        this(initialSP, DEFAULT_NAME);
     }
 
-    public Adventure(String name) {
+    public Adventure(StoryPiece initialSP, String name) {
         this.name = name;
         this.storyPieces = FXCollections.observableArrayList();
-        resetAvailableOrders();
+        this.availableOrders = new ArrayList<>();
 
-        this.createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
         setActiveAdventure(this);
+        addStoryPiece(initialSP);
     }
 
     /** Getters and Setters **/
 
-    public String getName() {
+    String getName() {
         return this.name;
     }
 
-    public void setName(String newName) { this.name = newName; }
+    void setName(String newName) { this.name = newName; }
 
-    public ObservableList<StoryPiece> getStoryPieces() {
+    ObservableList<StoryPiece> getStoryPieces() {
         return this.storyPieces;
     }
 
-    public static String getDefaultName() {
+    static String getDefaultName() {
         return DEFAULT_NAME;
     }
 
-    public static String getDefaultStoryPieceTitle() { return DEFAULT_STORYPIECE_TITLE; }
-
-    public static Adventure getActiveAdventure() {
+    static Adventure getActiveAdventure() {
         return activeAdventure;
     }
 
-    public static void setActiveAdventure(Adventure adv) {
+    static void setActiveAdventure(Adventure adv) {
         activeAdventure = adv;
     }
 
     /** Private helper methods **/
-
-    private static void resetAvailableOrders() {
-        availableOrders = new ArrayList<>();
-    }
 
     private void sortStoryPiecesByOrder() {
         Collections.sort(storyPieces, Comparator.comparing(StoryPiece::getOrder));
@@ -101,21 +94,14 @@ public class Adventure implements Serializable {
 
     /** Public methods **/
 
-    public StoryPiece createNewStoryPiece(String title) {
-        StoryPiece newSP = new StoryPiece(title, obtainNextStoryPieceOrder());
-        storyPieces.add(newSP);
-        sortStoryPiecesByOrder();
+    void addStoryPiece(StoryPiece sp) {
+        sp.setOrder(obtainNextStoryPieceOrder(), false);
+        storyPieces.add(sp);
 
         Application.getApp().performAfterTaskActions();
-
-        return newSP;
     }
 
-    public StoryPiece createNewStoryPiece() {
-        return createNewStoryPiece(DEFAULT_STORYPIECE_TITLE);
-    }
-
-    public void removeStoryPiece(StoryPiece sp) {
+    void removeStoryPiece(StoryPiece sp) {
         if (storyPieces.size() > 1) {
             freeUpOrder(sp.getOrder());
             this.storyPieces.remove(sp);
@@ -124,7 +110,7 @@ public class Adventure implements Serializable {
         }
     }
 
-    public void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
+    void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
         if (newOrder > storyPieces.size() || newOrder <= 0) {
             throw new IllegalArgumentException("The requested new order is out of range (1-Number of existing StoryPieces).");
         }
@@ -142,7 +128,7 @@ public class Adventure implements Serializable {
         }
     }
 
-    public void shuffleStoryPieces() {
+    void shuffleStoryPieces() {
         ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(storyPieces);
         ArrayList<Integer> shuffableOrders;
         boolean sameResultOrder = true;

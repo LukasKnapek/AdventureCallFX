@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Choice implements Serializable {
+class Choice implements Serializable {
 
     private StoryPiece choiceSP;
     private transient SimpleStringProperty text;

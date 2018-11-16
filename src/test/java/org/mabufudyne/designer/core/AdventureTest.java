@@ -10,130 +10,60 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AdventureTest {
+class AdventureTest {
 
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
     @BeforeEach
-    protected void createDefaultObjects() {
-        defaultAdventure = new Adventure();
-        defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
+    void createDefaultObjects() {
+        defaultStoryPiece = new StoryPiece();
+        defaultAdventure = new Adventure(defaultStoryPiece);
     }
 
     @Test
-    public void StoryPieces_ShouldBeAnObservableList() {
+    void StoryPieces_ShouldBeAnObservableList() {
         assertTrue(defaultAdventure.getStoryPieces() instanceof ObservableList);
     }
 
     @Test
-    public void Constructor_ShouldCreateAnAdventureWithName_GivenTheName() {
-        Adventure testAdv = new Adventure("My First Adventure");
+    void Constructor_ShouldCreateAnAdventureWithName_GivenTheName() {
+        StoryPiece sp = new StoryPiece();
+        Adventure testAdv = new Adventure(sp, "My First Adventure");
         assertEquals("My First Adventure", testAdv.getName(),
                 "Name of the Adventure should be equal to the name that was passed to the constructor");
     }
 
     @Test
-    public void Constructor_ShouldCreateAnAdventureWithDefaultName_GivenNoName() {
+    void Constructor_ShouldCreateAnAdventureWithDefaultName_GivenNoName() {
         assertEquals(Adventure.getDefaultName(), defaultAdventure.getName(),
                 "The Adventure name should be the default name");
     }
 
     @Test
-    public void Constructor_ShouldCreateAnAdventureWithOneStoryPiece() {
+    void Constructor_ShouldCreateAnAdventureWithOneStoryPiece() {
         assertEquals(1, defaultAdventure.getStoryPieces().size(),
                 "The Adventure has to contain at least one StoryPiece at all times," +
                         " including immediately after creation");
     }
 
     @Test
-    public void Constructor_ShouldSetTheNewlyCreatedAdventureAsActive() {
-        Adventure newAdv = new Adventure();
-        assertSame(newAdv, Adventure.getActiveAdventure(),
-                "Newly created Adventure was not set as active.");
-    }
+    void RemoveStoryPiece_ShouldRemoveStoryPieceFromAdventure_GivenTheStoryPiece() {
+        StoryPiece newSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(newSP);
 
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithFixedStatusFalseByDefault() {
-        assertFalse(defaultStoryPiece.isFixed(),
-                "StoryPieces should be created with Fixed status set to false by default.");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithTitle_GivenTheName() {
-        String spTitle = "Beginning";
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece("Beginning");
-        assertEquals(spTitle, newSP.getTitle(),
-                "The new StoryPiece does not have the title that was passed to the method.");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateNewStoryPieceWithDefaultTitle_GivenNothing() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
-        assertEquals(Adventure.getDefaultStoryPieceTitle(), newSP.getTitle(),
-                "The new StoryPiece does not have the default title.");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateAStoryPieceWithDefaultColorSetToNone() {
-        assertNull(defaultStoryPiece.getColor(),
-                "StoryPiece should have no color assigned by default.");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPieceToTheAdventure() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
-        assertTrue(defaultAdventure.getStoryPieces().contains(newSP),
-                "The Adventure does not contain the StoryPiece that was created inside it");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldIncrementOrderOfEveryNewStoryPiece() {
-        assertEquals(1, defaultStoryPiece.getOrder(),
-                "The initial StoryPiece in an Adventure should have order 1.");
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
-        assertEquals(2, newSP.getOrder(),
-                "The second StoryPiece in an Adventure should have order 2.");
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldCreateAndAddStoryPiecesToTheAdventure_GivenMultipleStoryPieces() {
-        StoryPiece[] storyPieces = new StoryPiece[5];
-        for (int i=0; i<5; i++) {
-            storyPieces[i] = defaultAdventure.createNewStoryPiece();
-        }
-
-        for (StoryPiece sp : storyPieces) {
-            assertTrue(defaultAdventure.getStoryPieces().contains(sp),
-                    "The Adventure does not contain one of the StoryPieces that were created inside it");
-        }
-    }
-
-    @Test
-    public void CreateNewStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterCreatingTheStoryPiece() {
-        Application.getApp().reset();
-
-        defaultAdventure.createNewStoryPiece();
-
-        WereAfterTasksPerformedCorrectly(1);
-
-    }
-
-    @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPieceFromAdventure_GivenTheStoryPiece() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
         defaultAdventure.removeStoryPiece(newSP);
-
         assertFalse(defaultAdventure.getStoryPieces().contains(newSP),
                 "The Adventure should not contain the StoryPiece that was removed from it");
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventure_GivenTheStoryPieces() {
+    void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventure_GivenTheStoryPieces() {
         StoryPiece[] storyPieces = new StoryPiece[5];
 
         for (int i=0; i<5; i++) {
-            storyPieces[i] = defaultAdventure.createNewStoryPiece();
+            storyPieces[i] = new StoryPiece();
+            defaultAdventure.addStoryPiece(storyPieces[i]);
         }
 
         for (StoryPiece sp : storyPieces) {
@@ -144,7 +74,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldNotRemoveStoryPieceFromAdventure_GivenItIsTheLastOne() {
+    void RemoveStoryPiece_ShouldNotRemoveStoryPieceFromAdventure_GivenItIsTheLastOne() {
         StoryPiece sp = defaultAdventure.getStoryPieces().get(0);
         defaultAdventure.removeStoryPiece(sp);
         assertTrue(defaultAdventure.getStoryPieces().contains(sp),
@@ -152,12 +82,13 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventureExceptForTheLastOne_GivenTheStoryPieces() {
+    void RemoveStoryPiece_ShouldRemoveStoryPiecesFromAdventureExceptForTheLastOne_GivenTheStoryPieces() {
         StoryPiece[] storyPieces = new StoryPiece[5];
         storyPieces[0] = defaultAdventure.getStoryPieces().get(0);
 
         for (int i=1; i<5; i++) {
-            storyPieces[i] = defaultAdventure.createNewStoryPiece();
+            storyPieces[i] = new StoryPiece();
+            defaultAdventure.addStoryPiece(storyPieces[i]);
         }
 
         for (StoryPiece sp : storyPieces) {
@@ -169,12 +100,13 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldOnlyRemoveSpecificStoryPiecesFromAdventure_GivenTheStoryPieces() {
+    void RemoveStoryPiece_ShouldOnlyRemoveSpecificStoryPiecesFromAdventure_GivenTheStoryPieces() {
         // Create 10 StoryPieces inside an Adventure, remove random number of them, see if the rest remains
         ArrayList<StoryPiece> spList = new ArrayList<>();
 
         for (int i=0; i<10; i++) {
-            spList.add(defaultAdventure.createNewStoryPiece());
+            spList.add(new StoryPiece());
+            defaultAdventure.addStoryPiece(spList.get(i));
         }
 
         Random rand = new Random();
@@ -193,8 +125,9 @@ public class AdventureTest {
     }
 
     @Test
-    public void RemoveStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterRemovingTheStoryPiece() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+    void RemoveStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterRemovingTheStoryPiece() {
+        StoryPiece newSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(newSP);
 
         Application.getApp().reset();
         defaultAdventure.removeStoryPiece(newSP);
@@ -204,10 +137,11 @@ public class AdventureTest {
     }
 
     @Test
-    public void SwitchStoryPieceOrder_ShouldSwitchTheOrderOfTheStoryPieces_GivenTheFirstStoryPieceAndItsNewOrder() {
+    void SwitchStoryPieceOrder_ShouldSwitchTheOrderOfTheStoryPieces_GivenTheFirstStoryPieceAndItsNewOrder() {
 
         for (int i=0; i<5; i++) {
-            defaultAdventure.createNewStoryPiece();
+            StoryPiece sp = new StoryPiece();
+            defaultAdventure.addStoryPiece(sp);
         }
 
         StoryPiece sp1 = defaultAdventure.getStoryPieces().get(2);
@@ -224,9 +158,10 @@ public class AdventureTest {
     }
 
     @Test
-    public void SwitchStoryPieceOrder_ShouldNotSwitchTheOrderOfTheStoryPieces_GivenAStoryPieceAndItsCurrentOrderAsTheNewOrder() {
+    void SwitchStoryPieceOrder_ShouldNotSwitchTheOrderOfTheStoryPieces_GivenAStoryPieceAndItsCurrentOrderAsTheNewOrder() {
 
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+        StoryPiece newSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(newSP);
         int currentOrder = newSP.getOrder();
 
         defaultAdventure.switchStoryPieceOrder(newSP, currentOrder);
@@ -236,7 +171,7 @@ public class AdventureTest {
 
     @ParameterizedTest
     @ValueSource(ints = { 0, -1, 100 })
-    public void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatIsOutsideTheRange1ToTheNumberOfExistingStoryPieces(int order) {
+    void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatIsOutsideTheRange1ToTheNumberOfExistingStoryPieces(int order) {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
             defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, order);
         });
@@ -245,8 +180,9 @@ public class AdventureTest {
     }
 
     @Test
-    public void SwitchStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsAfterSwitchingTheOrder() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+    void SwitchStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsAfterSwitchingTheOrder() {
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure.addStoryPiece(sp);
 
         Application.getApp().reset();
         defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
@@ -255,10 +191,11 @@ public class AdventureTest {
     }
 
     @Test
-    public void ShuffleStoryPieceOrder_ShouldRandomizeTheOrderOfStoryPiecesInAnAdventure() {
+    void ShuffleStoryPieceOrder_ShouldRandomizeTheOrderOfStoryPiecesInAnAdventure() {
 
         for (int i=0; i<5; i++) {
-            defaultAdventure.createNewStoryPiece();
+            StoryPiece sp = new StoryPiece();
+            defaultAdventure.addStoryPiece(sp);
         }
 
         ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
@@ -269,10 +206,11 @@ public class AdventureTest {
     }
 
     @Test
-    public void ShuffleStoryPieceOrder_ShouldNotResultInTheSameOrderAsBefore_GivenThereAreAtLeastTwoShuffableStoryPieces() {
+    void ShuffleStoryPieceOrder_ShouldNotResultInTheSameOrderAsBefore_GivenThereAreAtLeastTwoShuffableStoryPieces() {
 
         // Create a new StoryPiece so we have 2 in total
-        defaultAdventure.createNewStoryPiece();
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure.addStoryPiece(sp);
 
         // 50% chance of the correct order after shuffle even if the method does not work correctly, so repeat 10 times
         // to reduce the probability that the order gets shuffled correctly each time by chance to ~0.09%
@@ -286,9 +224,10 @@ public class AdventureTest {
     }
 
     @Test
-    public void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPiecesWithFixedStatus() {
+    void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPiecesWithFixedStatus() {
         for (int i=0; i<5; i++) {
-            defaultAdventure.createNewStoryPiece();
+            StoryPiece sp = new StoryPiece();
+            defaultAdventure.addStoryPiece(sp);
         }
 
         StoryPiece fixedSP1 = defaultAdventure.getStoryPieces().get(3);
@@ -308,7 +247,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPieces_GivenThereAreZeroShuffableStoryPieces() {
+    void ShuffleStoryPieceOrder_ShouldNotShuffleStoryPieces_GivenThereAreZeroShuffableStoryPieces() {
         defaultStoryPiece.setFixed(true);
         ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
 
@@ -318,8 +257,9 @@ public class AdventureTest {
     }
 
     @Test
-    public void ShuffleStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsOnceAfterShufflingTheOrder() {
-        StoryPiece newSP = defaultAdventure.createNewStoryPiece();
+    void ShuffleStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsOnceAfterShufflingTheOrder() {
+        StoryPiece newSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(newSP);
 
         Application.getApp().reset();
         defaultAdventure.shuffleStoryPieces();
@@ -328,7 +268,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeReflexive() {
+    void EqualsHashCode_ShouldBeReflexive() {
         Adventure adv = defaultAdventure;
 
         assertEquals(adv, adv,
@@ -338,9 +278,9 @@ public class AdventureTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeSymmetric() {
+    void EqualsHashCode_ShouldBeSymmetric() {
         Adventure adv1 = defaultAdventure;
-        Adventure adv2 = new Adventure();
+        Adventure adv2 = new Adventure(defaultStoryPiece);
 
         assertEquals(adv1, adv2,
                 "Two same Adventures are not considered equal.");
@@ -349,10 +289,10 @@ public class AdventureTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeTransitive() {
+    void EqualsHashCode_ShouldBeTransitive() {
         Adventure adv1 = defaultAdventure;
-        Adventure adv2 = new Adventure();
-        Adventure adv3 = new Adventure();
+        Adventure adv2 = new Adventure(defaultStoryPiece);
+        Adventure adv3 = new Adventure(defaultStoryPiece);
 
         assertTrue(adv1.equals(adv2) &&
                         adv2.equals(adv3) &&
@@ -365,7 +305,7 @@ public class AdventureTest {
     }
 
     @Test
-    public void SetName_ShouldSetTheAdventureName_GivenTheName() {
+    void SetName_ShouldSetTheAdventureName_GivenTheName() {
         String newName = "Unicorn land!";
         defaultAdventure.setName(newName);
 

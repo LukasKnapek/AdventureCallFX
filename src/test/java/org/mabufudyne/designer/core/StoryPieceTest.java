@@ -12,28 +12,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class StoryPieceTest {
+class StoryPieceTest {
 
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
-    private Choice defaultChoice;
 
     @BeforeEach
-    private void createDefaultStoryPiece() {
-        defaultAdventure = new Adventure();
-        defaultStoryPiece = defaultAdventure.getStoryPieces().get(0);
-        StoryPiece choiceSP = defaultAdventure.createNewStoryPiece();
-        defaultChoice = new Choice(choiceSP);
-
+    void createDefaultStoryPiece() {
+        defaultStoryPiece = new StoryPiece();
+        defaultAdventure = new Adventure(defaultStoryPiece);
     }
 
     @Test
-    public void Title_ShouldBeSimpleStringProperty() {
+    void Title_ShouldBeSimpleStringProperty() {
         assertTrue(defaultStoryPiece.titleProperty() instanceof SimpleStringProperty);
     }
 
     @Test
-    public void SetTitle_ShouldSetTheStoryPieceTitle_GivenTheTitle() {
+    void SetTitle_ShouldSetTheStoryPieceTitle_GivenTheTitle() {
         String newTitle = "On the verge of death";
         defaultStoryPiece.setTitle(newTitle);
         assertEquals(newTitle, defaultStoryPiece.getTitle(),
@@ -41,7 +37,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void SetTitle_ShouldPerformAfterTaskOperationsAfterSettingTheTitle() {
+    void SetTitle_ShouldPerformAfterTaskOperationsAfterSettingTheTitle() {
         Application.getApp().reset();
         defaultStoryPiece.setTitle("New title");
 
@@ -49,7 +45,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void SetStory_ShouldSetTheStoryPieceStory_GivenTheStory() {
+    void SetStory_ShouldSetTheStoryPieceStory_GivenTheStory() {
         String story = "Once upon a time, there was a vast and a beautiful kingdom.";
         defaultStoryPiece.setStory(story);
         assertEquals(story, defaultStoryPiece.getStory(),
@@ -57,7 +53,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void SetStory_ShouldPerformAfterTaskOperationsAfterSettingTheStory() {
+    void SetStory_ShouldPerformAfterTaskOperationsAfterSettingTheStory() {
         Application.getApp().reset();
         defaultStoryPiece.setStory("New story");
 
@@ -65,7 +61,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void SetColor_ShouldSetTheStoryPieceColor_GivenTheColor() {
+    void SetColor_ShouldSetTheStoryPieceColor_GivenTheColor() {
         String newColor = "FF0000";
         defaultStoryPiece.setColor(newColor);
 
@@ -74,7 +70,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void SetColor_ShouldPerformAfterTaskOperationsAfterSettingTheColor() {
+    void SetColor_ShouldPerformAfterTaskOperationsAfterSettingTheColor() {
         Application.getApp().reset();
 
         defaultStoryPiece.setColor("FFFF00");
@@ -83,12 +79,12 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void Fixed_ShouldBeSimpleBooleanProperty() {
+    void Fixed_ShouldBeSimpleBooleanProperty() {
         assertTrue(defaultStoryPiece.fixedProperty() instanceof SimpleBooleanProperty);
     }
 
     @Test
-    public void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
+    void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
         Application.getApp().reset();
 
         defaultStoryPiece.setFixed(true);
@@ -97,13 +93,14 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void Order_ShouldBeSimpleIntegerProperty() {
+    void Order_ShouldBeSimpleIntegerProperty() {
         assertTrue(defaultStoryPiece.orderProperty() instanceof SimpleIntegerProperty);
     }
 
     @Test
-    public void SetOrder_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
-        defaultAdventure.createNewStoryPiece();
+    void SetOrder_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure.addStoryPiece(sp);
 
         Application.getApp().reset();
         defaultStoryPiece.setOrder(2);
@@ -112,27 +109,30 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void Choices_IsAnObservableList() {
+    void Choices_IsAnObservableList() {
         assertTrue(defaultStoryPiece.getChoices() instanceof ObservableList);
     }
 
     @Test
-    public void AddChoice_ShouldAddChoice_GivenTheChoice() {
-        defaultStoryPiece.addChoice(defaultChoice);
-        assertTrue(defaultStoryPiece.getChoices().contains(defaultChoice),
+    void AddChoice_ShouldAddChoice_GivenTheChoice() {
+        Choice choice = new Choice(new StoryPiece());
+        defaultStoryPiece.addChoice(choice);
+        assertTrue(defaultStoryPiece.getChoices().contains(choice),
                 "StoryPiece should contain a Choice that was passed to it.");
     }
 
     @Test
-    public void AddChoice_ShouldNotAddChoice_GivenTheStoryPieceAlreadyContainsTheChoice() {
-        defaultStoryPiece.addChoice(defaultChoice);
-        defaultStoryPiece.addChoice(defaultChoice);
-        assertTrue(Collections.frequency(defaultStoryPiece.getChoices(), defaultChoice) == 1,
+    void AddChoice_ShouldNotAddChoice_GivenTheStoryPieceAlreadyContainsTheChoice() {
+        Choice choice = new Choice(new StoryPiece());
+
+        defaultStoryPiece.addChoice(choice);
+        defaultStoryPiece.addChoice(choice);
+        assertTrue(Collections.frequency(defaultStoryPiece.getChoices(), choice) == 1,
                 "StoryPiece should not add a Choice if it already contains that Choice.");
     }
 
     @Test
-    public void AddChoice_ShouldNotAddAChoice_GivenTheChoiceIsTheStoryPieceItself() {
+    void AddChoice_ShouldNotAddAChoice_GivenTheChoiceIsTheStoryPieceItself() {
         Choice selfChoice = new Choice(defaultStoryPiece);
         defaultStoryPiece.addChoice(selfChoice);
         assertFalse(defaultStoryPiece.getChoices().contains(selfChoice),
@@ -140,41 +140,46 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void AddChoice_ShouldNotAddAChoice_GivenStoryPieceContainsAnotherChoiceWithTheSameStoryPiece() {
-        StoryPiece sp = defaultAdventure.createNewStoryPiece();
+    void AddChoice_ShouldNotAddAChoice_GivenStoryPieceContainsAnotherChoiceWithTheSameStoryPiece() {
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure.addStoryPiece(sp);
+
         Choice choiceOne = new Choice(sp, "Go to");
         Choice choiceTwo = new Choice(sp, "Walk to");
         defaultStoryPiece.addChoice(choiceOne);
         defaultStoryPiece.addChoice(choiceTwo);
+
         assertTrue(defaultStoryPiece.getChoices().contains(choiceOne) &&
                 !defaultStoryPiece.getChoices().contains(choiceTwo),
                 "StoryPiece should not add a Choice with the same StoryPiece that another existing Choice points to.");
     }
 
     @Test
-    public void AddChoice_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
+    void AddChoice_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
         Application.getApp().reset();
 
-        defaultStoryPiece.addChoice(defaultChoice);
+        Choice choice = new Choice(new StoryPiece());
+        defaultStoryPiece.addChoice(choice);
 
         WereAfterTasksPerformedCorrectly(1);
     }
 
     @Test
-    public void RemoveChoice_ShouldRemoveChoiceFromStoryPiece_GivenTheChoice() {
-        defaultStoryPiece.addChoice(defaultChoice);
-        defaultStoryPiece.removeChoice(defaultChoice);
+    void RemoveChoice_ShouldRemoveChoiceFromStoryPiece_GivenTheChoice() {
+        Choice choice = new Choice(new StoryPiece());
+
+        defaultStoryPiece.addChoice(choice);
+        defaultStoryPiece.removeChoice(choice);
         assertEquals(0, defaultStoryPiece.getChoices().size(),
                 "The only Choice that was added to the StoryPiece should have been removed.");
     }
 
     @Test
-    public void RemoveChoice_ShouldRemoveChoicesFromStoryPiece_GivenTheChoices() {
-        //Application.getApp().getProperties().setProperty("saveStates", "false");
+    void RemoveChoice_ShouldRemoveChoicesFromStoryPiece_GivenTheChoices() {
         Choice[] choices = new Choice[2];
 
         for (int i=0; i<2; i++) {
-            choices[i] = new Choice(defaultAdventure.createNewStoryPiece());
+            choices[i] = new Choice(new StoryPiece());
             defaultStoryPiece.addChoice(choices[i]);
         }
 
@@ -187,21 +192,21 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void RemoveChoice_ThrowsExceptionWhenTryingToRemoveChoice_GivenStoryPieceDoesNotContainTheChoice() {
+    void RemoveChoice_ThrowsExceptionWhenTryingToRemoveChoice_GivenStoryPieceDoesNotContainTheChoice() {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            defaultStoryPiece.removeChoice(defaultChoice);
+            defaultStoryPiece.removeChoice(new Choice(new StoryPiece()));
         });
         assertEquals("StoryPiece does not contain the given Choice.", ex.getMessage(),
                 "The exception did not have the correct message.");
     }
 
     @Test
-    public void RemoveChoice_ShouldRemoveOnlySpecificChoices_GivenTheChoices() {
+    void RemoveChoice_ShouldRemoveOnlySpecificChoices_GivenTheChoices() {
         // Add 10 choices to a StoryPiece, remove random number of them, check that the rest still remains
         ArrayList<Choice> choices = new ArrayList<>();
 
         for (int i=0; i<10; i++) {
-            Choice choice = new Choice(defaultAdventure.createNewStoryPiece());
+            Choice choice = new Choice(new StoryPiece());
             choices.add(choice);
             defaultStoryPiece.addChoice(choice);
         }
@@ -222,16 +227,18 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void RemoveChoice_ShouldPerformAfterTaskOperationsAfterRemovingTheChoice() {
-        defaultStoryPiece.addChoice(defaultChoice);
+    void RemoveChoice_ShouldPerformAfterTaskOperationsAfterRemovingTheChoice() {
+        Choice choice = new Choice(new StoryPiece());
+
+        defaultStoryPiece.addChoice(choice);
         Application.getApp().reset();
 
-        defaultStoryPiece.removeChoice(defaultChoice);
+        defaultStoryPiece.removeChoice(choice);
         WereAfterTasksPerformedCorrectly(1);
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeReflexive() {
+    void EqualsHashCode_ShouldBeReflexive() {
         StoryPiece sp = defaultStoryPiece;
 
         assertEquals(sp, sp,
@@ -241,7 +248,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeSymmetric() {
+    void EqualsHashCode_ShouldBeSymmetric() {
         StoryPiece sp1 = defaultStoryPiece;
         StoryPiece sp2 = defaultAdventure.getStoryPieces().get(0);
 
@@ -252,7 +259,7 @@ public class StoryPieceTest {
     }
 
     @Test
-    public void EqualsHashCode_ShouldBeTransitive() {
+    void EqualsHashCode_ShouldBeTransitive() {
         StoryPiece sp1 = defaultStoryPiece;
         StoryPiece sp2 = defaultAdventure.getStoryPieces().get(0);
         StoryPiece sp3 = defaultAdventure.getStoryPieces().get(0);

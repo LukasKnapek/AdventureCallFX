@@ -1,6 +1,7 @@
 package org.mabufudyne.designer.core;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
@@ -9,25 +10,30 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ApplicationTest {
+class ApplicationTest {
 
     private static Application app;
     private static Adventure initialAdventure;
 
     @BeforeAll
-    public static void obtainApplicationInstance() {
+    static void obtainApplicationInstance() {
         app = Application.getApp();
     }
 
+    @BeforeEach
+    void resetApplicationState() {
+        Application.getApp().reset();
+    }
+
     @Test
-    public void Initialize_ShouldCreateAppPropertiesUsingPropertiesClass() throws IOException {
+    void Initialize_ShouldCreateAppPropertiesUsingPropertiesClass() throws IOException {
         app.initialize();
 
         assertTrue(app.getProperties() instanceof Properties);
     }
 
     @Test
-    public void Initialize_ShouldCreateDefaultProperties() throws IOException {
+    void Initialize_ShouldCreateDefaultProperties() throws IOException {
         app.reset();
         app.initialize();
 
@@ -44,7 +50,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void Initialize_ShouldThrowException_GivenDefaultPropertiesFileDoesNotExist() {
+    void Initialize_ShouldThrowException_GivenDefaultPropertiesFileDoesNotExist() {
         app.setPropertiesPath("non-existent path");
 
         assertThrows(IOException.class, () -> {
@@ -53,7 +59,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void Initialize_ShouldCreateAdventureAndPopulateCurrentStateWithTheAdventure() throws IOException {
+    void Initialize_ShouldCreateAdventureAndPopulateCurrentStateWithTheAdventure() throws IOException {
         app.reset();
         app.initialize();
 
@@ -64,13 +70,13 @@ public class ApplicationTest {
     }
 
     @Test
-    public void SaveState_ShouldMoveCurrentStateToUndoStackAndCreateNewCurrentMemento() throws IOException {
-
+    void SaveState_ShouldMoveCurrentStateToUndoStackAndCreateNewCurrentMemento() throws IOException {
         app.initialize();
         Memento originalState = app.getCurrentState();
 
         // Modify Adventure, the new Adventure state should be saved
-        Adventure.getActiveAdventure().createNewStoryPiece();
+        StoryPiece sp = new StoryPiece();
+        Adventure.getActiveAdventure().addStoryPiece(sp);
 
         assertSame(originalState, app.getUndoList().peek(),
                 "Former current Memento was not moved to the undo stack after save state operation");
@@ -79,23 +85,26 @@ public class ApplicationTest {
     }
 
     @Test
-    public void SaveState_ShouldNotBeExecuted_GivenSaveStatePropertyIsFalse() throws IOException {
+    void SaveState_ShouldNotBeExecuted_GivenSaveStatePropertyIsFalse() throws IOException {
         Adventure initialAdventure = app.initialize();
         app.getProperties().setProperty("saveStates", "false");
 
         Memento initialState = app.getCurrentState();
         // Should not create a new state
-        initialAdventure.createNewStoryPiece();
+        StoryPiece sp = new StoryPiece();
+        initialAdventure.addStoryPiece(sp);
 
         assertEquals(initialState, app.getCurrentState());
 
     }
 
     @Test
-    public void Undo_ShouldMoveCurrentStateToRedoStackAndMakeTheTopOfUndoStackTheNewCurrentState_GivenUndoStackIsNotEmpty() throws IOException {
+    void Undo_ShouldMoveCurrentStateToRedoStackAndMakeTheTopOfUndoStackTheNewCurrentState_GivenUndoStackIsNotEmpty() throws IOException {
         // Set up - we will have a current state, 1 state in undo stack and 0 states in redo stack
         app.initialize();
-        Adventure.getActiveAdventure().createNewStoryPiece();
+
+        StoryPiece sp = new StoryPiece();
+        Adventure.getActiveAdventure().addStoryPiece(sp);
         app.saveState();
 
         Memento currentState = app.getCurrentState();
@@ -111,10 +120,12 @@ public class ApplicationTest {
     }
 
     @Test
-    public void Redo_ShouldMoveCurrentStateToUndoStackAndMakeTheTopOfRedoStackTheNewCurentState_GivenRedoStackIsNotEmpty() throws IOException {
+    void Redo_ShouldMoveCurrentStateToUndoStackAndMakeTheTopOfRedoStackTheNewCurentState_GivenRedoStackIsNotEmpty() throws IOException {
         // Set up - we will have a current state, 0 states in undo stack and 1 state in redo stack
         app.initialize();
-        Adventure.getActiveAdventure().createNewStoryPiece("New SP");
+
+        StoryPiece sp = new StoryPiece();
+        Adventure.getActiveAdventure().addStoryPiece(sp);
         app.saveState();
         app.undo();
 
@@ -131,7 +142,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void PerformAfterTaskActions_ShouldSaveTheCurrentStateWheneverItIsCalled() throws IOException {
+    void PerformAfterTaskActions_ShouldSaveTheCurrentStateWheneverItIsCalled() throws IOException {
 
         app.initialize();
         Memento initialState = app.getCurrentState();

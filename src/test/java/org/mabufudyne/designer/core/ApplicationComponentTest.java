@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ApplicationComponentTest {
+class ApplicationComponentTest {
 
     @BeforeEach
-    public void SetUpCleanApplicationAndAdventure() throws IOException {
+    void SetUpCleanApplicationAndAdventure() throws IOException {
         // Clean Adventure
         Application.getApp().initialize();
         // Clean Application state history
@@ -20,13 +20,13 @@ public class ApplicationComponentTest {
     }
 
     @Test
-    public void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoRedoAreAvailable() throws IOException {
-
+    void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoRedoAreAvailable() throws IOException {
         // Initial current state, empty undo/redo stacks
         Application.getApp().initialize();
 
         // One state in undo stack
-        Adventure.getActiveAdventure().createNewStoryPiece("StoryPiece 2");
+        StoryPiece sp = new StoryPiece();
+        Adventure.getActiveAdventure().addStoryPiece(sp);
 
         // Two states in undo stack
         Adventure.getActiveAdventure().getStoryPieces().get(0).setFixed(true);
@@ -41,18 +41,18 @@ public class ApplicationComponentTest {
 
         assertSame(stateBeforeUndoRedo, Application.getApp().getCurrentState(),
                 "The application state is not the same after undo followed by redo");
-
     }
 
     @Test
-    public void Application_CurrentStateShouldContainTheCorrectAdventureAfterASequenceOfStateChanges() throws IOException {
+    void Application_CurrentStateShouldContainTheCorrectAdventureAfterASequenceOfStateChanges() throws IOException {
         // Initial state with one SP
         Application.getApp().initialize();
 
         Adventure initialAdventure = Adventure.getActiveAdventure();
 
         // 2 default SPs
-        initialAdventure.createNewStoryPiece();
+        StoryPiece anotherSP = new StoryPiece();
+        initialAdventure.addStoryPiece(anotherSP);
 
         StoryPiece sp1 = initialAdventure.getStoryPieces().get(0);
         StoryPiece sp2 = initialAdventure.getStoryPieces().get(1);

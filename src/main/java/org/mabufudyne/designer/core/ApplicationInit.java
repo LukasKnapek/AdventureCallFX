@@ -36,7 +36,7 @@ public class ApplicationInit extends javafx.application.Application {
         }
     }
 
-    public void setApp(Application newApp) {
+    void setApp(Application newApp) {
         app = newApp;
     }
 

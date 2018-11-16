@@ -1,14 +1,13 @@
 package org.mabufudyne.designer.core;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Application  {
+class Application  {
 
     private static Application app;
 
@@ -23,16 +22,18 @@ public class Application  {
 
     private Application() {}
 
-    public static Application getApp() {
+    static Application getApp() {
         if (app == null) {
             app = new Application();
         }
         return app;
     }
 
-    public Adventure initialize() throws IOException {
+    Adventure initialize() throws IOException {
         loadDefaultProperties(propertiesPath);
-        Adventure initialAdventure = new Adventure();
+
+        StoryPiece initialSP = new StoryPiece();
+        Adventure initialAdventure = new Adventure(initialSP);
         Adventure.setActiveAdventure(initialAdventure);
 
         return initialAdventure;
@@ -48,21 +49,21 @@ public class Application  {
         }
     }
 
-    public Memento getCurrentState() { return currentState; }
+    Memento getCurrentState() { return currentState; }
 
-    public LinkedList<Memento> getUndoList() { return undoList; }
+    LinkedList<Memento> getUndoList() { return undoList; }
 
-    public LinkedList<Memento> getRedoList() { return redoList; }
+    LinkedList<Memento> getRedoList() { return redoList; }
 
-    public Properties getProperties() {
+    Properties getProperties() {
         return properties;
     }
 
-    public void setPropertiesPath(String path) {
+    void setPropertiesPath(String path) {
         propertiesPath = path;
     }
 
-    public void saveState() {
+    void saveState() {
         if (properties.getProperty("saveStates") == null || properties.getProperty("saveStates").equals("true")) {
             Memento newState = new Memento(Adventure.getActiveAdventure());
             if (currentState != null) undoList.push(currentState);
@@ -70,21 +71,21 @@ public class Application  {
         }
     }
 
-    public void undo() {
+    void undo() {
         redoList.push(currentState);
         currentState = undoList.pop();
     }
 
-    public void redo() {
+    void redo() {
         undoList.push(currentState);
         currentState = redoList.pop();
     }
 
-    public void performAfterTaskActions() {
+    void performAfterTaskActions() {
         app.saveState();
     }
 
-    public void reset() {
+    void reset() {
         undoList.clear();
         redoList.clear();
         propertiesPath = "config.properties";

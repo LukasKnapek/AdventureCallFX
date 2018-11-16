@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public class StoryPiece implements Serializable {
 
+    private static String DEFAULT_TITLE = "Untitled";
+
     private transient SimpleStringProperty title;
     private transient SimpleIntegerProperty order;
     private transient SimpleBooleanProperty fixed;
@@ -22,9 +24,13 @@ public class StoryPiece implements Serializable {
 
     /** Constructors **/
 
-    public StoryPiece(String title, int order) {
+    public StoryPiece() {
+        this(DEFAULT_TITLE);
+    }
+
+    private StoryPiece(String title) {
         this.title = new SimpleStringProperty(title);
-        this.order = new SimpleIntegerProperty(order);
+        this.order = new SimpleIntegerProperty();
         this.fixed = new SimpleBooleanProperty(false);
         this.story = "";
 
@@ -33,67 +39,67 @@ public class StoryPiece implements Serializable {
 
     /** Getters and Setters **/
 
-    public String getTitle() {
+    String getTitle() {
         return title.get();
     }
 
-    public void setTitle(String newTitle) {
+    void setTitle(String newTitle) {
         this.title.set(newTitle);
         Application.getApp().performAfterTaskActions();
     }
 
-    public SimpleStringProperty titleProperty() { return title; }
+    SimpleStringProperty titleProperty() { return title; }
 
-    public String getStory() {
+    String getStory() {
         return story;
     }
 
-    public void setStory(String story) {
+    void setStory(String story) {
         this.story = story;
         Application.getApp().performAfterTaskActions();
     }
 
-    public int getOrder() {
+    int getOrder() {
         return order.get();
     }
 
-    public void setOrder(int newOrder) { setOrder(newOrder, true); }
+    void setOrder(int newOrder) { setOrder(newOrder, true); }
 
-    public void setOrder(int newOrder, boolean performAfterTaskActions) {
+    void setOrder(int newOrder, boolean performAfterTaskActions) {
         order.set(newOrder);
         if (performAfterTaskActions)
             Application.getApp().performAfterTaskActions();
     }
 
-    public SimpleIntegerProperty orderProperty() { return order; }
+    SimpleIntegerProperty orderProperty() { return order; }
 
-    public boolean isFixed() {
+    boolean isFixed() {
         return fixed.get();
     }
 
-    public void setFixed(boolean fixed) {
+    void setFixed(boolean fixed) {
         this.fixed.set(fixed);
         Application.getApp().performAfterTaskActions();
     }
 
-    public SimpleBooleanProperty fixedProperty() { return fixed; }
+    SimpleBooleanProperty fixedProperty() { return fixed; }
 
-    public String getColor() {
+    String getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    void setColor(String color) {
         this.color = color;
         Application.getApp().performAfterTaskActions();
     }
 
-    public ObservableList<Choice> getChoices() {
+    ObservableList<Choice> getChoices() {
         return choices;
     }
 
     /** Public methods **/
 
-    public void addChoice(Choice choice) {
+    void addChoice(Choice choice) {
 
         for (Choice existingChoice : choices) {
             if (existingChoice.getStoryPiece() == choice.getStoryPiece()) return;
@@ -106,7 +112,7 @@ public class StoryPiece implements Serializable {
         }
     }
 
-    public void removeChoice(Choice choice) {
+    void removeChoice(Choice choice) {
         if (choices.contains(choice)) {
             choices.remove(choice);
 

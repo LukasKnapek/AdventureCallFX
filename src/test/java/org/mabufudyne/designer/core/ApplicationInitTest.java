@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
-public class ApplicationInitTest {
+class ApplicationInitTest {
 
     @Tag("slow")
     @Test
-    public void Main_ShouldInitializeTheApplicationGUISuccessfully() {
+    void Main_ShouldInitializeTheApplicationGUISuccessfully() {
         /*
          * Run main with test argument, this will cause the main window to be hidden immediately, exiting the application
          * If there are no exceptions during this process, the application was launched successfully
@@ -18,7 +18,7 @@ public class ApplicationInitTest {
     }
 
     @Test
-    public void Init_ShouldInitializeTheApplicationState() throws Exception {
+    void Init_ShouldInitializeTheApplicationState() throws Exception {
         ApplicationInit appInit = new ApplicationInit();
         Application app = Application.getApp();
         app.reset();
@@ -34,7 +34,7 @@ public class ApplicationInitTest {
     }
 
     @Test
-    public void Init_ShouldExit_GivenAnExceptionDuringInitialisation() throws Exception {
+    void Init_ShouldExit_GivenAnExceptionDuringInitialisation() throws Exception {
         Application app = Application.getApp();
         ApplicationInit initializer = new ApplicationInit();
 

@@ -10,7 +10,7 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class FileHandlerTest {
+class FileHandlerTest {
 
     private Adventure defaultAdventure;
 
@@ -18,7 +18,7 @@ public class FileHandlerTest {
     private static FileHandler fileHandler;
 
     @BeforeAll
-    protected static void createTempFolderFilesHandler() {
+    static void createTempFolderFilesHandler() {
         String tempSaveFolderPath = System.getProperty("user.dir") + File.separator + "testSavingLoading";
         tempDirectory = new File(tempSaveFolderPath);
         tempDirectory.mkdir();
@@ -27,7 +27,7 @@ public class FileHandlerTest {
     }
 
     @AfterAll
-    protected static void deleteTempFolder() {
+    static void deleteTempFolder() {
         File[] files = tempDirectory.listFiles();
         if (files != null) {
             for (File f : files) {
@@ -38,18 +38,19 @@ public class FileHandlerTest {
     }
 
     @BeforeEach
-    protected void createDefaultObjects() {
-        defaultAdventure = new Adventure();
+    void createDefaultObjects() {
+        StoryPiece sp = new StoryPiece();
+        defaultAdventure = new Adventure(sp);
     }
 
     @Test
-    public void SaveAdventure_ShouldReturnNull_GivenAnExceptionOccursWhileSaving() {
+    void SaveAdventure_ShouldReturnNull_GivenAnExceptionOccursWhileSaving() {
         assertFalse(fileHandler.saveAdventure(defaultAdventure,"nonexistent-file-path/blah.adv"),
                 "SaveAdventure was given non-existent path, should have returned false.");
     }
 
     @Test
-    public void SaveAdventure_ShouldSaveTheAdventureToAFile_GivenTheSaveLocation() {
+    void SaveAdventure_ShouldSaveTheAdventureToAFile_GivenTheSaveLocation() {
         String fileName = "TestAdventure.adv";
         fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + fileName);
 
@@ -59,7 +60,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void SaveAdventure_ShouldSaveTheAdventureToAFileWithADVSuffix_GivenAFileNameWithNoSuffix() {
+    void SaveAdventure_ShouldSaveTheAdventureToAFileWithADVSuffix_GivenAFileNameWithNoSuffix() {
         String fileName = "TestAdventure";
         fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + fileName);
 
@@ -69,7 +70,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void LoadAdventure_ShouldLoadTheAdventureAndReturnIt_GivenAPathToValidSavedAdventureFile() {
+    void LoadAdventure_ShouldLoadTheAdventureAndReturnIt_GivenAPathToValidSavedAdventureFile() {
         String saveName = "ToBeLoaded.adv";
         fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + saveName);
 
@@ -79,13 +80,13 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void LoadAdventure_ShouldReturnNull_GivenANonExistentFilePath() {
+    void LoadAdventure_ShouldReturnNull_GivenANonExistentFilePath() {
         assertNull(fileHandler.loadAdventure(tempDirectory + File.separator + "NonsenseBla.adv"),
                 "Load did not return null given a nonexistent file path.");
     }
 
     @Test
-    public void LoadAdventure_ShouldReturnNull_GivenAnInvalidAdventureFile() throws IOException {
+    void LoadAdventure_ShouldReturnNull_GivenAnInvalidAdventureFile() throws IOException {
         String fileName = "NotActuallyAnAdventure.adv";
         FileOutputStream fileOut = new FileOutputStream(tempDirectory + File.separator + fileName);
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -98,7 +99,7 @@ public class FileHandlerTest {
     }
 
     @Test
-    public void LoadAdventure_ShouldLoadTheSameAdventureObjectThatWasSaved() {
+    void LoadAdventure_ShouldLoadTheSameAdventureObjectThatWasSaved() {
         String saveName = "Adventure.adv";
         fileHandler.saveAdventure(defaultAdventure, tempDirectory.toString() + File.separator + saveName);
         Adventure loadedAdventure = fileHandler.loadAdventure(tempDirectory.toString() + File.separator + saveName);
