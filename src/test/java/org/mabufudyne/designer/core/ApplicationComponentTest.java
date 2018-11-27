@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -11,51 +12,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApplicationComponentTest {
 
+    private Application app;
+    private Adventure defaultAdventure;
+
     @BeforeEach
-    void SetUpCleanApplicationAndAdventure() throws IOException {
-        // Clean Adventure
-        Application.getApp().initialize();
-        // Clean Application state history
-        Application.getApp().reset();
+    void SetUpCleanApplicationAndAdventure() {
+        app = new Application(new Properties());
+        defaultAdventure = new Adventure(app, new StoryPiece());
+        app.setActiveAdventure(defaultAdventure);
     }
 
     @Test
-    void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoRedoAreAvailable() throws IOException {
-        // Initial current state, empty undo/redo stacks
-        Application.getApp().initialize();
-
+    void Application_ShouldSetTheCurrentStateToTheSameStateAfterAnUndoAndRedo_GivenUndoAndRedoAreAvailable() {
         // One state in undo stack
         StoryPiece sp = new StoryPiece();
-        Adventure.getActiveAdventure().addStoryPiece(sp);
+        defaultAdventure.addStoryPiece(sp);
 
         // Two states in undo stack
-        Adventure.getActiveAdventure().getStoryPieces().get(0).setFixed(true);
+        defaultAdventure.getStoryPieces().get(0).setFixed(true);
 
         // One state in undo stack, one state in redo stack
-        Application.getApp().undo();
+        app.undo();
 
-        Memento stateBeforeUndoRedo = Application.getApp().getCurrentState();
+        Memento stateBeforeUndoRedo = app.getCurrentState();
 
-        Application.getApp().undo();
-        Application.getApp().redo();
+        app.undo();
+        app.redo();
 
-        assertSame(stateBeforeUndoRedo, Application.getApp().getCurrentState(),
+        assertSame(stateBeforeUndoRedo, app.getCurrentState(),
                 "The application state is not the same after undo followed by redo");
     }
 
     @Test
     void Application_CurrentStateShouldContainTheCorrectAdventureAfterASequenceOfStateChanges() throws IOException {
-        // Initial state with one SP
-        Application.getApp().initialize();
-
-        Adventure initialAdventure = Adventure.getActiveAdventure();
-
         // 2 default SPs
         StoryPiece anotherSP = new StoryPiece();
-        initialAdventure.addStoryPiece(anotherSP);
+        defaultAdventure.addStoryPiece(anotherSP);
 
-        StoryPiece sp1 = initialAdventure.getStoryPieces().get(0);
-        StoryPiece sp2 = initialAdventure.getStoryPieces().get(1);
+        StoryPiece sp1 = defaultAdventure.getStoryPieces().get(0);
+        StoryPiece sp2 = defaultAdventure.getStoryPieces().get(1);
 
         // 2 SPs, sp1 title is "Beginning"
         sp1.setTitle("Beginning");
@@ -67,10 +62,10 @@ class ApplicationComponentTest {
         sp1.setStory("To be continued");
 
         // 2 SPs, sp1 title is "Beginning", sp2 is fixed
-        Application.getApp().undo();
+        app.undo();
 
         // 2 SPs, sp1 title is "Beginning"
-        Application.getApp().undo();
+        app.undo();
 
         // 2 SPs, sp1 title is "Beginning", sp2 color is black
         sp2.setColor("FFFFFF");
@@ -79,12 +74,12 @@ class ApplicationComponentTest {
         sp2.setFixed(true);
 
         // 2 SPs, sp1 title is "Beginning", sp2 color is black
-        Application.getApp().undo();
+        app.undo();
 
         // 2 SPs, sp1 title is "Beginning", sp2 color is black and is fixed
-        Application.getApp().redo();
+        app.redo();
 
-        Adventure modifiedAdventure = Application.getApp().getCurrentState().getAdventure();
+        Adventure modifiedAdventure = app.getCurrentState().getAdventure();
         // Check: 2 SPs
         assertEquals(2, modifiedAdventure.getStoryPieces().size());
         // Check: sp1 title is "Beginning"

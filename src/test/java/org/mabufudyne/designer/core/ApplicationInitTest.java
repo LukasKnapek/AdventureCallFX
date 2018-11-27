@@ -20,29 +20,15 @@ class ApplicationInitTest {
     @Test
     void Init_ShouldInitializeTheApplicationState() throws Exception {
         ApplicationInit appInit = new ApplicationInit();
-        Application app = Application.getApp();
-        app.reset();
-
-        appInit.setApp(app);
         appInit.init();
 
-        Adventure adv = Adventure.getActiveAdventure();
-        assertNotNull(adv,
-                "After Application initialization, there should be an active Adventure");
-        assertEquals(1, adv.getStoryPieces().size(),
-                "After Application initialization, the active Adventure should have a default StoryPiece");
-    }
-
-    @Test
-    void Init_ShouldExit_GivenAnExceptionDuringInitialisation() throws Exception {
-        Application app = Application.getApp();
-        ApplicationInit initializer = new ApplicationInit();
-
-        app.setPropertiesPath("nonexistent path");
-        initializer.setApp(app);
-
-        assertThrows(Exception.class, initializer::init,
-                "Init did not raise exception even though fake path was given");
-
+        assertNotNull(appInit.getInitializedApplication(),
+                "ApplicationInit did not initialize an Application instance");
+        assertNotNull(appInit.getInitializedApplication().getActiveAdventure(),
+                "The initialized Application does not have an active Adventure");
+        assertNotNull(appInit.getInitializedApplication().getActiveAdventure().getStoryPieces(),
+                "The Adventure in the initialized Application does not have a StoryPiece");
+        assertNotNull(appInit.getInitializedApplication().getProperties(),
+                "ApplicationInit did not initialise (default) properties");
     }
 }

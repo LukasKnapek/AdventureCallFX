@@ -14,26 +14,26 @@ import java.util.Objects;
 
 public class Adventure implements Serializable {
 
-    private static Adventure activeAdventure;
-
     private static String DEFAULT_NAME = "New Adventure";
-    private ArrayList<Integer> availableOrders;
 
     private transient ObservableList<StoryPiece> storyPieces;
+    private ArrayList<Integer> availableOrders;
+
     private String name;
+    private transient Application parentApp;
 
     /** Constructors **/
 
-    public Adventure(StoryPiece initialSP) {
-        this(initialSP, DEFAULT_NAME);
+    public Adventure(Application app, StoryPiece initialSP) {
+        this(app, initialSP, DEFAULT_NAME);
     }
 
-    public Adventure(StoryPiece initialSP, String name) {
+    public Adventure(Application app, StoryPiece initialSP, String name) {
         this.name = name;
         this.storyPieces = FXCollections.observableArrayList();
         this.availableOrders = new ArrayList<>();
+        this.parentApp = app;
 
-        setActiveAdventure(this);
         addStoryPiece(initialSP);
     }
 
@@ -53,12 +53,8 @@ public class Adventure implements Serializable {
         return DEFAULT_NAME;
     }
 
-    static Adventure getActiveAdventure() {
-        return activeAdventure;
-    }
-
-    static void setActiveAdventure(Adventure adv) {
-        activeAdventure = adv;
+    void setParentApp(Application parentApp) {
+        this.parentApp = parentApp;
     }
 
     /** Private helper methods **/
@@ -97,8 +93,9 @@ public class Adventure implements Serializable {
     void addStoryPiece(StoryPiece sp) {
         sp.setOrder(obtainNextStoryPieceOrder(), false);
         storyPieces.add(sp);
+        sp.setAdventure(this);
 
-        Application.getApp().performAfterTaskActions();
+        performAfterTaskActions();
     }
 
     void removeStoryPiece(StoryPiece sp) {
@@ -106,7 +103,7 @@ public class Adventure implements Serializable {
             freeUpOrder(sp.getOrder());
             this.storyPieces.remove(sp);
 
-            Application.getApp().performAfterTaskActions();
+            performAfterTaskActions();
         }
     }
 
@@ -121,8 +118,7 @@ public class Adventure implements Serializable {
                 firstSP.setOrder(sp.getOrder(), false);
                 sp.setOrder(temp, false);
 
-                Application.getApp().performAfterTaskActions();
-
+                performAfterTaskActions();
                 break;
             }
         }
@@ -146,9 +142,13 @@ public class Adventure implements Serializable {
             sameResultOrder = storyPiecesOriginalOrder.equals(storyPieces);
         }
 
-        Application.getApp().performAfterTaskActions();
+        performAfterTaskActions();
 
 
+    }
+
+    void performAfterTaskActions() {
+        parentApp.performAfterTaskActions();
     }
 
     /** Overriden methods **/

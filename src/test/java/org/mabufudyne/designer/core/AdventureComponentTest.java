@@ -4,15 +4,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
+import java.util.Properties;
+
 class AdventureComponentTest {
 
+    private Application app = new Application(new Properties());
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
     @BeforeEach
     void createDefaultObjects() {
         defaultStoryPiece = new StoryPiece();
-        defaultAdventure = new Adventure(defaultStoryPiece);
+        defaultAdventure = new Adventure(app, defaultStoryPiece);
     }
 
     @Test
@@ -48,41 +51,6 @@ class AdventureComponentTest {
 
     }
 
-    /*
-    @Test
-    void Adventure_ShouldKeepStoryPiecesSortedByTheirOrder_GivenThatSomeStoryPiecesAreRemovedAndAdded() {
-
-        StoryPiece spTwo = defaultAdventure.createNewStoryPiece();
-        StoryPiece spThree = defaultAdventure.createNewStoryPiece();
-        defaultAdventure.createNewStoryPiece();
-
-        // StoryPieces should be in order 1-2-3-4 at the moment
-        for (int i=0; i<4; i++) {
-            int expectedOrder = i+1;
-            int actualOrder = defaultAdventure.getStoryPieces().get(i).getOrder();
-            assertEquals(expectedOrder, actualOrder,
-                    String.format("The order of the StoryPiece before modifications is %s, expected %s",
-                            expectedOrder, actualOrder));
-        }
-
-        // Remaining StoryPieces should be in order 1-4 at the moment
-        defaultAdventure.removeStoryPiece(spThree);
-        defaultAdventure.removeStoryPiece(spTwo);
-
-        defaultAdventure.createNewStoryPiece();
-        defaultAdventure.createNewStoryPiece();
-
-        // StoryPieces should be in order 1-2-3-4 after removal/creation of the two StoryPieces, NOT 1-4-2-3
-        for (int i=0; i<4; i++) {
-            int expectedOrder = i+1;
-            int actualOrder = defaultAdventure.getStoryPieces().get(i).getOrder();
-            assertEquals(expectedOrder, actualOrder,
-                    String.format("The order of the StoryPiece after modifications is %s, expected %s",
-                            expectedOrder, actualOrder));
-        }
-
-    }
-    */
     @Test
     void Adventure_ShouldShuffleStoryPiecesSuchThatTheResultIsDifferentAndFixedStoryPieceOrdersAreNotChanged_GivenSomeStoryPiecesAreFixed() {
 

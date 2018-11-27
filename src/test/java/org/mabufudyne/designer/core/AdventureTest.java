@@ -1,6 +1,7 @@
 package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.*;
@@ -8,17 +9,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Random;
 
 class AdventureTest {
 
+    private Application app = new Application(new Properties());
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
     @BeforeEach
     void createDefaultObjects() {
         defaultStoryPiece = new StoryPiece();
-        defaultAdventure = new Adventure(defaultStoryPiece);
+        defaultAdventure = new Adventure(app, defaultStoryPiece);
     }
 
     @Test
@@ -29,7 +32,7 @@ class AdventureTest {
     @Test
     void Constructor_ShouldCreateAnAdventureWithName_GivenTheName() {
         StoryPiece sp = new StoryPiece();
-        Adventure testAdv = new Adventure(sp, "My First Adventure");
+        Adventure testAdv = new Adventure(app, sp, "My First Adventure");
         assertEquals("My First Adventure", testAdv.getName(),
                 "Name of the Adventure should be equal to the name that was passed to the constructor");
     }
@@ -125,15 +128,17 @@ class AdventureTest {
     }
 
     @Test
-    void RemoveStoryPiece_ShouldPerformCommonAfterTaskOperationsAfterRemovingTheStoryPiece() {
+    void RemoveStoryPiece_ShouldSaveStateAfterPerformingTheAction() {
+        Application mockedApp = mock(Application.class);
+
         StoryPiece newSP = new StoryPiece();
         defaultAdventure.addStoryPiece(newSP);
 
-        Application.getApp().reset();
+        defaultAdventure.setParentApp(mockedApp);
         defaultAdventure.removeStoryPiece(newSP);
 
-        WereAfterTasksPerformedCorrectly(1);
-
+        // Check that the save state was requested
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -180,14 +185,17 @@ class AdventureTest {
     }
 
     @Test
-    void SwitchStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsAfterSwitchingTheOrder() {
+    void SwitchStoryPieceOrder_ShouldSaveStateAfterPerformingTheAction() {
+        Application mockedApp = mock(Application.class);
+
         StoryPiece sp = new StoryPiece();
         defaultAdventure.addStoryPiece(sp);
 
-        Application.getApp().reset();
-        defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
+        defaultAdventure.setParentApp(mockedApp);
 
-        WereAfterTasksPerformedCorrectly(1);
+        defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
+        verify(mockedApp).performAfterTaskActions();
+
     }
 
     @Test
@@ -257,14 +265,15 @@ class AdventureTest {
     }
 
     @Test
-    void ShuffleStoryPieceOrder_ShouldPerformCommonAfterTaskOperationsOnceAfterShufflingTheOrder() {
+    void ShuffleStoryPieceOrder_ShouldSaveStateAfterPerformingTheAction() {
+        Application mockedApp = mock(Application.class);
+
         StoryPiece newSP = new StoryPiece();
         defaultAdventure.addStoryPiece(newSP);
 
-        Application.getApp().reset();
+        defaultAdventure.setParentApp(mockedApp);
         defaultAdventure.shuffleStoryPieces();
-
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -280,7 +289,7 @@ class AdventureTest {
     @Test
     void EqualsHashCode_ShouldBeSymmetric() {
         Adventure adv1 = defaultAdventure;
-        Adventure adv2 = new Adventure(defaultStoryPiece);
+        Adventure adv2 = new Adventure(app, defaultStoryPiece);
 
         assertEquals(adv1, adv2,
                 "Two same Adventures are not considered equal.");
@@ -291,8 +300,8 @@ class AdventureTest {
     @Test
     void EqualsHashCode_ShouldBeTransitive() {
         Adventure adv1 = defaultAdventure;
-        Adventure adv2 = new Adventure(defaultStoryPiece);
-        Adventure adv3 = new Adventure(defaultStoryPiece);
+        Adventure adv2 = new Adventure(app, defaultStoryPiece);
+        Adventure adv3 = new Adventure(app, defaultStoryPiece);
 
         assertTrue(adv1.equals(adv2) &&
                         adv2.equals(adv3) &&
@@ -312,17 +321,4 @@ class AdventureTest {
         assertEquals(newName, defaultAdventure.getName(),
                 "Adventure does not have the name that was assigned to it.");
     }
-
-    /** Helpers **/
-
-    private static void WereAfterTasksPerformedCorrectly(int expectedSavedStates) {
-        Application app = Application.getApp();
-
-        // If there are X saved states, there should be X saved states in the undo history
-        assertEquals(app.getUndoList().size(), expectedSavedStates,
-                String.format("Expected %s new saved state(s) after the operation, there are %s instead",
-                        expectedSavedStates, app.getUndoList().size()));
-
-    }
-    
 }

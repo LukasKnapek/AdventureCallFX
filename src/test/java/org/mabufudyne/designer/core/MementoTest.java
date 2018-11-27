@@ -3,17 +3,19 @@ package org.mabufudyne.designer.core;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Properties;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MementoTest {
-
+    private Application app = new Application(new Properties());
     private Adventure defaultAdventure;
 
     @BeforeEach
     void createDefaultObjects() {
         StoryPiece sp = new StoryPiece();
-        defaultAdventure = new Adventure(sp);
+        defaultAdventure = new Adventure(app, sp);
     }
 
     @Test

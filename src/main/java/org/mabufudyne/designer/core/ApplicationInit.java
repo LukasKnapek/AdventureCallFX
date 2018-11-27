@@ -5,13 +5,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ApplicationInit extends javafx.application.Application {
 
-    private static final Logger LOGGER = Logger.getLogger( ApplicationInit.class.getName() );
-    private Application app;
+    private Application initializedApplication;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,25 +38,36 @@ public class ApplicationInit extends javafx.application.Application {
         }
     }
 
-    void setApp(Application newApp) {
-        app = newApp;
-    }
-
     @Override
-    public void init() throws Exception{
-        if (app == null)
-            app = Application.getApp();
+    public void init() throws Exception {
+        String defaultPropertiesPath = "config.properties";
+        Properties defaultProps = loadDefaultProperties(defaultPropertiesPath);
 
-        try {
-            app.initialize();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error while initializing application:");
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            throw e;
-        }
+        Application app = new Application(defaultProps);
+        Adventure initialAdventure = new Adventure(app, new StoryPiece());
+        app.setActiveAdventure(initialAdventure);
+
+        setInitializedApplication(app);
     }
 
     public static void main(String[] args) {
         javafx.application.Application.launch(args);
     }
+
+    private Properties loadDefaultProperties(String path) throws IOException {
+        Properties props = new Properties();
+
+        FileInputStream in = new FileInputStream(path);
+        props.load(in);
+        return props;
+    }
+
+    Application getInitializedApplication() {
+        return initializedApplication;
+    }
+
+    private void setInitializedApplication(Application initializedApplication) {
+        this.initializedApplication = initializedApplication;
+    }
+
 }

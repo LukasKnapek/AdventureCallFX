@@ -1,6 +1,8 @@
 package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -10,9 +12,13 @@ import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.Random;
 
 class StoryPieceTest {
+
+    private Application app = new Application(new Properties());
+    private Application mockedApp;
 
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
@@ -20,7 +26,8 @@ class StoryPieceTest {
     @BeforeEach
     void createDefaultStoryPiece() {
         defaultStoryPiece = new StoryPiece();
-        defaultAdventure = new Adventure(defaultStoryPiece);
+        defaultAdventure = new Adventure(app, defaultStoryPiece);
+        mockedApp = mock(Application.class);
     }
 
     @Test
@@ -38,10 +45,10 @@ class StoryPieceTest {
 
     @Test
     void SetTitle_ShouldPerformAfterTaskOperationsAfterSettingTheTitle() {
-        Application.getApp().reset();
-        defaultStoryPiece.setTitle("New title");
+        defaultAdventure.setParentApp(mockedApp);
 
-        WereAfterTasksPerformedCorrectly(1);
+        defaultStoryPiece.setTitle("New title");
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -54,10 +61,10 @@ class StoryPieceTest {
 
     @Test
     void SetStory_ShouldPerformAfterTaskOperationsAfterSettingTheStory() {
-        Application.getApp().reset();
-        defaultStoryPiece.setStory("New story");
+        defaultAdventure.setParentApp(mockedApp);
 
-        WereAfterTasksPerformedCorrectly(1);
+        defaultStoryPiece.setStory("New story");
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -71,11 +78,10 @@ class StoryPieceTest {
 
     @Test
     void SetColor_ShouldPerformAfterTaskOperationsAfterSettingTheColor() {
-        Application.getApp().reset();
+        defaultAdventure.setParentApp(mockedApp);
 
         defaultStoryPiece.setColor("FFFF00");
-
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -85,11 +91,10 @@ class StoryPieceTest {
 
     @Test
     void SetFixed_ShouldPerformAfterTaskOperationsAfterSettingTheFixedStatus() {
-        Application.getApp().reset();
+        defaultAdventure.setParentApp(mockedApp);
 
         defaultStoryPiece.setFixed(true);
-
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -101,11 +106,10 @@ class StoryPieceTest {
     void SetOrder_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
         StoryPiece sp = new StoryPiece();
         defaultAdventure.addStoryPiece(sp);
+        defaultAdventure.setParentApp(mockedApp);
 
-        Application.getApp().reset();
         defaultStoryPiece.setOrder(2);
-
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -155,13 +159,12 @@ class StoryPieceTest {
     }
 
     @Test
-    void AddChoice_ShouldPerformAfterTaskOperationsAfterSettingTheOrder() {
-        Application.getApp().reset();
+    void AddChoice_ShouldPerformAfterTaskOperationsAfterPerformingTheAction() {
+        defaultAdventure.setParentApp(mockedApp);
 
         Choice choice = new Choice(new StoryPiece());
         defaultStoryPiece.addChoice(choice);
-
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
     }
 
     @Test
@@ -229,12 +232,13 @@ class StoryPieceTest {
     @Test
     void RemoveChoice_ShouldPerformAfterTaskOperationsAfterRemovingTheChoice() {
         Choice choice = new Choice(new StoryPiece());
-
         defaultStoryPiece.addChoice(choice);
-        Application.getApp().reset();
+
+        defaultAdventure.setParentApp(mockedApp);
 
         defaultStoryPiece.removeChoice(choice);
-        WereAfterTasksPerformedCorrectly(1);
+        verify(mockedApp).performAfterTaskActions();
+
     }
 
     @Test
@@ -272,17 +276,5 @@ class StoryPieceTest {
                         sp2.hashCode() == sp3.hashCode() &&
                         sp1.hashCode() == sp3.hashCode(),
                 "The transitive property doest not apply to hash codes of three equal StoryPieces.");
-    }
-
-    /** Helpers **/
-
-    private static void WereAfterTasksPerformedCorrectly(int expectedSavedStates) {
-        Application app = Application.getApp();
-
-        // If there are X saved states, there should be X saved states in the undo history
-        assertEquals(app.getUndoList().size(), expectedSavedStates,
-                String.format("Expected %s new saved state(s) after the operation, there are %s instead",
-                        expectedSavedStates, app.getUndoList().size()));
-
     }
 }

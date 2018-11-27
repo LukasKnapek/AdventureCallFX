@@ -6,12 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 class FileHandlerTest {
 
+    private Application app = new Application(new Properties());
     private Adventure defaultAdventure;
 
     private static File tempDirectory;
@@ -40,7 +42,11 @@ class FileHandlerTest {
     @BeforeEach
     void createDefaultObjects() {
         StoryPiece sp = new StoryPiece();
-        defaultAdventure = new Adventure(sp);
+        defaultAdventure = new Adventure(app, sp);
+
+        StoryPiece choiceSP = new StoryPiece();
+        Choice ch = new Choice(choiceSP);
+        sp.addChoice(ch);
     }
 
     @Test

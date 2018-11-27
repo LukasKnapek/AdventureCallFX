@@ -14,6 +14,8 @@ public class StoryPiece implements Serializable {
 
     private static String DEFAULT_TITLE = "Untitled";
 
+    private Adventure adventure;
+
     private transient SimpleStringProperty title;
     private transient SimpleIntegerProperty order;
     private transient SimpleBooleanProperty fixed;
@@ -45,7 +47,7 @@ public class StoryPiece implements Serializable {
 
     void setTitle(String newTitle) {
         this.title.set(newTitle);
-        Application.getApp().performAfterTaskActions();
+        adventure.performAfterTaskActions();
     }
 
     SimpleStringProperty titleProperty() { return title; }
@@ -56,7 +58,7 @@ public class StoryPiece implements Serializable {
 
     void setStory(String story) {
         this.story = story;
-        Application.getApp().performAfterTaskActions();
+        adventure.performAfterTaskActions();
     }
 
     int getOrder() {
@@ -68,7 +70,7 @@ public class StoryPiece implements Serializable {
     void setOrder(int newOrder, boolean performAfterTaskActions) {
         order.set(newOrder);
         if (performAfterTaskActions)
-            Application.getApp().performAfterTaskActions();
+            adventure.performAfterTaskActions();
     }
 
     SimpleIntegerProperty orderProperty() { return order; }
@@ -79,7 +81,7 @@ public class StoryPiece implements Serializable {
 
     void setFixed(boolean fixed) {
         this.fixed.set(fixed);
-        Application.getApp().performAfterTaskActions();
+        adventure.performAfterTaskActions();
     }
 
     SimpleBooleanProperty fixedProperty() { return fixed; }
@@ -90,11 +92,15 @@ public class StoryPiece implements Serializable {
 
     void setColor(String color) {
         this.color = color;
-        Application.getApp().performAfterTaskActions();
+        adventure.performAfterTaskActions();
     }
 
     ObservableList<Choice> getChoices() {
         return choices;
+    }
+
+    public void setAdventure(Adventure adventure) {
+        this.adventure = adventure;
     }
 
     /** Public methods **/
@@ -108,7 +114,7 @@ public class StoryPiece implements Serializable {
         if (choice.getStoryPiece() != this) {
             choices.add(choice);
 
-            Application.getApp().performAfterTaskActions();
+            adventure.performAfterTaskActions();
         }
     }
 
@@ -116,7 +122,7 @@ public class StoryPiece implements Serializable {
         if (choices.contains(choice)) {
             choices.remove(choice);
 
-            Application.getApp().performAfterTaskActions();
+            adventure.performAfterTaskActions();
         }
         else {
             throw new IllegalArgumentException("StoryPiece does not contain the given Choice.");

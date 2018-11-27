@@ -1,52 +1,21 @@
 package org.mabufudyne.designer.core;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class Application  {
 
-    private static Application app;
+    private Adventure activeAdventure;
+    private Properties properties;
+    private LinkedList<Memento> undoList;
+    private LinkedList<Memento> redoList;
 
     private Memento currentState;
-    private LinkedList<Memento> undoList = new LinkedList<>();
-    private LinkedList<Memento> redoList = new LinkedList<>();
 
-    private String propertiesPath = "config.properties";
-    private Properties properties = new Properties();
-
-    private static final Logger LOGGER = Logger.getLogger( Application.class.getName() );
-
-    private Application() {}
-
-    static Application getApp() {
-        if (app == null) {
-            app = new Application();
-        }
-        return app;
-    }
-
-    Adventure initialize() throws IOException {
-        loadDefaultProperties(propertiesPath);
-
-        StoryPiece initialSP = new StoryPiece();
-        Adventure initialAdventure = new Adventure(initialSP);
-        Adventure.setActiveAdventure(initialAdventure);
-
-        return initialAdventure;
-    }
-
-    private void loadDefaultProperties(String path) throws IOException {
-        try {
-            FileInputStream in = new FileInputStream(path);
-            properties.load(in);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error while loading default properties:");
-            throw e;
-        }
+    Application(Properties props) {
+        this.undoList = new LinkedList<>();
+        this.redoList = new LinkedList<>();
+        this.properties = props;
     }
 
     Memento getCurrentState() { return currentState; }
@@ -59,18 +28,23 @@ class Application  {
         return properties;
     }
 
-    void setPropertiesPath(String path) {
-        propertiesPath = path;
+    Adventure getActiveAdventure() {
+        return activeAdventure;
+    }
+
+    void setActiveAdventure(Adventure activeAdventure) {
+        this.activeAdventure = activeAdventure;
     }
 
     void saveState() {
         if (properties.getProperty("saveStates") == null || properties.getProperty("saveStates").equals("true")) {
-            Memento newState = new Memento(Adventure.getActiveAdventure());
+            Memento newState = new Memento(activeAdventure);
             if (currentState != null) undoList.push(currentState);
             currentState = newState;
         }
     }
 
+    //TODO: For Undo and Redo, change the active adventure (and its parent app) after loading the state
     void undo() {
         redoList.push(currentState);
         currentState = undoList.pop();
@@ -82,12 +56,6 @@ class Application  {
     }
 
     void performAfterTaskActions() {
-        app.saveState();
-    }
-
-    void reset() {
-        undoList.clear();
-        redoList.clear();
-        propertiesPath = "config.properties";
+        this.saveState();
     }
 }
