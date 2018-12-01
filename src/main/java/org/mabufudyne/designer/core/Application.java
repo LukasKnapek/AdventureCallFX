@@ -32,10 +32,6 @@ class Application  {
         return activeAdventure;
     }
 
-    void setActiveAdventure(Adventure activeAdventure) {
-        this.activeAdventure = activeAdventure;
-    }
-
     void saveState() {
         if (properties.getProperty("saveStates") == null || properties.getProperty("saveStates").equals("true")) {
             Memento newState = new Memento(activeAdventure);
@@ -44,15 +40,21 @@ class Application  {
         }
     }
 
-    //TODO: For Undo and Redo, change the active adventure (and its parent app) after loading the state
     void undo() {
         redoList.push(currentState);
         currentState = undoList.pop();
+        linkAdventure(currentState.getAdventure());
     }
 
     void redo() {
         undoList.push(currentState);
         currentState = redoList.pop();
+        linkAdventure(currentState.getAdventure());
+    }
+
+    void linkAdventure(Adventure adv) {
+        this.activeAdventure = adv;
+        adv.setParentApp(this);
     }
 
     void performAfterTaskActions() {

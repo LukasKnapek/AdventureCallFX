@@ -19,7 +19,6 @@ class ApplicationComponentTest {
     void SetUpCleanApplicationAndAdventure() {
         app = new Application(new Properties());
         defaultAdventure = new Adventure(app, new StoryPiece());
-        app.setActiveAdventure(defaultAdventure);
     }
 
     @Test
@@ -66,6 +65,8 @@ class ApplicationComponentTest {
 
         // 2 SPs, sp1 title is "Beginning"
         app.undo();
+
+        sp2 = app.getActiveAdventure().getStoryPieces().get(1);
 
         // 2 SPs, sp1 title is "Beginning", sp2 color is black
         sp2.setColor("FFFFFF");

@@ -32,7 +32,9 @@ public class Adventure implements Serializable {
         this.name = name;
         this.storyPieces = FXCollections.observableArrayList();
         this.availableOrders = new ArrayList<>();
+
         this.parentApp = app;
+        app.linkAdventure(this);
 
         addStoryPiece(initialSP);
     }
@@ -53,6 +55,8 @@ public class Adventure implements Serializable {
         return DEFAULT_NAME;
     }
 
+    Application getParentApp() { return this.parentApp; }
+
     void setParentApp(Application parentApp) {
         this.parentApp = parentApp;
     }
@@ -60,7 +64,7 @@ public class Adventure implements Serializable {
     /** Private helper methods **/
 
     private void sortStoryPiecesByOrder() {
-        Collections.sort(storyPieces, Comparator.comparing(StoryPiece::getOrder));
+        storyPieces.sort(Comparator.comparing(StoryPiece::getOrder));
     }
 
     private int obtainNextStoryPieceOrder() {

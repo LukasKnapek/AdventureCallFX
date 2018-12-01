@@ -45,7 +45,6 @@ public class ApplicationInit extends javafx.application.Application {
 
         Application app = new Application(defaultProps);
         Adventure initialAdventure = new Adventure(app, new StoryPiece());
-        app.setActiveAdventure(initialAdventure);
 
         setInitializedApplication(app);
     }
