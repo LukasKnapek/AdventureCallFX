@@ -30,7 +30,7 @@ public class StoryPiece implements Serializable {
         this(DEFAULT_TITLE);
     }
 
-    private StoryPiece(String title) {
+    public StoryPiece(String title) {
         this.title = new SimpleStringProperty(title);
         this.order = new SimpleIntegerProperty();
         this.fixed = new SimpleBooleanProperty(false);
@@ -50,7 +50,7 @@ public class StoryPiece implements Serializable {
         adventure.performAfterTaskActions();
     }
 
-    SimpleStringProperty titleProperty() { return title; }
+    public SimpleStringProperty titleProperty() { return title; }
 
     String getStory() {
         return story;
@@ -73,7 +73,7 @@ public class StoryPiece implements Serializable {
             adventure.performAfterTaskActions();
     }
 
-    SimpleIntegerProperty orderProperty() { return order; }
+    public SimpleIntegerProperty orderProperty() { return order; }
 
     boolean isFixed() {
         return fixed.get();

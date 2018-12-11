@@ -1,9 +1,14 @@
 package org.mabufudyne.designer.core;
 
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.mabufudyne.designer.gui.MainWindowController;
+import org.mabufudyne.designer.gui.OverviewController;
+import sun.applet.Main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,10 +20,13 @@ public class ApplicationInit extends javafx.application.Application {
 
     private Application initializedApplication;
 
+    @FXML
+    private OverviewController overviewController;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        VBox mainWindow = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
+        VBox mainWindow = loader.load();
         Scene mainScene = new Scene(mainWindow);
 
         primaryStage.setTitle("Welcome to Adventure Call FX!");
@@ -36,6 +44,8 @@ public class ApplicationInit extends javafx.application.Application {
         if (testParamValue != null && testParamValue.equals("true")) {
             primaryStage.hide();
         }
+
+        populateControls(loader.getController());
     }
 
     @Override
@@ -47,6 +57,11 @@ public class ApplicationInit extends javafx.application.Application {
         Adventure initialAdventure = new Adventure(app, new StoryPiece());
 
         setInitializedApplication(app);
+    }
+
+    public void populateControls(MainWindowController mc) {
+        ObservableList<StoryPiece> storyPieces = initializedApplication.getActiveAdventure().getStoryPieces();
+        mc.getOverviewController().populateStoryPieceTable(storyPieces);
     }
 
     public static void main(String[] args) {
