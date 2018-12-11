@@ -47,7 +47,7 @@ public class Adventure implements Serializable {
 
     void setName(String newName) { this.name = newName; }
 
-    ObservableList<StoryPiece> getStoryPieces() {
+    public ObservableList<StoryPiece> getStoryPieces() {
         return this.storyPieces;
     }
 

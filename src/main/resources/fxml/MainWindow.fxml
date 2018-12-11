@@ -4,25 +4,25 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" spacing="5.0" stylesheets="@../css/ToolBar.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:controller="org.mabufudyne.designer.gui.MainWindowController" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" spacing="5.0" stylesheets="@../css/ToolBar.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <fx:include source="ToolBar.fxml" />
+      <fx:include fx:id="toolBar" source="ToolBar.fxml" />
       <SplitPane dividerPositions="0.310838445807771, 0.6359918200408998" VBox.vgrow="ALWAYS">
          <items>
-            <fx:include source="AdventureLayout.fxml" />
+            <fx:include fx:id="adventureLayout" source="AdventureLayout.fxml" />
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" />
                </padding>
                <items>
-                  <fx:include source="StoryPieceView.fxml" />
-                  <fx:include source="ChoiceView.fxml" />
+                  <fx:include fx:id="storyPieceView" source="StoryPieceView.fxml" />
+                  <fx:include fx:id="choiceView" source="ChoiceView.fxml" />
                </items>
             </SplitPane>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
               <items>
-                  <fx:include source="StoryPieceOverview.fxml" />
-                  <fx:include source="PropertiesView.fxml" />
+                  <fx:include fx:id="overview" source="Overview.fxml" />
+                  <fx:include fx:id="propertiesView" source="PropertiesView.fxml" />
               </items>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

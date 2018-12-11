@@ -3,7 +3,7 @@ package org.mabufudyne.designer.core;
 import java.util.LinkedList;
 import java.util.Properties;
 
-class Application  {
+public class Application  {
 
     private Adventure activeAdventure;
     private Properties properties;
@@ -28,7 +28,7 @@ class Application  {
         return properties;
     }
 
-    Adventure getActiveAdventure() {
+    public Adventure getActiveAdventure() {
         return activeAdventure;
     }
 
