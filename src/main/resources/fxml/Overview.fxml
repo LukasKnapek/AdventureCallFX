@@ -29,7 +29,7 @@
             </TableView>
             <VBox alignment="TOP_CENTER">
                <children>
-                  <Button fx:id="btAddStoryPiece" mnemonicParsing="false" onAction="#addStoryPieceClicked" text="+" />
+                  <Button fx:id="btAddStoryPiece" mnemonicParsing="false" onAction="#onAddStoryPieceClick" text="+" />
                </children>
                <HBox.margin>
                   <Insets left="5.0" />

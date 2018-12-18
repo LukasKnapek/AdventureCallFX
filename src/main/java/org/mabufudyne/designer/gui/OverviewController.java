@@ -8,15 +8,12 @@ import javafx.scene.control.TableView;
 import org.mabufudyne.designer.core.Application;
 import org.mabufudyne.designer.core.StoryPiece;
 
-import java.net.URL;
-
 public class OverviewController {
-    @FXML
-    private TableView<StoryPiece> storyPiecesTable;
-    @FXML
-    private TableColumn<StoryPiece, Integer> orderColumn;
-    @FXML
-    private TableColumn<StoryPiece, String> titleColumn;
+    @FXML private TableView<StoryPiece> storyPiecesTable;
+    @FXML private TableColumn<StoryPiece, Integer> orderColumn;
+    @FXML private TableColumn<StoryPiece, String> titleColumn;
+
+    private Application app;
 
     public void initialize() {
         orderColumn.setCellValueFactory(cellData -> cellData.getValue().orderProperty().asObject());
@@ -25,5 +22,13 @@ public class OverviewController {
 
     public void populateStoryPieceTable(ObservableList<StoryPiece> data) {
         storyPiecesTable.setItems(data);
+    }
+
+    public void onAddStoryPieceClick() {
+        app.getActiveAdventure().addStoryPiece(new StoryPiece());
+    }
+
+    public void setApp(Application app) {
+        this.app = app;
     }
 }
