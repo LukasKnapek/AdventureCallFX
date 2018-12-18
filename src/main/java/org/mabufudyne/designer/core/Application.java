@@ -12,7 +12,7 @@ public class Application  {
 
     private Memento currentState;
 
-    Application(Properties props) {
+    public Application(Properties props) {
         this.undoList = new LinkedList<>();
         this.redoList = new LinkedList<>();
         this.properties = props;

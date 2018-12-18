@@ -94,7 +94,7 @@ public class Adventure implements Serializable {
 
     /** Public methods **/
 
-    void addStoryPiece(StoryPiece sp) {
+    public void addStoryPiece(StoryPiece sp) {
         sp.setOrder(obtainNextStoryPieceOrder(), false);
         storyPieces.add(sp);
         sp.setAdventure(this);

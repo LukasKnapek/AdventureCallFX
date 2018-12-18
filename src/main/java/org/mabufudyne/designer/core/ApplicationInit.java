@@ -8,13 +8,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.mabufudyne.designer.gui.MainWindowController;
 import org.mabufudyne.designer.gui.OverviewController;
-import sun.applet.Main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ApplicationInit extends javafx.application.Application {
 
@@ -45,7 +42,13 @@ public class ApplicationInit extends javafx.application.Application {
             primaryStage.hide();
         }
 
-        populateControls(loader.getController());
+        initializeControllers(loader.getController());
+        populateControls();
+    }
+
+    public void initializeControllers(MainWindowController mc) {
+        overviewController = mc.getOverviewController();
+        overviewController.setApp(initializedApplication);
     }
 
     @Override
@@ -59,13 +62,9 @@ public class ApplicationInit extends javafx.application.Application {
         setInitializedApplication(app);
     }
 
-    public void populateControls(MainWindowController mc) {
+    public void populateControls() {
         ObservableList<StoryPiece> storyPieces = initializedApplication.getActiveAdventure().getStoryPieces();
-        mc.getOverviewController().populateStoryPieceTable(storyPieces);
-    }
-
-    public static void main(String[] args) {
-        javafx.application.Application.launch(args);
+        overviewController.populateStoryPieceTable(storyPieces);
     }
 
     private Properties loadDefaultProperties(String path) throws IOException {
@@ -82,6 +81,10 @@ public class ApplicationInit extends javafx.application.Application {
 
     private void setInitializedApplication(Application initializedApplication) {
         this.initializedApplication = initializedApplication;
+    }
+
+    public static void main(String[] args) {
+        javafx.application.Application.launch(args);
     }
 
 }
