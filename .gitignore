@@ -27,6 +27,7 @@ lib/
 
 # IntelliJ
 .idea/
+.attach*
 
 # Maven
 target/
