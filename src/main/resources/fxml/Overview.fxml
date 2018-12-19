@@ -27,9 +27,10 @@
                   <TableColumn fx:id="titleColumn" minWidth="0.0" prefWidth="10.0" text="Title" />
                </columns>
             </TableView>
-            <VBox alignment="TOP_CENTER">
+            <VBox alignment="TOP_CENTER" spacing="5.0">
                <children>
-                  <Button fx:id="btAddStoryPiece" mnemonicParsing="false" onAction="#onAddStoryPieceClick" text="+" />
+                  <Button fx:id="btAddStoryPiece" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddStoryPieceClick" prefHeight="30.0" prefWidth="30.0" text="+" />
+                  <Button fx:id="btRemoveStoryPiece" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRemoveStoryPieceClick" prefHeight="30.0" prefWidth="30.0" text="-" />
                </children>
                <HBox.margin>
                   <Insets left="5.0" />
