@@ -102,7 +102,7 @@ public class Adventure implements Serializable {
         performAfterTaskActions();
     }
 
-    void removeStoryPiece(StoryPiece sp) {
+    public void removeStoryPiece(StoryPiece sp) {
         if (storyPieces.size() > 1) {
             freeUpOrder(sp.getOrder());
             this.storyPieces.remove(sp);

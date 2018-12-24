@@ -2,18 +2,24 @@ package org.mabufudyne.designer.gui;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.mabufudyne.designer.core.Application;
 import org.mabufudyne.designer.core.StoryPiece;
 
+import javax.annotation.Resources;
+import java.net.URL;
+
 public class OverviewController {
-    @FXML private TableView<StoryPiece> storyPiecesTable;
+    public TableView<StoryPiece> storyPiecesTable;
     @FXML private TableColumn<StoryPiece, Integer> orderColumn;
     @FXML private TableColumn<StoryPiece, String> titleColumn;
 
     private Application app;
+
+    public void setApp(Application app) {
+        this.app = app;
+    }
 
     public void initialize() {
         orderColumn.setCellValueFactory(cellData -> cellData.getValue().orderProperty().asObject());
@@ -28,7 +34,7 @@ public class OverviewController {
         app.getActiveAdventure().addStoryPiece(new StoryPiece());
     }
 
-    public void setApp(Application app) {
-        this.app = app;
+    public void onRemoveStoryPieceClick() {
+        app.getActiveAdventure().removeStoryPiece(storyPiecesTable.getSelectionModel().getSelectedItem());
     }
 }

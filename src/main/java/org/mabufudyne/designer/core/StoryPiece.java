@@ -61,7 +61,7 @@ public class StoryPiece implements Serializable {
         adventure.performAfterTaskActions();
     }
 
-    int getOrder() {
+    public int getOrder() {
         return order.get();
     }
 
