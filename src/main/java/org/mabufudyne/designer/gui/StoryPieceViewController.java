@@ -17,7 +17,7 @@ public class StoryPieceViewController extends WindowSubController {
         this.textStory = textStory;
     }
 
-    public StoryPieceViewController() {};
+    public StoryPieceViewController() {}
 
     @Override
     public void setUpControls() {
@@ -33,7 +33,9 @@ public class StoryPieceViewController extends WindowSubController {
         int maxOrder = app.getActiveAdventure().getStoryPieces().size();
 
         spinOrder.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, maxOrder, selectedSP.getOrder()));
+        textTitle.clear();
         textTitle.insertText(0, selectedSP.getTitle());
+        textStory.clear();
         textStory.insertText(0, selectedSP.getStory());
     }
 

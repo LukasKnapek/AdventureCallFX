@@ -21,6 +21,11 @@ public class StoryPieceControllerTest {
     private Adventure defaultAdventure;
     private StoryPiece defaultStoryPiece;
 
+    private StoryPieceViewController controller;
+    private Spinner<Integer> orderSpinner;
+    private TextField titleField;
+    private TextArea storyArea;
+
     /**
      * Creates a new JFXPanel, which launches the FX environment/toolkit.
      * We need this in order to instantiate and work with JFX controls in tests
@@ -35,6 +40,12 @@ public class StoryPieceControllerTest {
         app = new Application(new Properties());
         defaultStoryPiece = new StoryPiece();
         defaultAdventure = new Adventure(app, defaultStoryPiece);
+
+        orderSpinner = new Spinner<>();
+        titleField = new TextField();
+        storyArea = new TextArea();
+        controller = new StoryPieceViewController(orderSpinner, titleField, storyArea);
+        controller.setApp(app);
     }
 
     @Test
@@ -42,13 +53,6 @@ public class StoryPieceControllerTest {
         // Give the SP other than default values
         defaultStoryPiece.setTitle("Beginning!");
         defaultStoryPiece.setStory("Once upon a time...");
-
-        // Populate controller with controls and model
-        Spinner<Integer> orderSpinner = new Spinner<>();
-        TextField titleField = new TextField();
-        TextArea storyArea = new TextArea();
-        StoryPieceViewController controller = new StoryPieceViewController(orderSpinner, titleField, storyArea);
-        controller.setApp(app);
 
         controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
 
@@ -62,6 +66,22 @@ public class StoryPieceControllerTest {
 
     @Test
     public void onStoryPieceViewTableNewSelection_ShouldReplacePreviouslySelectedStoryPieceValueWithNewlySelectedStoryPieceValues() {
-        // TODO: Make sure View field values are replacet and not just concatenated
+        StoryPiece secondSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(secondSP);
+
+        defaultStoryPiece.setTitle("Old title");
+        defaultStoryPiece.setStory("Old story");
+        secondSP.setTitle("New and shiny story");
+        secondSP.setStory("New and better story");
+
+        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(secondSP);
+
+        assertEquals(secondSP.getOrder(), (int) orderSpinner.getValue(),
+                "The handler did not correctly populate the order spinner on second SP selection.");
+        assertEquals(secondSP.getTitle(), titleField.getText(),
+                "The handler did not correctly populate the title field on second SP selection.");
+        assertEquals(secondSP.getStory(), storyArea.getText(),
+                "The handler did not correctly populate the story field on second SP selection.");
     }
 }
