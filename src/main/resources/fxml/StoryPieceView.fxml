@@ -47,7 +47,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextArea fx:id="testStory" wrapText="true" VBox.vgrow="ALWAYS" />
+            <TextArea fx:id="textStory" wrapText="true" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </children>

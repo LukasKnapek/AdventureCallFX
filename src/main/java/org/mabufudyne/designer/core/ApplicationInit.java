@@ -1,13 +1,10 @@
 package org.mabufudyne.designer.core;
 
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.mabufudyne.designer.gui.MainWindowController;
-import org.mabufudyne.designer.gui.OverviewController;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,9 +13,6 @@ import java.util.Properties;
 public class ApplicationInit extends javafx.application.Application {
 
     private Application initializedApplication;
-
-    @FXML
-    private OverviewController overviewController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -42,13 +36,20 @@ public class ApplicationInit extends javafx.application.Application {
             primaryStage.hide();
         }
 
-        initializeControllers(loader.getController());
-        populateControls();
+        setUpControllers(loader.getController());
     }
 
-    public void initializeControllers(MainWindowController mc) {
-        overviewController = mc.getOverviewController();
-        overviewController.setApp(initializedApplication);
+    private void setUpControllers(MainWindowController mc) {
+        // TODO: Find a way to gather all sub-controllers in a single iterable
+        mc.getOverviewController().setApp(initializedApplication);
+        mc.getStoryPieceViewController().setApp(initializedApplication);
+
+        mc.getOverviewController().setMainController(mc);
+        mc.getStoryPieceViewController().setMainController(mc);
+
+        mc.getOverviewController().setUpControls();
+        mc.getStoryPieceViewController().setUpControls();
+
     }
 
     @Override
@@ -60,11 +61,6 @@ public class ApplicationInit extends javafx.application.Application {
         Adventure initialAdventure = new Adventure(app, new StoryPiece());
 
         setInitializedApplication(app);
-    }
-
-    public void populateControls() {
-        ObservableList<StoryPiece> storyPieces = initializedApplication.getActiveAdventure().getStoryPieces();
-        overviewController.populateStoryPieceTable(storyPieces);
     }
 
     private Properties loadDefaultProperties(String path) throws IOException {
