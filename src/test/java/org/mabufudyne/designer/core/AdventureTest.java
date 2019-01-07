@@ -206,10 +206,14 @@ class AdventureTest {
             defaultAdventure.addStoryPiece(sp);
         }
 
-        ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
-        defaultAdventure.shuffleStoryPieces();
+        ArrayList<Integer> originalOrders = new ArrayList<>();
+        for (StoryPiece sp : defaultAdventure.getStoryPieces()) { originalOrders.add(sp.getOrder()); }
 
-        assertFalse(storyPiecesOriginalOrder.equals(defaultAdventure.getStoryPieces()),
+        defaultAdventure.shuffleStoryPieces();
+        ArrayList<Integer> newOrders = new ArrayList<>();
+        for (StoryPiece sp : defaultAdventure.getStoryPieces()) { originalOrders.add(sp.getOrder()); }
+
+        assertNotEquals(newOrders, originalOrders,
                 "The order of the StoryPieces has not changed after shuffle.");
     }
 
@@ -220,12 +224,18 @@ class AdventureTest {
         StoryPiece sp = new StoryPiece();
         defaultAdventure.addStoryPiece(sp);
 
+        ArrayList<Integer> originalOrders = new ArrayList<>();
+        for (StoryPiece sPiece : defaultAdventure.getStoryPieces()) { originalOrders.add(sPiece.getOrder()); }
+
         // 50% chance of the correct order after shuffle even if the method does not work correctly, so repeat 10 times
         // to reduce the probability that the order gets shuffled correctly each time by chance to ~0.09%
         for (int i=0; i<10; i++) {
-            ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(defaultAdventure.getStoryPieces());
             defaultAdventure.shuffleStoryPieces();
-            assertNotEquals(storyPiecesOriginalOrder, defaultAdventure.getStoryPieces(),
+
+            ArrayList<Integer> newOrders = new ArrayList<>();
+            for (StoryPiece sPiece : defaultAdventure.getStoryPieces()) { originalOrders.add(sPiece.getOrder()); }
+
+            assertNotEquals(newOrders, originalOrders,
                     "The order of the StoryPieces has not changed after shuffle even though there are two" +
                     "shuffable StoryPieces.");
         }
@@ -274,6 +284,32 @@ class AdventureTest {
         defaultAdventure.setParentApp(mockedApp);
         defaultAdventure.shuffleStoryPieces();
         verify(mockedApp).performAfterTaskActions();
+    }
+
+    @Test
+    void GetMaxUsedOrder_ShouldReturnTheMaxUsedOrder_GivenTheMaxUsedOrderIsCurrentlyAvailableAndNotUsed() {
+        // Create StoryPieces 2-5, max used order is now 5
+        for (int i=2; i<=5; i++) { defaultAdventure.addStoryPiece(new StoryPiece()); }
+
+        // Remove last two SPs, order 5 are now available, 1-4 are used
+        defaultAdventure.removeStoryPiece(defaultAdventure.getStoryPieces().get(4));
+
+        assertEquals(5, defaultAdventure.getMaxUsedOrder(),
+                "The method did not detect the max used order in available orders.");
+    }
+
+    @Test
+    void GetMaxUsedOrder_ShouldReturnTheMaxUsedOrder_GivenTheMaxUsedOrderIsCurrentlyBeingUsed() {
+        // Create StoryPieces 2-5, max used order is now 5
+        for (int i=2; i<=5; i++) { defaultAdventure.addStoryPiece(new StoryPiece()); }
+
+        // Remove first three SPs, orders 1-3 are now available, 4-5 are being used
+        for (int i=0; i<3; i++) {
+            defaultAdventure.removeStoryPiece(defaultAdventure.getStoryPieces().get(0));
+        }
+
+        assertEquals(5, defaultAdventure.getMaxUsedOrder(),
+                "The method did not detect the max used order.");
     }
 
     @Test

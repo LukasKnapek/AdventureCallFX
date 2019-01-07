@@ -15,7 +15,7 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StoryPieceControllerTest {
+public class StoryPieceViewControllerTest {
 
     private Application app;
     private Adventure defaultAdventure;
