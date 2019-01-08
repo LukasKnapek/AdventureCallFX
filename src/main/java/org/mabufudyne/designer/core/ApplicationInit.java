@@ -40,7 +40,8 @@ public class ApplicationInit extends javafx.application.Application {
     }
 
     private void setUpControllers(MainWindowController mc) {
-        // TODO: Find a way to gather all sub-controllers in a single iterable
+        // TODO: Suboptimal way of calling functions on subcontrollers
+        // Find a way to gather them in a data structure that would make the code more clean and elegant
         mc.getOverviewController().setApp(initializedApplication);
         mc.getStoryPieceViewController().setApp(initializedApplication);
 
@@ -49,7 +50,6 @@ public class ApplicationInit extends javafx.application.Application {
 
         mc.getOverviewController().setUpControls();
         mc.getStoryPieceViewController().setUpControls();
-
     }
 
     @Override
@@ -57,8 +57,9 @@ public class ApplicationInit extends javafx.application.Application {
         String defaultPropertiesPath = "config.properties";
         Properties defaultProps = loadDefaultProperties(defaultPropertiesPath);
 
+        // Create a new Application and populate it with a new Adventure
         Application app = new Application(defaultProps);
-        Adventure initialAdventure = new Adventure(app, new StoryPiece());
+        new Adventure(app, new StoryPiece());
 
         setInitializedApplication(app);
     }

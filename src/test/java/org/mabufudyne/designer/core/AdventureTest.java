@@ -163,6 +163,21 @@ class AdventureTest {
     }
 
     @Test
+    void SwitchStoryPieceOrder_ShouldSwitchTheOrders_GivenTheSecondOrderIsAvailableAndNotCurrentlyAssignedToAStoryPiece() {
+        // Usable orders are now 1-2
+        StoryPiece secondSP = new StoryPiece();
+        defaultAdventure.addStoryPiece(secondSP);
+
+        // Order 2 becomes available
+        defaultAdventure.removeStoryPiece(secondSP);
+
+        // The orders should be switched regardless of the second one not being currently assigned
+        defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, 2);
+        assertEquals(2, defaultStoryPiece.getOrder(),
+                "SP with order 1 did not get order 2 after switch even though order 2 is available");
+    }
+
+    @Test
     void SwitchStoryPieceOrder_ShouldNotSwitchTheOrderOfTheStoryPieces_GivenAStoryPieceAndItsCurrentOrderAsTheNewOrder() {
 
         StoryPiece newSP = new StoryPiece();
@@ -174,15 +189,7 @@ class AdventureTest {
                 "The StoryPiece order was changed although its new order argument was its current order.");
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = { 0, -1, 100 })
-    void SwitchStoryPieceOrder_ShouldThrowAnException_GivenANewOrderThatIsOutsideTheRange1ToTheNumberOfExistingStoryPieces(int order) {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            defaultAdventure.switchStoryPieceOrder(defaultStoryPiece, order);
-        });
-        assertEquals("The requested new order is out of range (1-Number of existing StoryPieces).", ex.getMessage(),
-                "The exception did not have the correct message.");
-    }
+
 
     @Test
     void SwitchStoryPieceOrder_ShouldSaveStateAfterPerformingTheAction() {

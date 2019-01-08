@@ -69,11 +69,13 @@ public class Adventure implements Serializable {
     }
 
     private void freeUpOrder(int order) {
+        // TODO: Try to find a better way to keep order in available orders without having to sort them after every insertion
         availableOrders.add(order);
         Collections.sort(availableOrders);
     }
 
     private ArrayList<Integer> obtainShuffableOrders() {
+        // TODO: Use streams?
         ArrayList<Integer> shuffableOrders = new ArrayList<>();
 
         for (StoryPiece sp : storyPieces) {
@@ -109,20 +111,23 @@ public class Adventure implements Serializable {
     }
 
     void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
-        if (newOrder > storyPieces.size() || newOrder <= 0) {
-            throw new IllegalArgumentException("The requested new order is out of range (1-Number of existing StoryPieces).");
+        // Case 1: New order currently available, but unused
+        if (availableOrders.contains(newOrder)) {
+            freeUpOrder(firstSP.getOrder());
+            firstSP.setOrder(availableOrders.remove(availableOrders.indexOf(newOrder)), false);
+        }
+        // Case 2: New order assigned to another SP
+        else {
+            StoryPiece secondSP = storyPieces.stream()
+                    .filter(sp -> sp.getOrder() == newOrder)
+                    .reduce((a, b) -> { throw new IllegalArgumentException("Multiple StoryPieces with the same order found"); })
+                    .get();
+
+            secondSP.setOrder(firstSP.getOrder(), false);
+            firstSP.setOrder(newOrder, false);
         }
 
-        for (StoryPiece sp : storyPieces) {
-            if (sp.getOrder() == newOrder) {
-                int temp = firstSP.getOrder();
-                firstSP.setOrder(sp.getOrder(), false);
-                sp.setOrder(temp, false);
-
-                performAfterTaskActions();
-                break;
-            }
-        }
+        performAfterTaskActions();
     }
 
     /**
