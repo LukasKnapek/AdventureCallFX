@@ -24,6 +24,9 @@ public class StoryPieceViewController extends WindowSubController {
         // Instead, we start observing its selection model and call event handler on each change
         storyPiecesTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onStoryPiecesTableNewSelection(newValue));
+
+        spinOrder.focusedProperty().addListener(
+                (observable, oldValue, newValue) -> onOrderSpinnerFocusLost(newValue));
     }
 
 
@@ -34,6 +37,11 @@ public class StoryPieceViewController extends WindowSubController {
         textTitle.insertText(0, selectedSP.getTitle());
         textStory.clear();
         textStory.insertText(0, selectedSP.getStory());
+    }
+
+    public void onOrderSpinnerFocusLost(Boolean focusGained) {
+        StoryPiece selectedSP = mainController.getOverviewController().storyPiecesTable.getSelectionModel().getSelectedItem();
+        app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
     }
 
 }

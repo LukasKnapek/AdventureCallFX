@@ -110,7 +110,7 @@ public class Adventure implements Serializable {
         }
     }
 
-    void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
+    public void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
         // Case 1: New order currently available, but unused
         if (availableOrders.contains(newOrder)) {
             freeUpOrder(firstSP.getOrder());
