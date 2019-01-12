@@ -28,4 +28,8 @@ public class OverviewController extends WindowSubController {
     public void setUpControls() {
         storyPiecesTable.setItems(app.getActiveAdventure().getStoryPieces());
     }
+
+    public StoryPiece getSelectedStoryPiece() {
+        return storyPiecesTable.getSelectionModel().getSelectedItem();
+    }
 }

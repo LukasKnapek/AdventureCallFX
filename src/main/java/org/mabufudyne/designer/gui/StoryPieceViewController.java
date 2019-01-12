@@ -20,28 +20,31 @@ public class StoryPieceViewController extends WindowSubController {
     @Override
     public void setUpControls() {
         TableView<StoryPiece> storyPiecesTable = mainController.getOverviewController().storyPiecesTable;
-        // TableView doesn't emit events on row selection directly
-        // Instead, we start observing its selection model and call event handler on each change
         storyPiecesTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> onStoryPiecesTableNewSelection(newValue));
 
         spinOrder.focusedProperty().addListener(
-                (observable, oldValue, newValue) -> onOrderSpinnerFocusLost(newValue));
-    }
+                (observable, lostFocus, gotFocus) -> { if (lostFocus) onOrderSpinnerFocusLost(); });
 
+        textTitle.focusedProperty().addListener(
+                (observable, lostFocus, gotFocus) -> { if (lostFocus) onTitleFieldFocusLost(); });
+    }
 
     public void onStoryPiecesTableNewSelection(StoryPiece selectedSP) {
+        // TODO: Save all fields values of the previously selected SP before displaying the values of the newly selected SP
         spinOrder.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
                 1, app.getActiveAdventure().getMaxUsedOrder(), selectedSP.getOrder()));
-        textTitle.clear();
-        textTitle.insertText(0, selectedSP.getTitle());
-        textStory.clear();
-        textStory.insertText(0, selectedSP.getStory());
+        textTitle.setText(selectedSP.getTitle());
+        textStory.setText(selectedSP.getStory());
     }
 
-    public void onOrderSpinnerFocusLost(Boolean focusGained) {
-        StoryPiece selectedSP = mainController.getOverviewController().storyPiecesTable.getSelectionModel().getSelectedItem();
+    public void onOrderSpinnerFocusLost() {
+        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
         app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
     }
 
+    public void onTitleFieldFocusLost() {
+        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
+        selectedSP.setTitle(textTitle.getText());
+    }
 }
