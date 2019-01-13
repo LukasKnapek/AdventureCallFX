@@ -21,6 +21,7 @@ public class OverviewController extends WindowSubController {
     }
 
     public void onRemoveStoryPieceClick() {
+        // TODO: Disable the remove button if there is only one StoryPiece left
         app.getActiveAdventure().removeStoryPiece(storyPiecesTable.getSelectionModel().getSelectedItem());
     }
 

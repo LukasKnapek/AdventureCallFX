@@ -115,4 +115,16 @@ public class StoryPieceViewControllerTest {
         controller.onTitleFieldFocusLost();
         assertEquals(newTitle, defaultStoryPiece.getTitle());
     }
+
+    @Test
+    public void onStoryFieldFocusLost_ShouldSaveTheNewStoryPieceTitle() {
+        String newStory = "Once upon a time...";
+
+        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
+
+        storyArea.setText(newStory);
+        controller.onStoryFieldFocusLost();
+        assertEquals(newStory, defaultStoryPiece.getStory());
+    }
 }

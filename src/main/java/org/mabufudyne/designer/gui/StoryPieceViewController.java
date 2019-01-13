@@ -28,6 +28,9 @@ public class StoryPieceViewController extends WindowSubController {
 
         textTitle.focusedProperty().addListener(
                 (observable, lostFocus, gotFocus) -> { if (lostFocus) onTitleFieldFocusLost(); });
+
+        textStory.focusedProperty().addListener(
+                (observable, lostFocus, gotFocus) -> { if (lostFocus) onStoryFieldFocusLost(); });
     }
 
     public void onStoryPiecesTableNewSelection(StoryPiece selectedSP) {
@@ -46,5 +49,10 @@ public class StoryPieceViewController extends WindowSubController {
     public void onTitleFieldFocusLost() {
         StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
         selectedSP.setTitle(textTitle.getText());
+    }
+
+    public void onStoryFieldFocusLost() {
+        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
+        selectedSP.setStory(textStory.getText());
     }
 }
