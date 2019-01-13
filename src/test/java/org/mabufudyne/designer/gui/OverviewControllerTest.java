@@ -67,7 +67,7 @@ public class OverviewControllerTest {
     }
 
     @Test
-    public void onRemoveStoryPieceClick_ShouldOnlyRemoveTheCurrentlySelectedStoryPiece() {
+    public void onRemoveStoryPieceClick_ShouldOnlyRemoveTheCurrentlySelectedStoryPiece_GivenThereAreMoreThanOneStoryPiece() {
         // Create a few SPs, only this one is expected to be removed
         StoryPiece SPtoBeRemoved = new StoryPiece();
         defaultAdventure.addStoryPiece(new StoryPiece());

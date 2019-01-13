@@ -41,22 +41,22 @@ public class StoryPiece implements Serializable {
 
     /** Getters and Setters **/
 
-    String getTitle() {
+    public String getTitle() {
         return title.get();
     }
 
-    void setTitle(String newTitle) {
+    public void setTitle(String newTitle) {
         this.title.set(newTitle);
         adventure.performAfterTaskActions();
     }
 
     public SimpleStringProperty titleProperty() { return title; }
 
-    String getStory() {
+    public String getStory() {
         return story;
     }
 
-    void setStory(String story) {
+    public void setStory(String story) {
         this.story = story;
         adventure.performAfterTaskActions();
     }

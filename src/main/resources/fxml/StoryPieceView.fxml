@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1">
+<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mabufudyne.designer.gui.StoryPieceViewController">
    <children>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="StoryPiece">
          <font>
@@ -25,7 +25,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Spinner minWidth="-Infinity" prefWidth="70.0" />
+                  <Spinner fx:id="spinOrder" minWidth="-Infinity" prefWidth="70.0" />
                </children>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
@@ -35,7 +35,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                  <TextField fx:id="textTitle" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                </children>
             </VBox>
          </children>
@@ -47,7 +47,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextArea wrapText="true" VBox.vgrow="ALWAYS" />
+            <TextArea fx:id="textStory" wrapText="true" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </children>

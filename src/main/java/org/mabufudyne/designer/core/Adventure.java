@@ -9,8 +9,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 public class Adventure implements Serializable {
 
@@ -63,20 +64,18 @@ public class Adventure implements Serializable {
 
     /** Private helper methods **/
 
-    private void sortStoryPiecesByOrder() {
-        storyPieces.sort(Comparator.comparing(StoryPiece::getOrder));
-    }
-
     private int obtainNextStoryPieceOrder() {
         return availableOrders.isEmpty() ? storyPieces.size() + 1 : availableOrders.remove(0);
     }
 
     private void freeUpOrder(int order) {
+        // TODO: Try to find a better way to keep order in available orders without having to sort them after every insertion
         availableOrders.add(order);
         Collections.sort(availableOrders);
     }
 
     private ArrayList<Integer> obtainShuffableOrders() {
+        // TODO: Use streams?
         ArrayList<Integer> shuffableOrders = new ArrayList<>();
 
         for (StoryPiece sp : storyPieces) {
@@ -111,44 +110,51 @@ public class Adventure implements Serializable {
         }
     }
 
-    void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
-        if (newOrder > storyPieces.size() || newOrder <= 0) {
-            throw new IllegalArgumentException("The requested new order is out of range (1-Number of existing StoryPieces).");
+    public void switchStoryPieceOrder(StoryPiece firstSP, int newOrder) {
+        // Case 1: New order currently available, but unused
+        if (availableOrders.contains(newOrder)) {
+            freeUpOrder(firstSP.getOrder());
+            firstSP.setOrder(availableOrders.remove(availableOrders.indexOf(newOrder)), false);
         }
+        // Case 2: New order assigned to another SP
+        else {
+            StoryPiece secondSP = storyPieces.stream()
+                    .filter(sp -> sp.getOrder() == newOrder)
+                    .reduce((a, b) -> { throw new IllegalArgumentException("Multiple StoryPieces with the same order found"); })
+                    .get();
 
-        for (StoryPiece sp : storyPieces) {
-            if (sp.getOrder() == newOrder) {
-                int temp = firstSP.getOrder();
-                firstSP.setOrder(sp.getOrder(), false);
-                sp.setOrder(temp, false);
-
-                performAfterTaskActions();
-                break;
-            }
-        }
-    }
-
-    void shuffleStoryPieces() {
-        ArrayList<StoryPiece> storyPiecesOriginalOrder = new ArrayList<>(storyPieces);
-        ArrayList<Integer> shuffableOrders;
-        boolean sameResultOrder = true;
-
-        while (sameResultOrder) {
-            shuffableOrders = obtainShuffableOrders();
-            // If there is less than two shuffable orders, there is nothing to be done
-            if (shuffableOrders.size() <= 1) return;
-
-            Collections.shuffle(shuffableOrders);
-            reassignStoryPieceOrders(shuffableOrders);
-            sortStoryPiecesByOrder();
-
-            // If the result of the shuffle is the same StoryPiece order as before, we will repeat the process
-            sameResultOrder = storyPiecesOriginalOrder.equals(storyPieces);
+            secondSP.setOrder(firstSP.getOrder(), false);
+            firstSP.setOrder(newOrder, false);
         }
 
         performAfterTaskActions();
+    }
 
+    /**
+     * Return the maximum order that has been used so far (i.e. assigned to a StoryPiece at some point)
+     */
+    public int getMaxUsedOrder() {
+        int maxAvailableOrder = availableOrders.size() > 0 ? Collections.max(availableOrders) : 0;
+        int maxUsedOrder = Collections.max(storyPieces.stream().map(StoryPiece::getOrder).collect(toList()));
 
+        return Math.max(maxAvailableOrder, maxUsedOrder);
+    }
+
+    void shuffleStoryPieces() {
+        ArrayList<Integer> originalOrders = obtainShuffableOrders();
+        ArrayList<Integer> shuffableOrders = obtainShuffableOrders();
+        boolean sameOrders = true;
+
+        // If there are fewer than two shuffable orders, there is nothing to be done
+        if (shuffableOrders.size() <= 1) return;
+
+        while (sameOrders) {
+            Collections.shuffle(shuffableOrders);
+            sameOrders = shuffableOrders.equals(originalOrders);
+        }
+
+        reassignStoryPieceOrders(shuffableOrders);
+        performAfterTaskActions();
     }
 
     void performAfterTaskActions() {
