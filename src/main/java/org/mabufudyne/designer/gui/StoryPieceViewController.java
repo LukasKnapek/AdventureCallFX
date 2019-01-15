@@ -19,40 +19,26 @@ public class StoryPieceViewController extends WindowSubController {
 
     @Override
     public void setUpControls() {
+        spinOrder.valueProperty().addListener((observable, oldVal, newVal) -> onOrderSpinnerValueChange());
+
         TableView<StoryPiece> storyPiecesTable = mainController.getOverviewController().storyPiecesTable;
-        storyPiecesTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> onStoryPiecesTableNewSelection(newValue));
-
-        spinOrder.focusedProperty().addListener(
-                (observable, lostFocus, gotFocus) -> { if (lostFocus) onOrderSpinnerFocusLost(); });
-
-        textTitle.focusedProperty().addListener(
-                (observable, lostFocus, gotFocus) -> { if (lostFocus) onTitleFieldFocusLost(); });
-
-        textStory.focusedProperty().addListener(
-                (observable, lostFocus, gotFocus) -> { if (lostFocus) onStoryFieldFocusLost(); });
+        storyPiecesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelectedSP, newSelectedSP) -> onStoryPiecesTableNewSelection(oldSelectedSP, newSelectedSP));
     }
 
-    public void onStoryPiecesTableNewSelection(StoryPiece selectedSP) {
-        // TODO: Save all fields values of the previously selected SP before displaying the values of the newly selected SP
+    public void onStoryPiecesTableNewSelection(StoryPiece oldSP, StoryPiece newSP) {
         spinOrder.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                1, app.getActiveAdventure().getMaxUsedOrder(), selectedSP.getOrder()));
-        textTitle.setText(selectedSP.getTitle());
-        textStory.setText(selectedSP.getStory());
+                1, app.getActiveAdventure().getMaxUsedOrder(), newSP.getOrder()));
+
+        if (oldSP != null) {
+            textTitle.textProperty().unbindBidirectional(oldSP.titleProperty());
+            textStory.textProperty().unbindBidirectional(oldSP.storyProperty());
+        }
+        textTitle.textProperty().bindBidirectional(newSP.titleProperty());
+        textStory.textProperty().bindBidirectional(newSP.storyProperty());
     }
 
-    public void onOrderSpinnerFocusLost() {
+    public void onOrderSpinnerValueChange() {
         StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
         app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
-    }
-
-    public void onTitleFieldFocusLost() {
-        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
-        selectedSP.setTitle(textTitle.getText());
-    }
-
-    public void onStoryFieldFocusLost() {
-        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
-        selectedSP.setStory(textStory.getText());
     }
 }

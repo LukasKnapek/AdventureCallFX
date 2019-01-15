@@ -64,7 +64,7 @@ public class StoryPieceViewControllerTest {
         defaultStoryPiece.setTitle("Beginning!");
         defaultStoryPiece.setStory("Once upon a time...");
 
-        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
 
         assertEquals(defaultStoryPiece.getOrder(), (int) orderSpinner.getValue(),
                 "The handler did not populate the order spinner with the order of the StoryPiece.");
@@ -81,8 +81,8 @@ public class StoryPieceViewControllerTest {
         secondSP.setTitle("New and shiny title");
         secondSP.setStory("New and better story");
 
-        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
-        controller.onStoryPiecesTableNewSelection(secondSP);
+        controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(defaultStoryPiece, secondSP);
 
         assertEquals(secondSP.getOrder(), (int) orderSpinner.getValue(),
                 "The handler did not correctly populate the order spinner on second SP selection.");
@@ -97,34 +97,10 @@ public class StoryPieceViewControllerTest {
         defaultAdventure.addStoryPiece(new StoryPiece());
 
         oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
-        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
 
         orderSpinner.getValueFactory().setValue(2);
-        controller.onOrderSpinnerFocusLost();
+        controller.onOrderSpinnerValueChange();
         assertEquals(2, defaultStoryPiece.getOrder());
-    }
-
-    @Test
-    public void onTitleFieldFocusLost_ShouldSaveTheNewStoryPieceTitle() {
-        String newTitle = "Changed title";
-
-        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
-        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
-
-        titleField.setText(newTitle);
-        controller.onTitleFieldFocusLost();
-        assertEquals(newTitle, defaultStoryPiece.getTitle());
-    }
-
-    @Test
-    public void onStoryFieldFocusLost_ShouldSaveTheNewStoryPieceTitle() {
-        String newStory = "Once upon a time...";
-
-        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
-        controller.onStoryPiecesTableNewSelection(defaultStoryPiece);
-
-        storyArea.setText(newStory);
-        controller.onStoryFieldFocusLost();
-        assertEquals(newStory, defaultStoryPiece.getStory());
     }
 }

@@ -19,7 +19,7 @@ public class StoryPiece implements Serializable {
     private transient SimpleStringProperty title;
     private transient SimpleIntegerProperty order;
     private transient SimpleBooleanProperty fixed;
-    private String story;
+    private transient SimpleStringProperty story;
     private String color;
 
     private transient ObservableList<Choice> choices;
@@ -34,7 +34,7 @@ public class StoryPiece implements Serializable {
         this.title = new SimpleStringProperty(title);
         this.order = new SimpleIntegerProperty();
         this.fixed = new SimpleBooleanProperty(false);
-        this.story = "";
+        this.story = new SimpleStringProperty("");
 
         this.choices = FXCollections.observableArrayList();
     }
@@ -52,12 +52,14 @@ public class StoryPiece implements Serializable {
 
     public SimpleStringProperty titleProperty() { return title; }
 
+    public SimpleStringProperty storyProperty() { return story; }
+
     public String getStory() {
-        return story;
+        return story.get();
     }
 
     public void setStory(String story) {
-        this.story = story;
+        this.story.setValue(story);
         adventure.performAfterTaskActions();
     }
 
@@ -139,14 +141,14 @@ public class StoryPiece implements Serializable {
         return order.get() == that.order.get() &&
                 fixed.get() == that.fixed.get() &&
                 Objects.equals(title.get(), that.title.get()) &&
-                Objects.equals(story, that.story) &&
+                Objects.equals(story.get(), that.story.get()) &&
                 Objects.equals(color, that.color) &&
                 Objects.equals(choices, that.choices);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title.get(), story, order.get(), fixed.get(), color, choices);
+        return Objects.hash(title.get(), story.get(), order.get(), fixed.get(), color, choices);
     }
 
     /** Serialization **/
@@ -154,6 +156,7 @@ public class StoryPiece implements Serializable {
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeUTF(title.get());
+        out.writeUTF(story.get());
         out.writeInt(order.get());
         out.writeBoolean(fixed.get());
         out.writeObject(new ArrayList<>(choices));
@@ -163,6 +166,7 @@ public class StoryPiece implements Serializable {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.title = new SimpleStringProperty(in.readUTF());
+        this.story = new SimpleStringProperty(in.readUTF());
         this.order = new SimpleIntegerProperty(in.readInt());
         this.fixed = new SimpleBooleanProperty(in.readBoolean());
         this.choices = FXCollections.observableArrayList((ArrayList<Choice>) in.readObject());
