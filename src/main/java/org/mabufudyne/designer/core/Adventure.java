@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -76,13 +77,11 @@ public class Adventure implements Serializable {
 
     private ArrayList<Integer> obtainShuffableOrders() {
         // TODO: Use streams?
-        ArrayList<Integer> shuffableOrders = new ArrayList<>();
 
-        for (StoryPiece sp : storyPieces) {
-            if (!sp.isFixed()) shuffableOrders.add(sp.getOrder());
-        }
-
-        return shuffableOrders;
+        return storyPieces.stream()
+                .filter(sp -> !sp.isFixed())
+                .map(StoryPiece::getOrder)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void reassignStoryPieceOrders(ArrayList<Integer> newOrders) {
