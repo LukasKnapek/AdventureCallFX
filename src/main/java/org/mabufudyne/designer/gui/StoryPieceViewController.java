@@ -19,7 +19,7 @@ public class StoryPieceViewController extends WindowSubController {
 
     @Override
     public void setUpControls() {
-        spinOrder.valueProperty().addListener((observable, oldVal, newVal) -> onOrderSpinnerValueChange());
+        spinOrder.valueProperty().addListener((observable, oldVal, newVal) -> onOrderSpinnerValueChange(oldVal, newVal));
 
         TableView<StoryPiece> storyPiecesTable = mainController.getOverviewController().storyPiecesTable;
         storyPiecesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelectedSP, newSelectedSP) -> onStoryPiecesTableNewSelection(oldSelectedSP, newSelectedSP));
@@ -37,8 +37,12 @@ public class StoryPieceViewController extends WindowSubController {
         textStory.textProperty().bindBidirectional(newSP.storyProperty());
     }
 
-    public void onOrderSpinnerValueChange() {
-        StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
-        app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
+    public void onOrderSpinnerValueChange(int oldOrder, int newOrder) {
+        if (newOrder < 1 || newOrder > app.getActiveAdventure().getMaxUsedOrder()) {
+            spinOrder.getValueFactory().setValue(oldOrder);
+        } else {
+            StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
+            app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
+        }
     }
 }

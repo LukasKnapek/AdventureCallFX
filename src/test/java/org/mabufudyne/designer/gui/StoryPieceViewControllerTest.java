@@ -8,6 +8,8 @@ import javafx.scene.control.TextField;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mabufudyne.designer.core.Adventure;
 import org.mabufudyne.designer.core.Application;
 import org.mabufudyne.designer.core.StoryPiece;
@@ -93,14 +95,27 @@ public class StoryPieceViewControllerTest {
     }
 
     @Test
-    public void onOrderSpinnerFocusLost_ShouldChangeTheCurrentlySelectedStoryPieceOrder_GivenItHasBeenChangedInTheSpinner() {
+    public void onOrderSpinnerValueChange_ShouldChangeTheCurrentlySelectedStoryPieceOrder_GivenItHasBeenChangedInTheSpinnerAndIsValid() {
         defaultAdventure.addStoryPiece(new StoryPiece());
 
         oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
         controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
 
         orderSpinner.getValueFactory().setValue(2);
-        controller.onOrderSpinnerValueChange();
+        controller.onOrderSpinnerValueChange(1, 2);
         assertEquals(2, defaultStoryPiece.getOrder());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 3, 10 })
+    public void onOrderSpinnerValueChange_ShouldKeepTheCurrentSelectedStoryPieceOrder_GivenTheNewOrderIsInvalid(int invalidOrder) {
+        defaultAdventure.addStoryPiece(new StoryPiece());
+
+        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
+        controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
+
+        orderSpinner.getValueFactory().setValue(invalidOrder);
+        controller.onOrderSpinnerValueChange(1, invalidOrder);
+        assertEquals(1, defaultStoryPiece.getOrder());
     }
 }
