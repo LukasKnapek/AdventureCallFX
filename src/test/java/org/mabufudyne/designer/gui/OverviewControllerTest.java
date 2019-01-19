@@ -11,8 +11,7 @@ import org.mabufudyne.designer.core.StoryPiece;
 
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class OverviewControllerTest {
@@ -42,7 +41,7 @@ public class OverviewControllerTest {
         defaultTable.setItems(defaultAdventure.getStoryPieces());
 
         controller.setApp(app);
-        controller.storyPiecesTable = defaultTable;
+        controller.setStoryPiecesTable(defaultTable);
     }
 
     @Test

@@ -17,6 +17,7 @@ import org.mabufudyne.designer.core.StoryPiece;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class StoryPieceViewControllerTest {
 
@@ -56,7 +57,7 @@ public class StoryPieceViewControllerTest {
 
         // Overview Controller and its populated TableView, which is accessed often in the class under test
         oc = new OverviewController();
-        oc.storyPiecesTable = new TableView<>(defaultAdventure.getStoryPieces());
+        oc.setStoryPiecesTable(new TableView<>(defaultAdventure.getStoryPieces()));
         controller.mainController = new MainWindowController();
         controller.mainController.overviewController = oc;
     }
@@ -98,7 +99,7 @@ public class StoryPieceViewControllerTest {
     public void onOrderSpinnerValueChange_ShouldChangeTheCurrentlySelectedStoryPieceOrder_GivenItHasBeenChangedInTheSpinnerAndIsValid() {
         defaultAdventure.addStoryPiece(new StoryPiece());
 
-        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
+        oc.getStoryPiecesTable().getSelectionModel().select(defaultStoryPiece);
         controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
 
         orderSpinner.getValueFactory().setValue(2);
@@ -111,11 +112,18 @@ public class StoryPieceViewControllerTest {
     public void onOrderSpinnerValueChange_ShouldKeepTheCurrentSelectedStoryPieceOrder_GivenTheNewOrderIsInvalid(int invalidOrder) {
         defaultAdventure.addStoryPiece(new StoryPiece());
 
-        oc.storyPiecesTable.getSelectionModel().select(defaultStoryPiece);
+        oc.getStoryPiecesTable().getSelectionModel().select(defaultStoryPiece);
         controller.onStoryPiecesTableNewSelection(null, defaultStoryPiece);
 
         orderSpinner.getValueFactory().setValue(invalidOrder);
         controller.onOrderSpinnerValueChange(1, invalidOrder);
         assertEquals(1, defaultStoryPiece.getOrder());
+    }
+
+    @Test
+    public void setUpControls_ShouldEnsureThatAStoryPieceIsSelectedAfterSettingUpTheStoryPieceTableViewSelectionListener() {
+        controller.setUpControls();
+        assertNotNull(oc.getStoryPiecesTable().getSelectionModel().getSelectedItem(),
+                "After setting up the StoryPiece TableView listener, no StoryPiece has been selected.");
     }
 }
