@@ -7,7 +7,7 @@ import org.mabufudyne.designer.core.StoryPiece;
 
 public class OverviewController extends WindowSubController {
 
-    public TableView<StoryPiece> storyPiecesTable;
+    @FXML private TableView<StoryPiece> storyPiecesTable;
     @FXML private TableColumn<StoryPiece, Integer> orderColumn;
     @FXML private TableColumn<StoryPiece, String> titleColumn;
 
@@ -32,5 +32,13 @@ public class OverviewController extends WindowSubController {
 
     public StoryPiece getSelectedStoryPiece() {
         return storyPiecesTable.getSelectionModel().getSelectedItem();
+    }
+
+    public TableView<StoryPiece> getStoryPiecesTable() {
+        return storyPiecesTable;
+    }
+
+    public void setStoryPiecesTable(TableView<StoryPiece> storyPiecesTable) {
+        this.storyPiecesTable = storyPiecesTable;
     }
 }

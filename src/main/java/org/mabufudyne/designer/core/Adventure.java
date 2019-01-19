@@ -134,7 +134,9 @@ public class Adventure implements Serializable {
      */
     public int getMaxUsedOrder() {
         int maxAvailableOrder = availableOrders.size() > 0 ? Collections.max(availableOrders) : 0;
-        int maxUsedOrder = Collections.max(storyPieces.stream().map(StoryPiece::getOrder).collect(toList()));
+        int maxUsedOrder = Collections.max(storyPieces.stream()
+                .map(StoryPiece::getOrder)
+                .collect(toList()));
 
         return Math.max(maxAvailableOrder, maxUsedOrder);
     }

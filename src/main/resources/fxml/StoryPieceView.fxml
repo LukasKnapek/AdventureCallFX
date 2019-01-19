@@ -25,7 +25,7 @@
                         <Font size="15.0" />
                      </font>
                   </Label>
-                  <Spinner fx:id="spinOrder" minWidth="-Infinity" prefWidth="70.0" />
+                  <Spinner fx:id="spinOrder" editable="true" minWidth="-Infinity" prefWidth="70.0" />
                </children>
             </VBox>
             <VBox HBox.hgrow="ALWAYS">
