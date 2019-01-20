@@ -42,6 +42,7 @@ public class OverviewControllerTest {
 
         controller.setApp(app);
         controller.setStoryPiecesTable(defaultTable);
+        controller.setBtnRemoveStoryPiece(new Button());
     }
 
     @Test
@@ -50,6 +51,15 @@ public class OverviewControllerTest {
         controller.onAddStoryPieceClick();
         assertEquals(2, app.getActiveAdventure().getStoryPieces().size(),
                 "The handler should have added a new StoryPiece to the current Adventure");
+    }
+
+    @Test
+    public void onAddStoryPieceClick_ShouldEnableTheRemoveStoryPieceButton() {
+        controller.getBtnRemoveStoryPiece().setDisable(true);
+        controller.onAddStoryPieceClick();
+
+        assertFalse(controller.getBtnRemoveStoryPiece().isDisabled(),
+                "The remove StoryPiece button is still disabled even after adding a StoryPiece");
     }
 
     @Test
@@ -77,5 +87,15 @@ public class OverviewControllerTest {
         controller.onRemoveStoryPieceClick();
         assertFalse(app.getActiveAdventure().getStoryPieces().contains(SPtoBeRemoved),
                 "The handler did not remove the currently selected StoryPiece");
+    }
+
+    @Test
+    public void onRemoveStoryPieceClick_ShouldDisableTheRemoveButton_GivenThereIsOnlyOneStoryPieceLeft() {
+        defaultAdventure.addStoryPiece(new StoryPiece());
+        controller.getStoryPiecesTable().getSelectionModel().select(defaultStoryPiece);
+        controller.onRemoveStoryPieceClick();
+
+        assertTrue(controller.getBtnRemoveStoryPiece().isDisabled(),
+                "After removing all but one StoryPiece, the remove StoryPiece button is still enabled");
     }
 }
