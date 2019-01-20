@@ -1,6 +1,7 @@
 package org.mabufudyne.designer.gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.mabufudyne.designer.core.StoryPiece;
@@ -10,6 +11,7 @@ public class OverviewController extends WindowSubController {
     @FXML private TableView<StoryPiece> storyPiecesTable;
     @FXML private TableColumn<StoryPiece, Integer> orderColumn;
     @FXML private TableColumn<StoryPiece, String> titleColumn;
+    @FXML private Button btnRemoveStoryPiece;
 
     public void initialize() {
         orderColumn.setCellValueFactory(cellData -> cellData.getValue().orderProperty().asObject());
@@ -18,11 +20,12 @@ public class OverviewController extends WindowSubController {
 
     public void onAddStoryPieceClick() {
         app.getActiveAdventure().addStoryPiece(new StoryPiece());
+        btnRemoveStoryPiece.setDisable(false);
     }
 
     public void onRemoveStoryPieceClick() {
-        // TODO: Disable the remove button if there is only one StoryPiece left
         app.getActiveAdventure().removeStoryPiece(storyPiecesTable.getSelectionModel().getSelectedItem());
+        btnRemoveStoryPiece.setDisable(app.getActiveAdventure().getStoryPieces().size() == 1);
     }
 
     @Override
@@ -40,5 +43,13 @@ public class OverviewController extends WindowSubController {
 
     public void setStoryPiecesTable(TableView<StoryPiece> storyPiecesTable) {
         this.storyPiecesTable = storyPiecesTable;
+    }
+
+    public Button getBtnRemoveStoryPiece() {
+        return btnRemoveStoryPiece;
+    }
+
+    public void setBtnRemoveStoryPiece(Button btnRemoveStoryPiece) {
+        this.btnRemoveStoryPiece = btnRemoveStoryPiece;
     }
 }

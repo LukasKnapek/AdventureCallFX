@@ -30,7 +30,7 @@
             <VBox alignment="TOP_CENTER" spacing="5.0">
                <children>
                   <Button fx:id="btAddStoryPiece" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddStoryPieceClick" prefHeight="30.0" prefWidth="30.0" text="+" />
-                  <Button fx:id="btRemoveStoryPiece" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRemoveStoryPieceClick" prefHeight="30.0" prefWidth="30.0" text="-" />
+                  <Button fx:id="btnRemoveStoryPiece" disable="true" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onRemoveStoryPieceClick" prefHeight="30.0" prefWidth="30.0" text="-" />
                </children>
                <HBox.margin>
                   <Insets left="5.0" />
