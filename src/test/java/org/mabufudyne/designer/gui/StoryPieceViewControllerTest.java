@@ -59,7 +59,7 @@ public class StoryPieceViewControllerTest {
         oc = new OverviewController();
         oc.setStoryPiecesTable(new TableView<>(defaultAdventure.getStoryPieces()));
         controller.mainController = new MainWindowController();
-        controller.mainController.overviewController = oc;
+        controller.mainController.setOverviewController(oc);
     }
 
     @Test

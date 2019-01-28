@@ -8,18 +8,18 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
-class Choice implements Serializable {
+public class Choice implements Serializable {
 
     private StoryPiece choiceSP;
-    private transient SimpleStringProperty text;
+    private transient SimpleStringProperty description;
 
     private static String DEFAULT_TEXT = "Go to";
 
     /** Constructors **/
 
-    public Choice(StoryPiece choiceSP, String text) {
+    public Choice(StoryPiece choiceSP, String description) {
         this.choiceSP = choiceSP;
-        this.text = new SimpleStringProperty(text);
+        this.description = new SimpleStringProperty(description);
     }
 
     public Choice(StoryPiece choiceSP) {
@@ -28,11 +28,11 @@ class Choice implements Serializable {
 
     /** Getters and Setters **/
 
-    public String getText() { return text.get(); }
+    public String getDescription() { return description.get(); }
 
-    public void setText(String newText) { this.text.set(newText); }
+    public void setDescription(String newText) { this.description.set(newText); }
 
-    public SimpleStringProperty textProperty() { return text; }
+    public SimpleStringProperty descriptionProperty() { return description; }
 
     public StoryPiece getStoryPiece() {
         return choiceSP;
@@ -52,24 +52,24 @@ class Choice implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Choice choice = (Choice) o;
         return Objects.equals(choiceSP, choice.choiceSP) &&
-                Objects.equals(text.get(), choice.text.get());
+                Objects.equals(description.get(), choice.description.get());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(choiceSP, text.get());
+        return Objects.hash(choiceSP, description.get());
     }
 
     /** Serialization **/
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeUTF(getText());
+        out.writeUTF(getDescription());
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        this.text = new SimpleStringProperty(in.readUTF());
+        this.description = new SimpleStringProperty(in.readUTF());
     }
 
 }

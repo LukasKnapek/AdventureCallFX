@@ -18,13 +18,13 @@ class ChoiceTest {
     @Test
     void Text_ShouldBeSimpleStringProperty() {
         Choice choice = new Choice(defaultStoryPiece);
-        assertTrue(choice.textProperty() instanceof SimpleStringProperty);
+        assertTrue(choice.descriptionProperty() instanceof SimpleStringProperty);
     }
 
     @Test
     void Constructor_ShouldCreateAChoiceObjectWithStoryPieceAndName_GivenTheStoryPieceAndName() {
         Choice choice = new Choice(defaultStoryPiece, "Move 5 steps to");
-        assertEquals("Move 5 steps to", choice.getText(),
+        assertEquals("Move 5 steps to", choice.getDescription(),
                 "Choice did not have the text that it was assigned.");
         assertEquals(defaultStoryPiece, choice.getStoryPiece(),
                 "Choice did not have the StoryPiece that it was assigned.");
@@ -33,7 +33,7 @@ class ChoiceTest {
     @Test
     void Constructor_ShouldCreateAChoiceObjectWithStoryPieceAndDefaultName_GivenTheStoryPieceAndNoName() {
         Choice choice = new Choice(defaultStoryPiece);
-        assertEquals(Choice.getDefaultText(), choice.getText(),
+        assertEquals(Choice.getDefaultText(), choice.getDescription(),
                 "Choice did not have the default text when no text was passed to it.");
     }
 
@@ -41,8 +41,8 @@ class ChoiceTest {
     void SetText_ShouldSetTheChoiceText_GivenTheText() {
         String newText = "Go down the beaten path";
         Choice ch = new Choice(defaultStoryPiece);
-        ch.setText(newText);
-        assertEquals(newText, ch.getText(),
+        ch.setDescription(newText);
+        assertEquals(newText, ch.getDescription(),
                 "Choice did not have text that was assigned to it.");
     }
 

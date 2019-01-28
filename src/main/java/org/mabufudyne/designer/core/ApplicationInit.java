@@ -44,12 +44,15 @@ public class ApplicationInit extends javafx.application.Application {
         // Find a way to gather them in a data structure that would make the code more clean and elegant
         mc.getOverviewController().setApp(initializedApplication);
         mc.getStoryPieceViewController().setApp(initializedApplication);
+        mc.getChoiceViewController().setApp(initializedApplication);
 
         mc.getOverviewController().setMainController(mc);
         mc.getStoryPieceViewController().setMainController(mc);
+        mc.getChoiceViewController().setMainController(mc);
 
         mc.getOverviewController().setUpControls();
         mc.getStoryPieceViewController().setUpControls();
+        mc.getChoiceViewController().setUpControls();
     }
 
     @Override
