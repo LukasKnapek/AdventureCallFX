@@ -97,7 +97,7 @@ public class StoryPiece implements Serializable {
         adventure.performAfterTaskActions();
     }
 
-    ObservableList<Choice> getChoices() {
+    public ObservableList<Choice> getChoices() {
         return choices;
     }
 
@@ -107,7 +107,7 @@ public class StoryPiece implements Serializable {
 
     /** Public methods **/
 
-    void addChoice(Choice choice) {
+    public void addChoice(Choice choice) {
 
         for (Choice existingChoice : choices) {
             if (existingChoice.getStoryPiece() == choice.getStoryPiece()) return;
@@ -120,7 +120,7 @@ public class StoryPiece implements Serializable {
         }
     }
 
-    void removeChoice(Choice choice) {
+    public void removeChoice(Choice choice) {
         if (choices.contains(choice)) {
             choices.remove(choice);
 
