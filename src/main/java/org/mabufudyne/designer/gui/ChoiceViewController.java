@@ -28,6 +28,8 @@ public class ChoiceViewController extends WindowSubController {
         storyPiecesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelectedSP, newSelectedSP) -> onStoryPiecesTableNewSelection(oldSelectedSP, newSelectedSP));
     }
 
+    /** Getters and Setters **/
+
     public TableView<Choice> getChoicesTable() {
         return choicesTable;
     }
@@ -36,7 +38,13 @@ public class ChoiceViewController extends WindowSubController {
         this.choicesTable = choicesTable;
     }
 
+    /** Event handlers **/
+
     void onStoryPiecesTableNewSelection(StoryPiece oldSP, StoryPiece newSP) {
         choicesTable.setItems(newSP.getChoices());
+    }
+
+    public void onAddChoiceClick() {
+
     }
 }
