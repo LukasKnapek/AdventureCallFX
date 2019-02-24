@@ -30,7 +30,7 @@
             </TableView>
             <VBox>
                <children>
-                  <Button fx:id="btAddChoice" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onAddChoiceClick" prefHeight="30.0" prefWidth="30.0" styleClass="toolBarButton" text="+" />
+                  <Button fx:id="btAddChoice" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="toolBarButton" text="+" />
                </children>
                <padding>
                   <Insets left="5.0" />

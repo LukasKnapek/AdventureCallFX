@@ -2,6 +2,8 @@ package org.mabufudyne.designer.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import org.junit.jupiter.api.*;
 
 class ApplicationInitTest {
@@ -31,4 +33,6 @@ class ApplicationInitTest {
         assertNotNull(appInit.getInitializedApplication().getProperties(),
                 "ApplicationInit did not initialise (default) properties");
     }
+
+
 }

@@ -59,7 +59,7 @@ public class StoryPieceViewControllerTest {
         oc = new OverviewController();
         oc.setStoryPiecesTable(new TableView<>(defaultAdventure.getStoryPieces()));
         controller.mainController = new MainWindowController();
-        controller.mainController.setOverviewController(oc);
+        controller.mainController.setController("OverviewController", oc);
     }
 
     @Test
@@ -118,12 +118,5 @@ public class StoryPieceViewControllerTest {
         orderSpinner.getValueFactory().setValue(invalidOrder);
         controller.onOrderSpinnerValueChange(1, invalidOrder);
         assertEquals(1, defaultStoryPiece.getOrder());
-    }
-
-    @Test
-    public void setUpControls_ShouldEnsureThatAStoryPieceIsSelectedAfterSettingUpTheStoryPieceTableViewSelectionListener() {
-        controller.setUpControls();
-        assertNotNull(oc.getStoryPiecesTable().getSelectionModel().getSelectedItem(),
-                "After setting up the StoryPiece TableView listener, no StoryPiece has been selected.");
     }
 }

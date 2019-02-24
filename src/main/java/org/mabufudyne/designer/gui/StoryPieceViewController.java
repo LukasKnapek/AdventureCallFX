@@ -20,19 +20,22 @@ public class StoryPieceViewController extends WindowSubController {
     public StoryPieceViewController() {}
 
     @Override
-    public void setUpControls() {
+    public void setupListeners() {
         // WORKAROUND:
         // On the first value change and listener call (oldValue (null), newValue(1)),
         // NPE is thrown somewhere inside Java code for some unknown reason
-        // Setting a temporary value factory (oldValue (1), newValue(1)) helps to avoid this
+        // Setting a temporary value factory (such that first value change = oldValue (1), newValue(1)) avoids this
         spinOrder.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,1));
         spinOrder.valueProperty().addListener((observable, oldValue, newValue) -> onOrderSpinnerValueChange(oldValue, newValue));
 
-        // Set up StoryPieces table selection listener, select an item so the View fields are populated from the start
-        TableView<StoryPiece> storyPiecesTable = mainController.getOverviewController().getStoryPiecesTable();
-        storyPiecesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelectedSP, newSelectedSP) -> onStoryPiecesTableNewSelection(oldSelectedSP, newSelectedSP));
-        storyPiecesTable.getSelectionModel().select(0);
+        // Set up StoryPieces table selection listener
+        OverviewController oc = (OverviewController) mainController.getController("OverviewController");
+        TableView<StoryPiece> storyPiecesTable = oc.getStoryPiecesTable();
+        storyPiecesTable.getSelectionModel().selectedItemProperty().addListener((observable, oldSelectedSP, newSelectedSP) ->
+                onStoryPiecesTableNewSelection(oldSelectedSP, newSelectedSP));
     }
+
+    /** Event Listeners **/
 
     void onStoryPiecesTableNewSelection(StoryPiece oldSP, StoryPiece newSP) {
         SpinnerValueFactory.IntegerSpinnerValueFactory spinnerRange = new SpinnerValueFactory.IntegerSpinnerValueFactory(
@@ -52,7 +55,8 @@ public class StoryPieceViewController extends WindowSubController {
         if (newOrder < 1 || newOrder > app.getActiveAdventure().getMaxUsedOrder()) {
             spinOrder.getValueFactory().setValue(oldOrder);
         } else {
-            StoryPiece selectedSP = mainController.getOverviewController().getSelectedStoryPiece();
+            OverviewController oc = (OverviewController) mainController.getController("OverviewController");
+            StoryPiece selectedSP = oc.getSelectedStoryPiece();
             app.getActiveAdventure().switchStoryPieceOrder(selectedSP, spinOrder.getValue());
         }
     }
