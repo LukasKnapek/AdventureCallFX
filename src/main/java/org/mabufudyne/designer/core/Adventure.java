@@ -100,6 +100,7 @@ public class Adventure implements Serializable {
         performAfterTaskActions();
     }
 
+    // TODO: Delete from all choices in the Adventure on removal
     public void removeStoryPiece(StoryPiece sp) {
         if (storyPieces.size() > 1) {
             freeUpOrder(sp.getOrder());

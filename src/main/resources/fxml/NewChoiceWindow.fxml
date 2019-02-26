@@ -26,13 +26,6 @@
    </center>
    <bottom>
       <BorderPane prefHeight="49.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <right>
-            <Button alignment="CENTER" mnemonicParsing="false" text="Create" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets right="10.0" />
-               </BorderPane.margin>
-            </Button>
-         </right>
          <left>
             <HBox alignment="CENTER_RIGHT" prefHeight="40.0" BorderPane.alignment="CENTER">
                <children>
@@ -41,7 +34,7 @@
                         <Insets />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="50.0" text="Go to...">
+                  <TextField fx:id="textChoiceDescription" prefHeight="50.0" text="Go to...">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" top="10.0" />
                      </HBox.margin>
@@ -52,6 +45,17 @@
                </BorderPane.margin>
             </HBox>
          </left>
+         <right>
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="btnAddNewChoice" alignment="CENTER" mnemonicParsing="false" text="Add Choice" />
+                  <Button fx:id="btnCancel" mnemonicParsing="false" text="Cancel" />
+               </children>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </HBox>
+         </right>
       </BorderPane>
    </bottom>
 </BorderPane>

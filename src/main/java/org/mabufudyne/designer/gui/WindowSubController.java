@@ -19,7 +19,7 @@ public abstract class WindowSubController {
      * Post-initialisation configuration - use the injected Application and MainWindowController references to
      * populate Controls or set up some other stuff dependent on other Controllers
      */
-    public void setupListeners() {};
+    public void setupListeners() {}
 
-    public void populateControls() {};
+    public void populateControls() {}
 }

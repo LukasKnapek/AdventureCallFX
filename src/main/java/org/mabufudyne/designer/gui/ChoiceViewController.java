@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.mabufudyne.designer.core.Choice;
 import org.mabufudyne.designer.core.StoryPiece;
 
@@ -19,8 +20,9 @@ public class ChoiceViewController extends WindowSubController {
     @FXML private TableColumn<Choice, Integer> spOrderColumn;
     @FXML private TableColumn<Choice, String> spTitleColumn;
     @FXML private TableColumn<Choice, String> descriptionColumn;
-
     @FXML private Button btAddChoice;
+
+    private StoryPiece selectedStoryPiece;
 
     public void initialize() {
         spOrderColumn.setCellValueFactory(cellData -> cellData.getValue().getStoryPiece().orderProperty().asObject());
@@ -51,6 +53,7 @@ public class ChoiceViewController extends WindowSubController {
 
     void onStoryPiecesTableNewSelection(StoryPiece oldSP, StoryPiece newSP) {
         choicesTable.setItems(newSP.getChoices());
+        selectedStoryPiece = newSP;
     }
 
     public Stage onAddChoiceClick() {
@@ -60,10 +63,12 @@ public class ChoiceViewController extends WindowSubController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewChoiceWindow.fxml"));
             BorderPane choiceWindow = loader.load();
             NewChoiceWindowController controller = loader.getController();
+            controller.setCurrentStoryPiece(selectedStoryPiece);
             controller.loadData(app.getActiveAdventure().getStoryPieces());
 
             Scene subScene = new Scene(choiceWindow);
             subStage = new Stage();
+            controller.setStage(subStage);
             subStage.setScene(subScene);
             subStage.show();
         }
