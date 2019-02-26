@@ -1,11 +1,14 @@
 package org.mabufudyne.designer.gui;
 
+import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mabufudyne.designer.core.Adventure;
 import org.mabufudyne.designer.core.Application;
@@ -14,8 +17,7 @@ import org.mabufudyne.designer.core.StoryPiece;
 
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChoiceViewControllerTest {
 
@@ -57,24 +59,12 @@ public class ChoiceViewControllerTest {
         OverviewController oc = new OverviewController();
         TableView<StoryPiece> spTable = new TableView<>();
 
-        mc.setOverviewController(oc);
+        mc.setController("OverviewController", oc);
         oc.setStoryPiecesTable(spTable);
         spTable.setItems(defaultAdventure.getStoryPieces());
         spTable.getSelectionModel().select(defaultStoryPiece);
 
         controller.setMainController(mc);
-    }
-
-    @Test
-    public void setUpControls_ShouldPopulateTheChoicesTable() {
-        StoryPiece spTwo = new StoryPiece();
-        Choice defaultChoice = new Choice(spTwo, "I am a choice!");
-        defaultAdventure.addStoryPiece(spTwo);
-        defaultStoryPiece.addChoice(defaultChoice);
-
-        // Default SP has one Choice that should show up in the TableView
-        controller.setUpControls();
-        assertEquals(controller.getChoicesTable().getItems().get(0), defaultChoice);
     }
 
     @Test
@@ -89,5 +79,19 @@ public class ChoiceViewControllerTest {
                 "After selecting a new StoryPiece, the Choices table doesn't show exactly one Choice the SP has.");
         assertTrue(controller.getChoicesTable().getItems().contains(spTwoChoice),
                 "After selecting a new StoryPiece, the content of the Choices table doesn't equal the Choice of the SP.");
+    }
+
+
+    @Tag("slow")
+    @Test
+    public void onAddChoiceClick_ShouldDisplayNewChoiceWindow() {
+        // Execute using JavaFX application thread, required for displaying Stages
+        Platform.setImplicitExit(false);
+        Platform.runLater(() -> {
+            Stage stage = controller.onAddChoiceClick();
+            assertNotNull(stage);
+            assertTrue(stage.isShowing());
+            stage.close();
+        });
     }
 }

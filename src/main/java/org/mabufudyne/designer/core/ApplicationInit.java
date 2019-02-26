@@ -1,13 +1,19 @@
 package org.mabufudyne.designer.core;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.util.Callback;
 import org.mabufudyne.designer.gui.MainWindowController;
+import org.mabufudyne.designer.gui.OverviewController;
+import org.mabufudyne.designer.gui.WindowSubController;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class ApplicationInit extends javafx.application.Application {
@@ -17,9 +23,29 @@ public class ApplicationInit extends javafx.application.Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
-        VBox mainWindow = loader.load();
-        Scene mainScene = new Scene(mainWindow);
 
+        // Collect all instantiated subcontrollers in a single data structure rather than inject them
+        // into separate fields of MainWindowController
+        HashMap<String, WindowSubController> controllerMap = new HashMap<>();
+        loader.setControllerFactory(param -> {
+            Object instance = null;
+
+            try {
+                instance = param.newInstance();
+
+                if (!(instance instanceof MainWindowController)) {
+                    WindowSubController instantiatedController = (WindowSubController) instance;
+                    controllerMap.put(instantiatedController.getClass().getSimpleName(), instantiatedController);
+                }
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            return instance;
+        });
+        VBox mainWindow = loader.load();
+
+        Scene mainScene = new Scene(mainWindow);
         primaryStage.setTitle("Welcome to Adventure Call FX!");
         primaryStage.setScene(mainScene);
 
@@ -29,30 +55,31 @@ public class ApplicationInit extends javafx.application.Application {
 
         primaryStage.show();
 
+        MainWindowController mc = loader.getController();
+        mc.setControllers(controllerMap);
+        setUpControllers(mc);
+
         // If we pass testing argument to the application, hide the stage immediately, exiting the app
         // This is used to test that the app launches successfully
         String testParamValue = getParameters().getNamed().get("testRun");
         if (testParamValue != null && testParamValue.equals("true")) {
-            primaryStage.hide();
+            Platform.setImplicitExit(true);
+            primaryStage.close();
         }
-
-        setUpControllers(loader.getController());
     }
 
     private void setUpControllers(MainWindowController mc) {
-        // TODO: Suboptimal way of calling functions on subcontrollers
-        // Find a way to gather them in a data structure that would make the code more clean and elegant
-        mc.getOverviewController().setApp(initializedApplication);
-        mc.getStoryPieceViewController().setApp(initializedApplication);
-        mc.getChoiceViewController().setApp(initializedApplication);
+        for (WindowSubController controller : mc.getControllers().values()) {
+            controller.setApp(initializedApplication);
+            controller.setMainController(mc);
 
-        mc.getOverviewController().setMainController(mc);
-        mc.getStoryPieceViewController().setMainController(mc);
-        mc.getChoiceViewController().setMainController(mc);
+            controller.populateControls();
+            controller.setupListeners();
+        }
 
-        mc.getOverviewController().setUpControls();
-        mc.getStoryPieceViewController().setUpControls();
-        mc.getChoiceViewController().setUpControls();
+        // Select the first StoryPiece to populate StoryPiece View and Choice View
+        OverviewController oc = (OverviewController) mc.getController("OverviewController");
+        oc.getStoryPiecesTable().getSelectionModel().select(0);
     }
 
     @Override
