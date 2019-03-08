@@ -19,30 +19,13 @@ import java.util.Properties;
 public class ApplicationInit extends javafx.application.Application {
 
     private Application initializedApplication;
+    private MainWindowController mwc;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
 
-        // Collect all instantiated subcontrollers in a single data structure rather than inject them
-        // into separate fields of MainWindowController
-        HashMap<String, WindowSubController> controllerMap = new HashMap<>();
-        loader.setControllerFactory(param -> {
-            Object instance = null;
-
-            try {
-                instance = param.newInstance();
-
-                if (!(instance instanceof MainWindowController)) {
-                    WindowSubController instantiatedController = (WindowSubController) instance;
-                    controllerMap.put(instantiatedController.getClass().getSimpleName(), instantiatedController);
-                }
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            return instance;
-        });
+        loader.setControllerFactory(controllerFactory);
         VBox mainWindow = loader.load();
 
         Scene mainScene = new Scene(mainWindow);
@@ -54,10 +37,7 @@ public class ApplicationInit extends javafx.application.Application {
         primaryStage.setMinHeight(mainWindow.getMinHeight());
 
         primaryStage.show();
-
-        MainWindowController mc = loader.getController();
-        mc.setControllers(controllerMap);
-        setUpControllers(mc);
+        setUpControllers();
 
         // If we pass testing argument to the application, hide the stage immediately, exiting the app
         // This is used to test that the app launches successfully
@@ -68,17 +48,42 @@ public class ApplicationInit extends javafx.application.Application {
         }
     }
 
-    private void setUpControllers(MainWindowController mc) {
-        for (WindowSubController controller : mc.getControllers().values()) {
+    // Collect all instantiated subcontrollers in a single data structure rather than
+    // injecting them into separate fields of MainWindowController
+    Callback<Class<?>, Object> controllerFactory = paramClass -> {
+        Object instance = null;
+
+        try {
+            instance = paramClass.newInstance();
+
+            if (instance instanceof  MainWindowController) {
+                HashMap<String, WindowSubController> controllerMap = new HashMap<>();
+                mwc = (MainWindowController) instance;
+                mwc.setControllers(controllerMap);
+            }
+            else  {
+                WindowSubController controller = (WindowSubController) instance;
+                mwc.getControllers().put(controller.getClass().getSimpleName(), controller);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            Platform.exit();
+        }
+
+        return instance;
+    };
+
+    private void setUpControllers() {
+        for (WindowSubController controller : mwc.getControllers().values()) {
             controller.setApp(initializedApplication);
-            controller.setMainController(mc);
+            controller.setMainController(mwc);
 
             controller.populateControls();
             controller.setupListeners();
         }
 
         // Select the first StoryPiece to populate StoryPiece View and Choice View
-        OverviewController oc = (OverviewController) mc.getController("OverviewController");
+        OverviewController oc = (OverviewController) mwc.getController("OverviewController");
         oc.getStoryPiecesTable().getSelectionModel().select(0);
     }
 
